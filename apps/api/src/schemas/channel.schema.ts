@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Server } from './server.schema';
 import { Category } from './category.schema';
+import { Message } from './message.schema';
 
 export type ChannelDocument = HydratedDocument<Channel>;
 
@@ -21,6 +22,9 @@ export class Channel {
 
     @Prop({ type: Number, required: true })
     order: number;
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Message' }] })
+    messages: Message[];
 }
 
 export const ChannelSchema = SchemaFactory.createForClass(Channel);
