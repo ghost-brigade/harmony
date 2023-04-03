@@ -19,11 +19,19 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Invalid request body'
   })
-  @Throttle(1, 60)
+  @Throttle(3, 60)
   @UseGuards(new ZodGuard("body", createUserSchema))
   @Post()
-  async create(@Body() createUser: createUserType) {
+  async create(@Body() createUser: createUserType, @Res() res) {
     try {
+      if(await this.userService.emailAlreadyExist(createUser.email)) {
+        return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Email already exists' });
+      }
+
+      if(await this.userService.usernameAlreadyExist(createUser.username)) {
+        return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Username already exists' });
+      }
+
       const userCreated = await this.userService.create(createUser);
       return publicUserSchema.parse(userCreated);
     } catch (error) {
