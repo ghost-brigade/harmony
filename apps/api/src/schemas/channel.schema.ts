@@ -3,6 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 import { Server } from './server.schema';
 import { Category } from './category.schema';
 import { Message } from './message.schema';
+import { CHANNEL_TYPE } from './enums/channelType.enum';
 
 export type ChannelDocument = HydratedDocument<Channel>;
 
@@ -14,7 +15,7 @@ export class Channel {
     @Prop({ type: Types.ObjectId, ref: 'Server' })
     server: Server;
 
-    @Prop({ type: String, enum: ['TEXT', 'VOICE'], default: 'TEXT' })
+    @Prop({ type: String, enum: CHANNEL_TYPE, default: CHANNEL_TYPE.TEXT })
     type: string;
 
     @Prop({ type: Types.ObjectId, ref: 'Category', required: false })
