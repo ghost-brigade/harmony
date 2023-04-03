@@ -1,0 +1,8 @@
+enum USER_STATUS {
+    ONLINE = 'ONLINE',
+    INACTIVE = 'INACTIVE',
+    BUSY = 'BUSY',
+    OFFLINE = 'OFFLINE',
+}
+
+export { USER_STATUS };

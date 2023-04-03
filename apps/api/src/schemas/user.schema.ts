@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument, ObjectId, model } from 'mongoose';
+import { USER_STATUS } from './enums/userStatus.enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -14,13 +15,13 @@ export class User {
     @Prop({ type: String, required: true })
     password: string;
 
-    @Prop({ type: String, enum: ['ONLINE', 'INACTIVE', 'BUSY', 'OFFLINE'], default: 'OFFLINE' })
+    @Prop({ type: String, enum: USER_STATUS, default: USER_STATUS.OFFLINE })
     status: string;
 
     @Prop({ type: String })
     avatar: string;
 
-    @Prop({ type: Boolean, required: true })
+    @Prop({ type: Boolean })
     isVerified: boolean;
 
     @Prop({ type: String })
@@ -28,3 +29,4 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+export const UserModel  = model<User>('User', UserSchema);

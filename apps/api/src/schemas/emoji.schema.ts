@@ -1,4 +1,3 @@
-// emoji.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Server } from './server.schema';
