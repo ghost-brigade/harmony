@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 const userSchema = z.object({
-    _id: z.string().optional(),
     /* 
      * Email max length is 320 characters, according to RFC 3696
      * https://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
@@ -20,14 +19,12 @@ const publicUserSchema = userSchema.omit({
 });
 
 const createUserSchema = userSchema.omit({ 
-    _id: true,
     password: true,
     isVerified: true,
     blockedUsers: true,
 });
 
 const updateUserSchema = userSchema.omit({
-    _id: true,
     username: true,
     blockedUsers: true,
     isVerified: true,
