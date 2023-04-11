@@ -31,7 +31,7 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { User } from "../schemas";
+import { User } from "@harmony/schemas";
 
 @ApiTags("user")
 @Controller("user")
