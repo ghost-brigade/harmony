@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types, model } from "mongoose";
 import { Server } from "./server.schema";
 
 export type EmojiDocument = HydratedDocument<Emoji>;
@@ -17,3 +17,4 @@ export class Emoji {
 }
 
 export const EmojiSchema = SchemaFactory.createForClass(Emoji);
+export const EmojiModel = model<Emoji>("Emoji", EmojiSchema);
