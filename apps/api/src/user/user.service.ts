@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { createUserType, publicUserType, updateUserType } from "@harmony/zod";
+import { createUserType, publicUserType, updateUserType, userType } from "@harmony/zod";
+import { compare, genSalt, hash } from "bcrypt";
 
 @Injectable()
 export class UserService {
@@ -37,6 +38,10 @@ export class UserService {
     return await this.userModel.find({ email }).exec();
   }
 
+  async internalFindByEmail(email: string): Promise<userType> {
+    return await this.userModel.find({ email }).exec();
+  }
+
   /**
    * Checks if the username already exists in the database
    * @param username
@@ -57,4 +62,25 @@ export class UserService {
     const user = await this.findByEmail(email);
     return user !== null;
   }
+
+  async hashPassword(password: string): Promise<string> {
+    return await hash(password, await genSalt(10));
+  }
+
+  async comparePassword(plainPassword: string, password: string): Promise<boolean> {
+    return await compare(plainPassword, password);
+  }
+
+  async isUserAccountActive({email = null, user = null}: {email?: string|null, user?: publicUserType|null}): Promise<boolean> {
+    if (!user && email) {
+      user = await this.findByEmail(email);
+    }
+
+    if (user) {
+        return await user.isVerified;
+    }
+
+    return false;
+  }
+  
 }
