@@ -65,6 +65,7 @@
       "executor": "@nx-tools/nx-container:build",
       "options": {
         "engine": "docker",
+        "platforms": ["linux/amd64", "linux/arm64"],
         "buildArgs": {
           "NODE_ENV": "production"
         },

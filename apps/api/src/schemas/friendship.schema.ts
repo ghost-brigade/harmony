@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types, model } from "mongoose";
 import { User } from "./user.schema";
 
 export type FriendshipDocument = HydratedDocument<Friendship>;
@@ -21,3 +21,4 @@ export class Friendship {
 }
 
 export const FriendshipSchema = SchemaFactory.createForClass(Friendship);
+export const FriendshipModel = model<Friendship>("Friendship", FriendshipSchema);

@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@harmony/enums": ["libs/enums/src/index.ts"],
       "@harmony/zod": ["libs/zod/src/index.ts"]
     }
   },

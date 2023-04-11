@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types, model } from "mongoose";
 import { User } from "./user.schema";
 import { PrivateGroup } from "./privateGroup.schema";
 
@@ -23,5 +23,5 @@ export class PrivateMessage {
   attachment: File[];
 }
 
-export const PrivateMessageSchema =
-  SchemaFactory.createForClass(PrivateMessage);
+export const PrivateMessageSchema = SchemaFactory.createForClass(PrivateMessage);
+export const PrivateMessageModel = model<PrivateMessage>("PrivateMessage", PrivateMessageSchema);

@@ -1,8 +1,8 @@
-enum USER_STATUS {
+enum UserStatus {
   ONLINE = "ONLINE",
   INACTIVE = "INACTIVE",
   BUSY = "BUSY",
   OFFLINE = "OFFLINE",
 }
 
-export { USER_STATUS };
+export { UserStatus };

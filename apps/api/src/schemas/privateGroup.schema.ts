@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types, model } from "mongoose";
 import { User } from "./user.schema";
 
 export type PrivateGroupDocument = HydratedDocument<PrivateGroup>;
@@ -17,3 +17,4 @@ export class PrivateGroup {
 }
 
 export const PrivateGroupSchema = SchemaFactory.createForClass(PrivateGroup);
+export const PrivateGroupModel = model<PrivateGroup>("PrivateGroup", PrivateGroupSchema);
