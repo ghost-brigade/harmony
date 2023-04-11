@@ -10,8 +10,8 @@ import { AuthModule } from "./authentication/auth.module";
       isGlobal: true,
     }),
     ThrottlerModule.forRoot({
-      ttl: parseInt(process.env?.RATE_LIMIT_TTL || '1'),
-      limit: parseInt(process.env?.RATE_LIMIT_COUNT || '10'),
+      ttl: parseInt(process.env?.RATE_LIMIT_TTL || "1"),
+      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "10"),
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     UserModule,
@@ -20,10 +20,9 @@ import { AuthModule } from "./authentication/auth.module";
   controllers: [],
   providers: [
     {
-      provide: 'APP_GUARD',
+      provide: "APP_GUARD",
       useClass: ThrottlerGuard,
-    }
+    },
   ],
 })
-
 export class AppModule {}

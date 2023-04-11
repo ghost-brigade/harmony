@@ -1,5 +1,5 @@
 enum PERMISSIONS {
-    "CREATE_USER",
+  "CREATE_USER",
 }
 
 export { PERMISSIONS };
