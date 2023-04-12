@@ -89,6 +89,7 @@
       "dependsOn": ["build"],
       "options": {
         "engine": "docker",
+        "platforms": ["linux/amd64", "linux/arm64"],
         "buildArgs": {},
         "metadata": {
           "images": ["ghcr.io/ghost-brigade/harmony-client"],
