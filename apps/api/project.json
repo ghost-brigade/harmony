@@ -61,8 +61,8 @@
       }
     },
     "container": {
-      "dependsOn": ["build"],
       "executor": "@nx-tools/nx-container:build",
+      "dependsOn": ["build"],
       "options": {
         "engine": "docker",
         "platforms": ["linux/amd64", "linux/arm64"],
