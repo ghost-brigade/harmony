@@ -83,6 +83,26 @@
           "codeCoverage": true
         }
       }
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "dependsOn": ["build"],
+      "options": {
+        "engine": "docker",
+        "buildArgs": {},
+        "metadata": {
+          "images": ["ghcr.io/ghost-brigade/harmony-client"],
+          "load": true,
+          "tags": [
+            "type=raw,value=stable,enable={{is_default_branch}}",
+            "type=raw,value=latest",
+            "type=sha,prefix=sha-"
+          ]
+        },
+        "push": true,
+        "cache-from": ["type=gha"],
+        "cache-to": ["type=gha,mode=max"]
+      }
     }
   },
   "tags": []
