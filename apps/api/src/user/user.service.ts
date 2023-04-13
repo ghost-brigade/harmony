@@ -34,12 +34,16 @@ export class UserService {
     return await this.userModel.find({ username }).exec();
   }
 
-  async findByEmail(email: string): Promise<publicUserType> {
+  async findByEmail(email: string): Promise<publicUserType | null> {
     return await this.userModel.find({ email }).exec();
   }
 
-  async internalFindByEmail(email: string): Promise<userType> {
-    return await this.userModel.find({ email }).exec();
+  async internalFindByEmail(email: string): Promise<userType | null> {
+    return await this.userModel.findOne({ email }).exec();
+  }
+
+  async internalFindByUsername(username: string): Promise<userType | null> {
+    return await this.userModel.find({ username }).exec();
   }
 
   /**

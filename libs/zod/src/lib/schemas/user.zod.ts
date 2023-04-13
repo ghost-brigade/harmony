@@ -11,6 +11,7 @@ const userSchema = z.object({
     avatar: z.string().optional(),
     isVerified: z.boolean().optional(),
     blockedUsers: z.array(z.string()).optional(),
+    id: z.string().optional(),
 });
 
 const publicUserSchema = userSchema.omit({
