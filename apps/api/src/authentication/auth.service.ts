@@ -39,7 +39,9 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    if (user.password !== pass) {
+    const isPasswordValid = await this.userService.comparePassword(pass, user.password);
+
+    if (!isPasswordValid) {
       throw new UnauthorizedException();
     }
 

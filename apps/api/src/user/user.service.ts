@@ -8,7 +8,7 @@ export class UserService {
   constructor(@InjectModel("User") private readonly userModel) {}
 
   async create(createUser: createUserType): Promise<publicUserType> {
-    const createdUser = new this.userModel(createUser);
+    const createdUser = new this.userModel({...createUser, password: await this.hashPassword(createUser.password)});
     return await createdUser.save();
   }
 
