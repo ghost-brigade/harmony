@@ -19,8 +19,9 @@ const publicUserSchema = userSchema.omit({
     blockedUsers: true,
 });
 
-const createUserSchema = userSchema.omit({ 
-    password: true,
+const createUserSchema = userSchema.omit({
+    id: true,
+    avatar: true,
     isVerified: true,
     blockedUsers: true,
 });
