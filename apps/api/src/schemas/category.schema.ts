@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types, model } from "mongoose";
 import { Server } from "./server.schema";
 
 export type CategoryDocument = HydratedDocument<Category>;
@@ -17,3 +17,4 @@ export class Category {
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
+export const CategoryModel = model<Category>("Category", CategorySchema);

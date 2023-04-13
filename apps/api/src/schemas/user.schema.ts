@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, ObjectId, model } from "mongoose";
-import { USER_STATUS } from "./enums/userStatus.enum";
+import { UserStatus } from "@harmony/enums";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -15,7 +15,7 @@ export class User {
   @Prop({ type: String, required: true })
   password: string;
 
-  @Prop({ type: String, enum: USER_STATUS, default: USER_STATUS.OFFLINE })
+  @Prop({ type: String, enum: UserStatus, default: UserStatus.OFFLINE })
   status: string;
 
   @Prop({ type: String })

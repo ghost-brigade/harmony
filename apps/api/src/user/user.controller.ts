@@ -32,7 +32,6 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { User } from "../schemas";
-
 @ApiTags("user")
 @Controller("user")
 export class UserController {

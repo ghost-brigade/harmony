@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types, model } from "mongoose";
 import { Message } from "./message.schema";
 import { PrivateMessage } from "./privateMessage.schema";
 
@@ -24,3 +24,4 @@ export class File {
 }
 
 export const FileSchema = SchemaFactory.createForClass(File);
+export const FileModel = model<File>("File", FileSchema);
