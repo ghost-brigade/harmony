@@ -8,12 +8,12 @@
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-04-12T16:07:31.317Z",
-    "modified": "2023-04-13T13:51:05.896Z",
+    "modified": "2023-04-13T15:15:40.322Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}",
+      "raw": "{\n  \"email\": \"john@gmail.fr\",\n  \"password\": \"Abcde12345\"\n}",
       "form": []
     },
     "tests": []
@@ -27,12 +27,12 @@
     "method": "POST",
     "sortNum": 20000,
     "created": "2023-04-12T16:07:41.784Z",
-    "modified": "2023-04-12T16:08:49.875Z",
+    "modified": "2023-04-13T15:15:42.466Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"username\": \"\",\n  \"email\": \"\",\n  \"password\": \"\"\n}",
+      "raw": "{\n  \"username\": \"john\",\n  \"email\": \"john@gmail.fr\",\n  \"password\": \"Abcde12345\"\n}",
       "form": []
     },
     "tests": []
