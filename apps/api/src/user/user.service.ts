@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { createUserType, publicUserType, updateUserType } from "@harmony/zod";
+import { createUserType, publicUserType, updateUserType, userType } from "@harmony/zod";
+import { compare, genSalt, hash } from "bcrypt";
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel("User") private readonly userModel) {}
 
   async create(createUser: createUserType): Promise<publicUserType> {
-    const createdUser = new this.userModel(createUser);
+    const createdUser = new this.userModel({...createUser, password: await this.hashPassword(createUser.password)});
     return await createdUser.save();
   }
 
@@ -30,11 +31,19 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<publicUserType | null> {
-    return await this.userModel.find({ username }).exec();
+    return await this.userModel.findOne({ username }).exec();
   }
 
-  async findByEmail(email: string): Promise<publicUserType> {
-    return await this.userModel.find({ email }).exec();
+  async findByEmail(email: string): Promise<publicUserType | null> {
+    return await this.userModel.findOne({ email }).exec();
+  }
+
+  async internalFindByEmail(email: string): Promise<userType | null> {
+    return await this.userModel.findOne({ email }).exec();
+  }
+
+  async internalFindByUsername(username: string): Promise<userType | null> {
+    return await this.userModel.find({ username }).exec();
   }
 
   /**
@@ -57,4 +66,25 @@ export class UserService {
     const user = await this.findByEmail(email);
     return user !== null;
   }
+
+  async hashPassword(password: string): Promise<string> {
+    return await hash(password, await genSalt(10));
+  }
+
+  async comparePassword(plainPassword: string, password: string): Promise<boolean> {
+    return await compare(plainPassword, password);
+  }
+
+  async isUserAccountActive({email = null, user = null}: {email?: string|null, user?: publicUserType|null}): Promise<boolean> {
+    if (!user && email) {
+      user = await this.findByEmail(email);
+    }
+
+    if (user) {
+        return await user.isVerified;
+    }
+
+    return false;
+  }
+  
 }
