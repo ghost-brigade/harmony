@@ -58,6 +58,7 @@ module "mongodbatlas_database_user" {
   source = "./modules/mongodbatlas_database_user"
   database_names = var.mongodbatlas_cluster_names
   database_password = var.mongodbatlas_database_password
+  role_name = "readWrite"
   project_id = module.mongodbatlas_project.project.id
 }
 
