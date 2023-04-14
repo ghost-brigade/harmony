@@ -1,0 +1,23 @@
+name: "💡 Demande de fonctionnalité - FR"
+description: Créer un nouveau ticket pour une nouvelle demande de fonctionnalité
+title: "💡 [DEMANDE] - <titre>"
+labels: [
+  "question"
+]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Résumé"
+      description: Fournir une brève explication de la fonctionnalité
+      placeholder: Décrivez en quelques lignes votre demande de fonctionnalité
+    validations:
+      required: true
+  - type: textarea
+    id: basic_example
+    attributes:
+      label: "Exemple Basique"
+      description: Indiquer ici quelques exemples basiques de votre fonctionnalité.
+      placeholder: Quelques mots spécifiques sur votre demande de fonctionnalité.
+    validations:
+      required: true

@@ -63,7 +63,7 @@ export class UserController {
       }
 
       const userCreated = await this.userService.create(createUser);
-      return publicUserSchema.parse(userCreated);
+      return res.status(HttpStatus.CREATED).json(userCreated);
     } catch (error) {
       console.log(error);
     }
