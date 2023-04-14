@@ -1,6 +1,7 @@
 name: "Terraform CI"
 
 on:
+  workflow_dispatch: {}
   push:
     branches:
       - main
@@ -18,11 +19,18 @@ permissions:
   pull-requests: write
 
 jobs:
-  build-with-docker-engine:
+  terraform:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
+
       - uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform fmt
         id: fmt
