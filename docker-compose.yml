@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  service-gateway:
+    image: node:18
+    command: npx nx serve service-gateway
+    restart: unless-stopped
+    ports:
+      - ${GATEWAY_PORT:-3000}:3000
+    working_dir: /app
+    volumes:
+      - .:/app
+
+  service-authentication:
+    image: node:18
+    command: npx nx serve service-authentication
+    restart: unless-stopped
+    ports:
+      - ${AUTHENTICATION_PORT:-3001}:3001
+    working_dir: /app
+    volumes:
+      - .:/app
+
