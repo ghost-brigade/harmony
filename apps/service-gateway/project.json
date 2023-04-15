@@ -1,0 +1,88 @@
+{
+  "name": "service-gateway",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/service-gateway/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/service-gateway",
+        "main": "apps/service-gateway/src/main.ts",
+        "tsConfig": "apps/service-gateway/tsconfig.app.json",
+        "assets": ["apps/service-gateway/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/service-gateway/webpack.config.js",
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "service-gateway:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "service-gateway:build:development"
+        },
+        "production": {
+          "buildTarget": "service-gateway:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/service-gateway/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/service-gateway/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "dependsOn": ["build"],
+      "options": {
+        "engine": "docker",
+        "platforms": ["linux/amd64", "linux/arm64"],
+        "buildArgs": {
+          "NODE_ENV": "production"
+        },
+        "metadata": {
+          "images": ["ghcr.io/ghost-brigade/harmony-service-gateway"],
+          "load": true,
+          "tags": [
+            "type=raw,value=stable,enable={{is_default_branch}}",
+            "type=raw,value=latest",
+            "type=sha,prefix=sha-"
+          ]
+        },
+        "push": true,
+        "cache-from": ["type=gha"],
+        "cache-to": ["type=gha,mode=max"]
+      }
+    }
+  },
+  "tags": []
+}
