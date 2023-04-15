@@ -26,14 +26,12 @@ variable "mongodbatlas_org_id" {
   type        = string
   description = "The organization ID for the MongoDB Atlas API"
 }
-
 variable "mongodbatlas_database_password" {
   type        = string
   description = "The password for the MongoDB Atlas database user"
 }
-
 variable "mongodbatlas_cluster_names" {
   type        = list(string)
   description = "The name of the cluster."
-  default     = ["test-cluster"]
+  default     = ["account"]
 }

@@ -6,10 +6,10 @@ on:
     branches:
       - main
     paths:
-      - 'terraform/**'
+      - "terraform/**"
   pull_request:
     paths:
-      - 'terraform/**'
+      - "terraform/**"
 
 defaults:
   run:
@@ -17,37 +17,41 @@ defaults:
 
 env:
   GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-
-permissions:
-  pull-requests: write
+  TF_VAR_environment: ${{ vars.TF_VAR_ENV }}
+  TF_VAR_app_name: ${{ vars.TF_VAR_APP_NAME }}
+  TF_VAR_google_project_id: ${{ secrets.TF_VAR_GOOGLE_PROJECT_ID }}
+  TF_VAR_google_region: ${{ vars.TF_VAR_GOOGLE_REGION }}
+  TF_VAR_mongodbatlas_public_key: ${{ secrets.TF_VAR_MONGODBATLAS_PUBLIC_KEY }}
+  TF_VAR_mongodbatlas_private_key: ${{ secrets.TF_VAR_MONGODBATLAS_PRIVATE_KEY }}
+  TF_VAR_mongodbatlas_org_id: ${{ secrets.TF_VAR_MONGODBATLAS_ORG_ID }}
+  TF_VAR_mongodbatlas_database_password: ${{ secrets.TF_VAR_MONGODBATLAS_DATABASE_PASSWORD }}
 
 jobs:
   terraform:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    name: "Terraform"
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: "read"
+      id-token: "write"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          fetch-depth: 0
 
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1'
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
         with:
           credentials_json: ${{ env.GOOGLE_CREDENTIALS }}
 
-      - uses: hashicorp/setup-terraform@v2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform fmt
+      - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        continue-on-error: true
 
       - name: Terraform Init
         id: init
@@ -59,38 +63,32 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -input=false
         continue-on-error: true
 
-      - uses: actions/github-script@v6
+      - name: Update Pull Request
+        uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN: ${{ steps.plan.outputs.stdout }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            <details><summary>Validation Output</summary>
-
-            \`\`\`\n
-            ${{ steps.validate.outputs.stdout }}
-            \`\`\`
-
-            </details>
-
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`\n
+            \`\`\`terraform\n
             ${process.env.PLAN}
             \`\`\`
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -98,3 +96,11 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
