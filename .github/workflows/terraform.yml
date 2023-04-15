@@ -15,11 +15,17 @@ defaults:
   run:
     working-directory: ./terraform
 
+env:
+  GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
 permissions:
   pull-requests: write
 
 jobs:
   terraform:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,6 +33,12 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ env.GOOGLE_CREDENTIALS }}
 
       - uses: hashicorp/setup-terraform@v2
         with:
