@@ -86,8 +86,5 @@
     "tslib": "^2.3.0",
     "zod": "^3.21.4",
     "zone.js": "~0.12.0"
-  },
-  "optionalDependencies": {
-    "@nrwl/nx-linux-arm64-gnu": "^15.9.2"
   }
 }
