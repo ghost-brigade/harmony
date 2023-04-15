@@ -59,29 +59,29 @@
           "codeCoverage": true
         }
       }
-    }
-  },
-  "container": {
-    "executor": "@nx-tools/nx-container:build",
-    "dependsOn": ["build"],
-    "options": {
-      "engine": "docker",
-      "platforms": ["linux/amd64", "linux/arm64"],
-      "buildArgs": {
-        "NODE_ENV": "production"
-      },
-      "metadata": {
-        "images": ["ghcr.io/ghost-brigade/harmony-service-authentication"],
-        "load": true,
-        "tags": [
-          "type=raw,value=stable,enable={{is_default_branch}}",
-          "type=raw,value=latest",
-          "type=sha,prefix=sha-"
-        ]
-      },
-      "push": true,
-      "cache-from": ["type=gha"],
-      "cache-to": ["type=gha,mode=max"]
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "dependsOn": ["build"],
+      "options": {
+        "engine": "docker",
+        "platforms": ["linux/amd64", "linux/arm64"],
+        "buildArgs": {
+          "NODE_ENV": "production"
+        },
+        "metadata": {
+          "images": ["ghcr.io/ghost-brigade/harmony-service-authentication"],
+          "load": true,
+          "tags": [
+            "type=raw,value=stable,enable={{is_default_branch}}",
+            "type=raw,value=latest",
+            "type=sha,prefix=sha-"
+          ]
+        },
+        "push": true,
+        "cache-from": ["type=gha"],
+        "cache-to": ["type=gha,mode=max"]
+      }
     }
   },
   "tags": []
