@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "_id": "d3d0fb86-b644-4f06-8986-e200bf80d2b7",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:3000/login",
+    "url": "localhost:3000/login",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-15T16:14:51.077Z",
+    "modified": "2023-04-15T16:14:51.077Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  }
+]

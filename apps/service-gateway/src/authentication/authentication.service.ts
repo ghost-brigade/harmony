@@ -1,13 +1,17 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable, Inject } from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { ConfigService } from "@harmony/config";
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    @Inject('AUTHENTICATION_SERVICE') private readonly client: ClientProxy,
+    private configService: ConfigService,
+    @Inject("AUTHENTICATION_SERVICE") private readonly client: ClientProxy
   ) {}
 
   async login() {
-    return this.client.send('login', {});
+    const config = this.configService;
+    console.log(config);
+    return this.client.send("login", {});
   }
 }
