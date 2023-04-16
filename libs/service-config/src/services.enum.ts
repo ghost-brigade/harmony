@@ -1,3 +1,4 @@
 export enum servicesEnum {
-  AUTHENTICATION = 'authentication',
+  AUTHENTICATION = "authentication",
+  ACCOUNT = "account",
 }

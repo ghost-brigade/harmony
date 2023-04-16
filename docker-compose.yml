@@ -16,5 +16,11 @@ services:
       service: service-template
     command: npx nx serve service-authentication
 
+  service-account:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-account
+
 volumes:
   mono-node-modules: null
