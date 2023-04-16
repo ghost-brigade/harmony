@@ -2,7 +2,7 @@ terraform {
   backend "gcs" {
     # Later inject data from CLI arguments, for now hardcode
     bucket = "harmony-terraform-bucket"
-    prefix  = "production"
+    prefix = "production"
   }
   required_providers {
     google = {
