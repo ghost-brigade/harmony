@@ -1,21 +1,21 @@
 {
-  "name": "config",
+  "name": "service-config",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/config/src",
+  "sourceRoot": "libs/service-config/src",
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/config/**/*.ts"]
+        "lintFilePatterns": ["libs/service-config/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/config/jest.config.ts",
+        "jestConfig": "libs/service-config/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
