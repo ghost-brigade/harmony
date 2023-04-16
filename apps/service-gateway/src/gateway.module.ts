@@ -1,16 +1,12 @@
-import { getServicesList } from '@harmony/service-config';
 import { Module } from "@nestjs/common";
 import { AuthenticationModule } from "./authentication/authentication.module";
-import { ClientsModule } from "@nestjs/microservices";
 
 @Module({
   imports: [
-    ClientsModule.register(
-      getServicesList()
-    ),
+    AuthenticationModule
   ],
   controllers: [],
-  providers: [AuthenticationModule],
-  exports: [ClientsModule],
+  providers: [],
+  exports: [],
 })
 export class GatewayModule {}
