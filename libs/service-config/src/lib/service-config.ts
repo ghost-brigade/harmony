@@ -1,33 +1,52 @@
 import { Transport } from "@nestjs/microservices";
-import { IGetService, IService } from "./service-config.interface";
-import { servicesEnum } from "../services.enum";
+import { Services } from "../services.enum";
+import {
+  ServiceType,
+  ServicePropertiesType,
+  ServicePropertyType,
+  ServicesMapType,
+} from "./service-config.type";
 
-const serviceHostPrefix = 'service';
-const serviceDefaultPort = 3000;
+const SERVICE_PREFIX = "service";
+const SERVICE_DEFAULT_PORT = 3000;
 
-const services: { [key: string]: IService } = {};
+const services: ServicesMapType = {};
 
-for (const name in servicesEnum) {
-  if (Object.prototype.hasOwnProperty.call(servicesEnum, name)) {
-    const serviceName = servicesEnum[name];
-    const service: IService = {
-      name: `${serviceHostPrefix}-${serviceName}`.toUpperCase(),
+for (const name in Services) {
+  if (Object.prototype.hasOwnProperty.call(Services, name)) {
+    const serviceName = Services[name];
+    const service: ServiceType = {
+      name: `${SERVICE_PREFIX}-${serviceName}`.toUpperCase(),
       transport: Transport.TCP,
       options: {
-        host: `${serviceHostPrefix}-${serviceName}`,
-        port: serviceDefaultPort,
+        host: `${SERVICE_PREFIX}-${serviceName}`,
+        port: SERVICE_DEFAULT_PORT,
       },
     };
     services[serviceName] = service;
   }
 }
 
-const getServiceName = (name: servicesEnum) => services[name].name;
-const getService: IGetService = (name: servicesEnum) => services[name];
-const getServicesList = () => Object.keys(services).map((key) => services[key]);
+const getServices = (): ServicesMapType => {
+  return services;
+};
 
-export {
-  getServiceName,
-  getService,
-  getServicesList
-}
+const getService = (name: Services): ServiceType => {
+  if (name in services) {
+    return services[name];
+  }
+  throw new Error(`Service ${name} not found`);
+};
+
+const getServiceProperty = (
+  name: Services,
+  property: keyof ServicePropertiesType
+): ServicePropertyType => {
+  const service = getService(name);
+  if (property in service) {
+    return service[property];
+  }
+  throw new Error(`Service ${name} does not have property ${property}`);
+};
+
+export { getService, getServices, getServiceProperty };
