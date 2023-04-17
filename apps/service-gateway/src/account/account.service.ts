@@ -3,12 +3,12 @@ import { ClientProxy } from "@nestjs/microservices";
 import { getServiceProperty, Services } from "@harmony/service-config";
 
 @Injectable()
-export class AuthenticationService {
+export class AccountService {
   constructor(
-    @Inject(getServiceProperty(Services.AUTHENTICATION, 'name')) private readonly client: ClientProxy
+    @Inject(getServiceProperty(Services.ACCOUNT, 'name')) private readonly client: ClientProxy
   ) {}
 
-  async login() {
-    return this.client.send("login", {});
+  async getAccount() {
+    return this.client.send("account_collection_get", {});
   }
 }

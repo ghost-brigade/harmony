@@ -1,21 +1,26 @@
 version: "3"
 
 services:
+
   service-gateway:
-    image: node:18
-    command: npx nx serve service-gateway
-    restart: unless-stopped
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
     ports:
       - ${GATEWAY_PORT:-3000}:3000
-    working_dir: /app
-    volumes:
-      - .:/app
+    command: npx nx serve service-gateway
 
   service-authentication:
-    image: node:18
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
     command: npx nx serve service-authentication
-    restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - .:/app
 
+  service-account:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-account
+
+volumes:
+  mono-node-modules: null
