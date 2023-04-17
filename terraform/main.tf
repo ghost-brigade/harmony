@@ -1,4 +1,9 @@
 terraform {
+  backend "gcs" {
+    # Later inject data from CLI arguments, for now hardcode
+    bucket = "harmony-terraform-bucket"
+    prefix = "production"
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -10,26 +15,29 @@ terraform {
     }
   }
 }
-
 provider "google" {
   project = var.google_project_id
   region  = var.google_region
 }
 
+data "google_storage_bucket_object" "terraform_bucket" {
+  bucket = "harmony-terraform-bucket"
+}
+
 module "google_compute_network" {
   source           = "./modules/google_compute_network"
-  vpc_network_name = "default"
+  vpc_network_name = var.app_name
 }
 
 module "google_compute_subnetwork" {
-  source            = "./modules/google_compute_subnetwork"
-  subnetwork_name   = "default"
-  vpc_self_link     = module.google_compute_network.vpc.self_link
+  source          = "./modules/google_compute_subnetwork"
+  subnetwork_name = var.app_name
+  vpc_self_link   = module.google_compute_network.vpc.self_link
 }
 
 module "google_container_cluster" {
   source           = "./modules/google_container_cluster"
-  cluster_name     = var.google_project_id
+  cluster_name     = "${var.app_name}-gke"
   region           = var.google_region
   vpc_network_name = module.google_compute_network.vpc.name
   subnetwork_name  = module.google_compute_subnetwork.subnet.name
@@ -38,32 +46,32 @@ module "google_container_cluster" {
 # ----------------------------------------
 
 provider "mongodbatlas" {
-  public_key = var.mongodbatlas_public_key
-  private_key  = var.mongodbatlas_private_key
+  public_key  = var.mongodbatlas_public_key
+  private_key = var.mongodbatlas_private_key
 }
 
 module "mongodbatlas_project" {
-  source = "./modules/mongodbatlas_project"
+  source       = "./modules/mongodbatlas_project"
   project_name = var.app_name
-  org_id = var.mongodbatlas_org_id
+  org_id       = var.mongodbatlas_org_id
 }
 
 module "mongodbatlas_project_ip_whitelist" {
-  source = "./modules/mongodbatlas_project_ip_whitelist"
-  project_id = module.mongodbatlas_project.project.id
+  source      = "./modules/mongodbatlas_project_ip_whitelist"
+  project_id  = module.mongodbatlas_project.project.id
   cidr_blocks = ["0.0.0.0/0"]
 }
 
 module "mongodbatlas_database_user" {
-  source = "./modules/mongodbatlas_database_user"
-  database_names = var.mongodbatlas_cluster_names
+  source            = "./modules/mongodbatlas_database_user"
+  database_names    = var.mongodbatlas_cluster_names
   database_password = var.mongodbatlas_database_password
-  role_name = "readWrite"
-  project_id = module.mongodbatlas_project.project.id
+  role_name         = "readWrite"
+  project_id        = module.mongodbatlas_project.project.id
 }
 
 module "mongodbatlas_cluster" {
-  source = "./modules/mongodbatlas_cluster"
+  source     = "./modules/mongodbatlas_cluster"
   project_id = module.mongodbatlas_project.project.id
-  names = var.mongodbatlas_cluster_names
+  names      = var.mongodbatlas_cluster_names
 }
