@@ -31,7 +31,7 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: "Install Dependencies"
-        run: npm install --omit=optional
+        run: npm install
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
