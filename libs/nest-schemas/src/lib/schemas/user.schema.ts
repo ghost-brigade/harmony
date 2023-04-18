@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, ObjectId, model } from "mongoose";
+import mongoose, { HydratedDocument, ObjectId, model } from "mongoose";
 import { UserStatus } from "@harmony/enums";
 
 export type UserDocument = HydratedDocument<User>;
@@ -29,4 +29,4 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-export const UserModel = model<User>("User", UserSchema);
+export const UserModel = mongoose.model<User>("User", UserSchema);
