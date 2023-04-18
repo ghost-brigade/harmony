@@ -2,19 +2,16 @@ import { Transport } from "@nestjs/microservices";
 import { Services } from "../services.enum";
 import {
   ServiceType,
+  ServicesMapType,
   ServicePropertiesType,
   ServicePropertyType,
-  ServicesMapType,
 } from "./service-config.type";
 
 const SERVICE_PREFIX = "service";
 const SERVICE_DEFAULT_PORT = 3000;
 
-const services: ServicesMapType = {};
-
-for (const name in Services) {
-  if (Object.prototype.hasOwnProperty.call(Services, name)) {
-    const serviceName = Services[name];
+const initializeServices = (): ServicesMapType =>
+  Object.values(Services).reduce((services, serviceName) => {
     const service: ServiceType = {
       name: `${SERVICE_PREFIX}-${serviceName}`.toUpperCase(),
       transport: Transport.TCP,
@@ -23,15 +20,13 @@ for (const name in Services) {
         port: SERVICE_DEFAULT_PORT,
       },
     };
-    services[serviceName] = service;
-  }
-}
+    return { ...services, [serviceName]: service };
+  }, {});
 
-const getServices = (): ServicesMapType => {
-  return services;
-};
+const getServices = (): Readonly<ServicesMapType> => initializeServices();
 
-const getService = (name: Services): ServiceType => {
+const getService = (name: Services): Readonly<ServiceType> => {
+  const services = getServices();
   if (name in services) {
     return services[name];
   }
@@ -41,7 +36,7 @@ const getService = (name: Services): ServiceType => {
 const getServiceProperty = (
   name: Services,
   property: keyof ServicePropertiesType
-): ServicePropertyType => {
+): Readonly<ServicePropertyType> => {
   const service = getService(name);
   if (property in service) {
     return service[property];
