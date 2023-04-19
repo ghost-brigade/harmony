@@ -16,7 +16,8 @@
         "tsConfig": "apps/service-message/tsconfig.app.json",
         "assets": ["apps/service-message/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/service-message/webpack.config.js"
+        "webpackConfig": "apps/service-message/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},

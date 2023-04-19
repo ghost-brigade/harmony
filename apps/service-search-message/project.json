@@ -16,7 +16,8 @@
         "tsConfig": "apps/service-search-message/tsconfig.app.json",
         "assets": ["apps/service-search-message/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/service-search-message/webpack.config.js"
+        "webpackConfig": "apps/service-search-message/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},
