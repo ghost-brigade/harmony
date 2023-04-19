@@ -33,5 +33,5 @@ variable "mongodbatlas_database_password" {
 variable "mongodbatlas_cluster_names" {
   type        = list(string)
   description = "The name of the cluster."
-  default     = ["account"]
+  default     = ["account", "server", "message"]
 }
