@@ -10,6 +10,11 @@ import {
 const SERVICE_PREFIX = "service";
 const SERVICE_DEFAULT_PORT = 3000;
 
+/**
+ * Initializes the services configuration with default values.
+ *
+ * @returns {ServicesMapType} The initialized services configuration.
+ */
 const initializeServices = (): ServicesMapType =>
   Object.values(Services).reduce((services, serviceName) => {
     const service: ServiceType = {
@@ -23,14 +28,36 @@ const initializeServices = (): ServicesMapType =>
     return { ...services, [serviceName]: service };
   }, {});
 
+/**
+ * The current services configuration.
+ *
+ * @type {ServicesMapType}
+ */
 let services: ServicesMapType = initializeServices();
 
+/**
+ * Updates the current services configuration with new values.
+ *
+ * @param {ServicesMapType} newServices - The new services configuration.
+ */
 const updateServices = (newServices: ServicesMapType): void => {
   services = { ...newServices };
 };
 
+/**
+ * Retrieves the current services configuration.
+ *
+ * @returns {Readonly<ServicesMapType>} The current services configuration.
+ */
 const getServices = (): Readonly<ServicesMapType> => services;
 
+/**
+ * Retrieves a specific service from the current services configuration.
+ *
+ * @param {Services} name - The name of the service to retrieve.
+ * @returns {Readonly<ServiceType>} The specified service.
+ * @throws {Error} If the specified service does not exist in the configuration.
+ */
 const getService = (name: Services): Readonly<ServiceType> => {
   if (name in services) {
     return services[name];
@@ -38,6 +65,14 @@ const getService = (name: Services): Readonly<ServiceType> => {
   throw new Error(`Service ${name} not found`);
 };
 
+/**
+ * Retrieves a specific property of a service from the current services configuration.
+ *
+ * @param {Services} name - The name of the service to retrieve the property from.
+ * @param {keyof ServicePropertiesType} property - The name of the property to retrieve.
+ * @returns {Readonly<ServicePropertyType>} The specified property.
+ * @throws {Error} If the specified property does not exist in the specified service.
+ */
 const getServiceProperty = (
   name: Services,
   property: keyof ServicePropertiesType
