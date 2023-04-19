@@ -1,5 +1,5 @@
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { Logger, VersioningType } from "@nestjs/common";
+import { Logger, VERSION_NEUTRAL, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { GatewayModule } from "./gateway.module";
 import helmet from "helmet";
@@ -19,7 +19,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors({ origin: [process.env?.CORS_ORIGIN || "*"] });
   app.enableVersioning({
-    defaultVersion: "1",
+    defaultVersion: [VERSION_NEUTRAL, "1"],
     type: VersioningType.HEADER,
     header: "Accept-Version",
   });
