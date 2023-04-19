@@ -21,7 +21,7 @@ resource "mongodbatlas_cluster" "atlas-cluster" {
 
   provider_name               = var.provider_name
   backing_provider_name       = var.backing_provider_name
-  provider_instance_size_name = var.provider_instance_size_name
+  provider_instance_size_name = each.key == "account" ? "M0" : var.provider_instance_size_name
 
   provider_region_name        = var.provider_region_name
 }
