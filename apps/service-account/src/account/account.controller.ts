@@ -7,18 +7,30 @@ import { publicUserSchema, publicUserType, userType } from "@harmony/zod";
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @MessagePattern("account_find_one")
-  async findOne(data: { id: string; private: boolean }): Promise<userType|publicUserType> {
+  @MessagePattern("account_find_all")
+  async findAll() {
     try {
-      const user = await this.accountService.findOne(data.id);
+      return await this.accountService.findAll();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  @MessagePattern("account_find_one")
+  async findOne(data) {
+    try {
+      const user = await this.accountService.findOneBy(data);
 
       if (data.private === false) {
         return publicUserSchema.parse(user) as publicUserType;
       }
 
-      return user;
-    } catch (error) {
-      console.log(error);
+       return user;
+     } catch (error) {
+       console.log(error);
     }
   }
+
+
+
 }

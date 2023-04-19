@@ -1,4 +1,4 @@
-import { genSalt, hash } from 'bcryptjs';
+import { genSalt, hash } from "bcryptjs";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
@@ -38,20 +38,8 @@ export class AccountService {
     return await this.userModel.findById(id).exec();
   }
 
-  async findByUsername(username: string): Promise<publicUserType | null> {
-    return await this.userModel.findOne({ username }).exec();
-  }
-
-  async findByEmail(email: string): Promise<publicUserType | null> {
-    return await this.userModel.findOne({ email }).exec();
-  }
-
-  async internalFindByEmail(email: string): Promise<userType | null> {
-    return await this.userModel.findOne({ email }).exec();
-  }
-
-  async internalFindByUsername(username: string): Promise<userType | null> {
-    return await this.userModel.find({ username }).exec();
+  async findOneBy(params: userType): Promise<userType | null> {
+    return await this.userModel.findOne(params).exec();
   }
 
   /**
@@ -61,7 +49,7 @@ export class AccountService {
    * @returns
    */
   async usernameAlreadyExist(username: string): Promise<boolean> {
-    const user = await this.findByUsername(username);
+    const user = await this.findOneBy({ username });
     return user !== null;
   }
 
@@ -71,7 +59,7 @@ export class AccountService {
    * @returns
    */
   async emailAlreadyExist(email: string): Promise<boolean> {
-    const user = await this.findByEmail(email);
+    const user = await this.findOneBy({ email });
     return user !== null;
   }
 
@@ -94,7 +82,7 @@ export class AccountService {
     user?: publicUserType | null;
   }): Promise<boolean> {
     if (!user && email) {
-      user = await this.findByEmail(email);
+      user = await this.findOneBy({ email });
     }
 
     if (user) {

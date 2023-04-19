@@ -15,6 +15,6 @@ import { AccountService } from "./account.service";
   ],
   controllers: [AccountController],
   providers: [AccountService],
-  exports: [AccountService],
+  exports: [],
 })
 export class AccountModule {}
