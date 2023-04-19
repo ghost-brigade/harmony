@@ -61,20 +61,26 @@
       }
     },
     "container": {
+      "dependsOn": ["build"],
       "executor": "@nx-tools/nx-container:build",
       "options": {
         "engine": "docker",
+        "platforms": ["linux/amd64", "linux/arm64"],
+        "buildArgs": {
+          "NODE_ENV": "production"
+        },
         "metadata": {
-          "images": ["harmony/service-server"],
+          "images": ["ghcr.io/ghost-brigade/harmony-service-server"],
           "load": true,
           "tags": [
-            "type=schedule",
-            "type=ref,event=branch",
-            "type=ref,event=tag",
-            "type=ref,event=pr",
+            "type=raw,value=stable,enable={{is_default_branch}}",
+            "type=raw,value=latest",
             "type=sha,prefix=sha-"
           ]
-        }
+        },
+        "push": true,
+        "cache-from": ["type=gha"],
+        "cache-to": ["type=gha,mode=max"]
       }
     }
   },
