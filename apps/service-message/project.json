@@ -1,0 +1,88 @@
+{
+  "name": "service-message",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/service-message/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/service-message",
+        "main": "apps/service-message/src/main.ts",
+        "tsConfig": "apps/service-message/tsconfig.app.json",
+        "assets": ["apps/service-message/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/service-message/webpack.config.js",
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "service-message:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "service-message:build:development"
+        },
+        "production": {
+          "buildTarget": "service-message:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/service-message/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/service-message/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "container": {
+      "dependsOn": ["build"],
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "engine": "docker",
+        "platforms": ["linux/amd64", "linux/arm64"],
+        "buildArgs": {
+          "NODE_ENV": "production"
+        },
+        "metadata": {
+          "images": ["ghcr.io/ghost-brigade/harmony-service-message"],
+          "load": true,
+          "tags": [
+            "type=raw,value=stable,enable={{is_default_branch}}",
+            "type=raw,value=latest",
+            "type=sha,prefix=sha-"
+          ]
+        },
+        "push": true,
+        "cache-from": ["type=gha"],
+        "cache-to": ["type=gha,mode=max"]
+      }
+    }
+  },
+  "tags": []
+}

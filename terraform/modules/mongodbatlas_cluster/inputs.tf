@@ -32,7 +32,7 @@ variable "backing_provider_name" {
 variable "provider_instance_size_name" {
   type        = string
   description = "The name of the compute and memory capacity of the hosts in the cluster."
-  default     = "M0"
+  default     = "M2"
 }
 
 variable "auto_scaling_disk_gb_enabled" {

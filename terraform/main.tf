@@ -71,7 +71,8 @@ module "mongodbatlas_database_user" {
 }
 
 module "mongodbatlas_cluster" {
-  source     = "./modules/mongodbatlas_cluster"
-  project_id = module.mongodbatlas_project.project.id
-  names      = var.mongodbatlas_cluster_names
+  source                      = "./modules/mongodbatlas_cluster"
+  project_id                  = module.mongodbatlas_project.project.id
+  names                       = var.mongodbatlas_cluster_names
+  provider_instance_size_name = "M2"
 }
