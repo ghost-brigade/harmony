@@ -23,10 +23,15 @@ const initializeServices = (): ServicesMapType =>
     return { ...services, [serviceName]: service };
   }, {});
 
-const getServices = (): Readonly<ServicesMapType> => initializeServices();
+let services: ServicesMapType = initializeServices();
+
+const updateServices = (newServices: ServicesMapType): void => {
+  services = { ...newServices };
+};
+
+const getServices = (): Readonly<ServicesMapType> => services;
 
 const getService = (name: Services): Readonly<ServiceType> => {
-  const services = getServices();
   if (name in services) {
     return services[name];
   }
@@ -44,4 +49,4 @@ const getServiceProperty = (
   throw new Error(`Service ${name} does not have property ${property}`);
 };
 
-export { getService, getServices, getServiceProperty };
+export { getService, getServices, getServiceProperty, updateServices };
