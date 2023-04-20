@@ -67,13 +67,6 @@ export class AccountService {
     return await hash(password, await genSalt(10));
   }
 
-  // async comparePassword(
-  //   plainPassword: string,
-  //   password: string
-  // ): Promise<boolean> {
-  //   return await compare(plainPassword, password);
-  // }
-
   async isUserAccountActive({
     email = null,
     user = null,

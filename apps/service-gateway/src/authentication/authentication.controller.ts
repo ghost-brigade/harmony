@@ -1,12 +1,10 @@
 import { loginType } from "@harmony/zod";
 import { AuthenticationService } from "./authentication.service";
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { ApiOkResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
 @Controller()
 export class AuthenticationController {
-  constructor(
-    private readonly authenticationService: AuthenticationService,
-  ) {}
+  constructor(private readonly authenticationService: AuthenticationService) {}
 
   @ApiOkResponse({
     description: "User found",
@@ -14,7 +12,7 @@ export class AuthenticationController {
   @ApiUnauthorizedResponse({
     description: "Bad credentials",
   })
-  @Post('login')
+  @Post("login")
   signIn(@Body() loginType: loginType) {
     return this.authenticationService.login(loginType);
   }

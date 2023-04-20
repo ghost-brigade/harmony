@@ -22,7 +22,7 @@ export class AccountController {
       const user = await this.accountService.findOneBy(data);
 
       if (data.private === false) {
-        return publicUserSchema.parse(user) as publicUserType;
+        return publicUserSchema.parse(user) as userType;
       }
 
        return user;
