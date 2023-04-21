@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServerController } from "./server.controller";
 import { ServerService } from "./server.service";
-import { serverSchema } from "@harmony/zod";
+import { ServerSchema } from "@harmony/nest-schemas";
 import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
@@ -11,6 +11,7 @@ import { MongooseModule } from "@nestjs/mongoose";
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forFeature([{ name: "Server", schema: ServerSchema }]),
   ],
   controllers: [ServerController],
   providers: [ServerService],
