@@ -1,28 +1,28 @@
-import { z } from 'zod';
-import { userSchema } from './user.zod';
+import { z } from "zod";
+import { userSchema } from "./user.zod";
 
 const categorySchema = z.object({
-  _id: z.string().optional(),
+  id: z.string().optional(),
   name: z.string(),
 });
 
 const channelSchema = z.object({
-  _id: z.string().optional(),
+  id: z.string().optional(),
   name: z.string(),
 });
 
 const roleSchema = z.object({
-  _id: z.string().optional(),
+  id: z.string().optional(),
   name: z.string(),
 });
 
 const emojiSchema = z.object({
-  _id: z.string().optional(),
+  id: z.string().optional(),
   name: z.string(),
 });
 
-export const serverSchema = z.object({
-  _id: z.string().optional(),
+const serverSchema = z.object({
+  id: z.string().optional(),
   name: z.string(),
   owner: userSchema.optional(),
   members: z.array(userSchema).optional(),
@@ -33,9 +33,14 @@ export const serverSchema = z.object({
   cover: z.string().optional(),
 });
 
-type serverType = z.infer<typeof serverSchema>;
+const createServerSchema = serverSchema.omit({
+  id: true,
+  avatar: true,
+  isVerified: true,
+  blockedUsers: true,
+});
 
-export {
-    serverSchema,
-    serverType,
-}
+type serverType = z.infer<typeof serverSchema>;
+type createserverType = z.infer<typeof createServerSchema>;
+
+export { serverSchema, serverType, createServerSchema, createserverType };
