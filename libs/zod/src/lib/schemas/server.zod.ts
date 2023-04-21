@@ -41,6 +41,6 @@ const createServerSchema = serverSchema.omit({
 });
 
 type serverType = z.infer<typeof serverSchema>;
-type createserverType = z.infer<typeof createServerSchema>;
+type createServerType = z.infer<typeof createServerSchema>;
 
-export { serverSchema, serverType, createServerSchema, createserverType };
+export { serverSchema, serverType, createServerSchema, createServerType };
