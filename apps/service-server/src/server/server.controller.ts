@@ -1,18 +1,19 @@
-import { Controller, Get } from "@nestjs/common";
-
+import { Controller } from "@nestjs/common";
 import { ServerService } from "./server.service";
-import { MessagePattern } from "@nestjs/microservices";
+import { MessagePattern, RpcException } from "@nestjs/microservices";
+import { createServerType } from "@harmony/zod";
 
 @Controller()
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
   @MessagePattern("server.create")
-  async createServer() {
+  async createServer(createServerType: createServerType) {
     try {
-      return await this.serverService.createServer();
+      const server = await this.serverService.create(createServerType);
+      return server;
     } catch (error) {
-      console.log(error);
+      throw new RpcException(error.message);
     }
   }
 }
