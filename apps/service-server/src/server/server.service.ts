@@ -1,12 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { createServerType } from "@harmony/zod";
+import { createServerType, serverType } from "@harmony/zod";
+import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class ServerService {
-  create(createServerType: createServerType) {
-    if (!createServerType.name) {
-      throw new Error("name is required");
-    }
-    return "This action adds a new server";
+  constructor(@InjectModel("Server") private readonly serverModel) {}
+
+  async create(createServer: createServerType): Promise<serverType> {
+    const createdServer = new this.serverModel({
+      ...createServer,
+    });
+    return createdServer.save();
   }
 }

@@ -20,7 +20,7 @@ export class ServerService {
       .send("server.create", serverData)
       .pipe(
         catchError((error) =>
-          throwError(() => new RpcException("qzddzq"))
+          throwError(() => new RpcException(error))
         )
       );
   }
