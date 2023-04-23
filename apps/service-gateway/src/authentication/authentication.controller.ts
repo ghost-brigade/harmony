@@ -13,7 +13,7 @@ export class AuthenticationController {
     description: "Bad credentials",
   })
   @Post("login")
-  signIn(@Body() loginType: loginType) {
+  login(@Body() loginType: loginType) {
     return this.authenticationService.login(loginType);
   }
 }
