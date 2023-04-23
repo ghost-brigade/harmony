@@ -20,4 +20,14 @@ export class AuthenticationService {
         )
       );
   }
+
+  jwtLogin(access_token: string): Observable<boolean> {
+    return this.client
+      .send("jwt_login", access_token)
+      .pipe(
+        catchError((error) =>
+          throwError(() => new RpcException(error.response))
+        )
+      );
+  }
 }
