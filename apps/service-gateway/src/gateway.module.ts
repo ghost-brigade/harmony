@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from "@nestjs/common";
 import { AuthenticationModule } from "./authentication/authentication.module";
 import { AccountModule } from "./account/account.module";
+import { JwtAuthGuard } from './core/guards/passport/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -16,13 +17,15 @@ import { AccountModule } from "./account/account.module";
     AuthenticationModule,
     AccountModule,
   ],
-  controllers: [],
   providers: [
     {
-      provide: "GATEWAY_GUARD",
+      provide: "APP_GUARD",
+      useClass: JwtAuthGuard
+    },
+    {
+      provide: "APP_GUARD",
       useClass: ThrottlerGuard,
     },
   ],
-  exports: [],
 })
 export class GatewayModule {}

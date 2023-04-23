@@ -1,7 +1,7 @@
 import { Controller } from "@nestjs/common";
 import { MessagePattern } from "@nestjs/microservices";
 import { AccountService } from "./account.service";
-import { publicUserSchema, publicUserType, userType } from "@harmony/zod";
+import { publicUserSchema, userType } from "@harmony/zod";
 
 @Controller()
 export class AccountController {
@@ -17,20 +17,21 @@ export class AccountController {
   }
 
   @MessagePattern("account_find_one")
-  async findOne(data) {
+  async findOne(data: userType) {
     try {
       const user = await this.accountService.findOneBy(data);
-
-      if (data.private === false) {
-        return publicUserSchema.parse(user) as userType;
-      }
-
-       return user;
-     } catch (error) {
-       console.log(error);
+      return user;
+    } catch (error) {
+      console.log(error);
     }
   }
 
-
-
+  @MessagePattern("account_create")
+  async create(data) {
+    try {
+      return await this.accountService.create(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

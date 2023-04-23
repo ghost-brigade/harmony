@@ -8,5 +8,6 @@ import { getService, Services } from "@harmony/service-config";
   imports: [ClientsModule.register([getService(Services.AUTHENTICATION)])],
   controllers: [AuthenticationController],
   providers: [AuthenticationService],
+  exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

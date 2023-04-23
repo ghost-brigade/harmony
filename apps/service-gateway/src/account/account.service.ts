@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { getServiceProperty, Services } from "@harmony/service-config";
-import {publicUserType, userType} from "@harmony/zod";
+import {createUserType, publicUserType, userType} from "@harmony/zod";
 import { Observable } from "rxjs";
 
 @Injectable()
@@ -16,6 +16,10 @@ export class AccountService {
 
   async findOne(id: string): Promise<Observable<publicUserType>> {
     return await this.client.send("account_find_one", { id });
+  }
+
+  create(user: createUserType): Observable<userType> {
+    return this.client.send("account_create", user);
   }
 
 }

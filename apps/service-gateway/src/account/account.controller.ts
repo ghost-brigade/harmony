@@ -1,8 +1,8 @@
 import {ApiNotFoundResponse, ApiOkResponse, ApiOperation,} from "@nestjs/swagger";
 import {AccountService} from "./account.service";
-import {Controller, Get, NotFoundException, Param} from "@nestjs/common";
+import {Body, Controller, Get, InternalServerErrorException, NotFoundException, Param, Post, UseGuards} from "@nestjs/common";
 import {User} from "@harmony/nest-schemas";
-import {publicUserSchema, publicUserType, userSchema, userType} from "@harmony/zod";
+import {createUserType, publicUserSchema, publicUserType, userSchema, userType} from "@harmony/zod";
 import { map } from 'rxjs/operators';
 
 @Controller("account")
@@ -40,4 +40,23 @@ export class AccountController {
       throw new NotFoundException('User not found');
     }
   }
+
+  @ApiOperation({ summary: "Create a user" })
+  @ApiOkResponse({
+    description: "User created",
+    type: User,
+  })
+  @ApiNotFoundResponse({ description: "User not found" })
+  @Post()
+  async create(@Body() createUser: createUserType) {
+    try {
+      console.log(createUser);
+      const user = await this.accountService.create(createUser);
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('An error occurred while creating the user');
+    }
+  }
+
 }
