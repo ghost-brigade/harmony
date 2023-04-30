@@ -1,12 +1,15 @@
 import { genSalt, hash } from "bcryptjs";
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
   createUserType,
   publicUserType,
   updateUserType,
+  userParamsSchema,
+  userParamsType,
   userType,
 } from "@harmony/zod";
+import { RpcException } from "@nestjs/microservices";
 
 @Injectable()
 export class AccountService {
@@ -30,8 +33,17 @@ export class AccountService {
     return await deletedUser;
   }
 
-  async findAll(): Promise<publicUserType[] | null> {
-    return await this.userModel.find().exec();
+  async findAll(params: userParamsType): Promise<publicUserType[] | null> {
+    const result = userParamsSchema.safeParse(params);
+
+    if (result.success === false) {
+    console.table(result.error.message)
+      throw new RpcException(
+        new UnprocessableEntityException(result.error.message),
+      );
+    }
+
+    return await this.userModel.find(params).exec();
   }
 
   async findOne(id: string): Promise<userType | null> {

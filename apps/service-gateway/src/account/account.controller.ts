@@ -1,9 +1,10 @@
-import {ApiNotFoundResponse, ApiOkResponse, ApiOperation,} from "@nestjs/swagger";
+import {ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnprocessableEntityResponse,} from "@nestjs/swagger";
 import {AccountService} from "./account.service";
-import {Body, Controller, Get, InternalServerErrorException, NotFoundException, Param, Post, UseGuards} from "@nestjs/common";
+import {Body, Controller, Get, InternalServerErrorException, NotFoundException, Param, Post, Query, UseGuards} from "@nestjs/common";
 import {User} from "@harmony/nest-schemas";
-import {createUserType, publicUserSchema, publicUserType, userSchema, userType} from "@harmony/zod";
+import {createUserType, publicUserSchema, publicUserType, userParamsSchema, userParamsType, userSchema, userType} from "@harmony/zod";
 import { map } from 'rxjs/operators';
+import { RpcException } from "@nestjs/microservices";
 
 @Controller("account")
 export class AccountController {
@@ -15,14 +16,11 @@ export class AccountController {
     type: [User],
   })
   @ApiNotFoundResponse({ description: "Users not found" })
+  @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
+  @ApiInternalServerErrorResponse({ description: "Internal server error" })
   @Get()
-  async findAll() {
-    try {
-      const users = await this.accountService.findAll();
-      return users.pipe(map((users) => users.map((user) => userSchema.parse(user) as userType)));
-    } catch (error) {
-      throw new NotFoundException('Users not found');
-    }
+  findAll(@Query() params?: userParamsType|undefined) {
+    return this.accountService.findAll(params);
   }
 
   @ApiOperation({ summary: "Get a user by id" })
