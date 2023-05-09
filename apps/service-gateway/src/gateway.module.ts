@@ -4,6 +4,7 @@ import { Module } from "@nestjs/common";
 import { AuthenticationModule } from "./authentication/authentication.module";
 import { AccountModule } from "./account/account.module";
 import { ServerModule } from "./server/server.module";
+import { JwtAuthGuard } from './core/guards/passport/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -18,13 +19,15 @@ import { ServerModule } from "./server/server.module";
     AccountModule,
     ServerModule,
   ],
-  controllers: [],
   providers: [
     {
-      provide: "GATEWAY_GUARD",
+      provide: "APP_GUARD",
+      useClass: JwtAuthGuard
+    },
+    {
+      provide: "APP_GUARD",
       useClass: ThrottlerGuard,
     },
   ],
-  exports: [],
 })
 export class GatewayModule {}

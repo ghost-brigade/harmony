@@ -5,7 +5,9 @@ import { AccountController } from "./account.controller";
 import { AccountService } from "./account.service";
 
 @Module({
-  imports: [ClientsModule.register([getService(Services.ACCOUNT)])],
+  imports: [
+    ClientsModule.register([getService(Services.ACCOUNT)]),
+  ],
   controllers: [AccountController],
   providers: [AccountService],
 })

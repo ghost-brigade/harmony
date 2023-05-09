@@ -10,6 +10,7 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { firstValueFrom } from "rxjs";
+import { jwtConstants } from "../constants/jwt.constants";
 
 @Injectable()
 export class AuthenticationService {
@@ -19,15 +20,13 @@ export class AuthenticationService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(email: string, plainPassword: string): Promise<any> {
-    const user: userType = await firstValueFrom(
-      this.accountService.send("account_find_one", { email })
-    );
+  async validateUser(user: userType) {
     console.log(user);
+
 
     // if (
     //   user &&
-    //   (await this.userService.comparePassword(plainPassword, user.password)) &&
+    //   (await this.comparePassword(plainPassword, user.password)) &&
     //   (await this.userService.isUserAccountActive({ user: user }))
     // ) {
     //   return user;
@@ -54,12 +53,14 @@ export class AuthenticationService {
         );
       }
 
+      this.validateUser(user);
+
       const isPasswordValid = await this.comparePassword(
         loginType.password,
         user.password
       );
 
-      if (!isPasswordValid) {
+      if (isPasswordValid === false) {
         throw new RpcException(
           new UnauthorizedException("Email or password is incorrect")
         );
@@ -73,6 +74,20 @@ export class AuthenticationService {
     } catch (error) {
       throw new RpcException(
         new UnauthorizedException("Email or password is incorrect")
+      );
+    }
+  }
+
+  async JwtLogin(access_token: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(access_token, {
+        secret: jwtConstants.secret,
+      });
+
+      return payload;
+    } catch {
+      throw new RpcException(
+        new UnauthorizedException("Token is invalid or expired")
       );
     }
   }

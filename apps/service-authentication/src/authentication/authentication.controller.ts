@@ -8,8 +8,13 @@ export class AuthenticationController {
     constructor(private readonly authenticationService: AuthenticationService) { }
 
     @MessagePattern('login')
-    signIn(loginType: loginType) {
+    login(loginType: loginType) {
       console.log(loginType);
       return this.authenticationService.login(loginType);
+    }
+
+    @MessagePattern('JwtLogin')
+    JwtLogin(access_token: string) {
+      return this.authenticationService.JwtLogin(access_token);
     }
 }
