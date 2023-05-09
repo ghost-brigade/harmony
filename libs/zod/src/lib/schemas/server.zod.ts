@@ -40,7 +40,13 @@ const createServerSchema = serverSchema.omit({
   blockedUsers: true,
 });
 
+const addMemberSchema = z.object({
+  serverId: z.string(),
+  memberId: z.string(),
+});
+
 type serverType = z.infer<typeof serverSchema>;
 type createServerType = z.infer<typeof createServerSchema>;
+type addMemberType = z.infer<typeof addMemberSchema>;
 
-export { serverSchema, serverType, createServerSchema, createServerType };
+export { serverSchema, serverType, createServerSchema, createServerType, addMemberSchema, addMemberType };
