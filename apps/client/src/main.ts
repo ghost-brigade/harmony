@@ -6,10 +6,12 @@ import {
   provideRouter,
 } from "@angular/router";
 import { BrowserModule, bootstrapApplication } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule),
+    importProvidersFrom(BrowserAnimationsModule),
     provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
   ],
 }).catch((err) => console.error(err));
