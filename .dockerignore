@@ -1,0 +1,10 @@
+.angular
+.github
+.nx-container
+.vscode
+coverage
+dist
+terraform
+thunder-test
+tools
+#node_modules

@@ -4,13 +4,72 @@
     "colId": "history",
     "containerId": "",
     "name": "localhost:3000/login",
-    "url": "localhost:3000/login",
-    "method": "GET",
+    "url": "localhost:3001/login",
+    "method": "POST",
     "sortNum": 0,
     "created": "2023-04-15T16:14:51.077Z",
-    "modified": "2023-04-15T16:14:51.077Z",
+    "modified": "2023-04-23T17:37:55.497Z",
     "headers": [],
     "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"test@antho.com\",\n  \"password\": \"arrrrrnthony\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "dba65ed5-9d9d-4376-a3bd-5b1b351927c3",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3001/account",
+    "url": "http://localhost:3001/account",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-04-23T17:12:21.639Z",
+    "modified": "2023-04-23T18:46:39.085Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU",
+        "isDisabled": true
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"test@antho.com\",\n\"password\": \"arrrrrnthony\",\n\"username\": \"anthony\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "78a0861e-8e57-4ddb-aa62-b2d8ac4a17b9",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3001/account",
+    "url": "http://localhost:3001/account",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-23T17:39:41.154Z",
+    "modified": "2023-04-23T18:53:52.282Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU",
+        "isDisabled": true
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"test@antho.com\",\n\"password\": \"arrrrrnthony\",\n\"username\": \"anthony\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU"
+    },
     "tests": []
   }
 ]
