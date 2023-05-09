@@ -3,7 +3,6 @@
 .nx-container
 .vscode
 coverage
-dist
 terraform
 thunder-test
 tools
