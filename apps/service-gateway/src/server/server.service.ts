@@ -18,10 +18,12 @@ export class ServerService {
   async createServer(serverData: serverType) {
     return this.client
       .send("server.create", serverData)
-      .pipe(
-        catchError((error) =>
-          throwError(() => new RpcException(error))
-        )
-      );
+      .pipe(catchError((error) => throwError(() => new RpcException(error))));
+  }
+
+  async getServerById(id: string) {
+    return this.client
+      .send("server.getServerById", id)
+      .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 }

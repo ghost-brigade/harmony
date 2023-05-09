@@ -16,4 +16,14 @@ export class ServerController {
       throw new RpcException(error.message);
     }
   }
+
+  @MessagePattern("server.getServerById")
+  async getServerById(id: string) {
+    try {
+      const server = await this.serverService.getServerById(id);
+      return server;
+    } catch (error) {
+      throw new RpcException(error.message);
+    }
+  }
 }

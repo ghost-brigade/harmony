@@ -17,6 +17,19 @@ export class ServerService {
     const createdServer = new this.serverModel({
       ...createServer,
     });
+
     return createdServer.save();
+  }
+
+  async getServerById(id: string): Promise<serverType> {
+    const server = await this.serverModel.findById(id).exec();
+
+    if (!server) {
+      throw new RpcException(
+        new UnprocessableEntityException("Server not found")
+      );
+    }
+
+    return server;
   }
 }

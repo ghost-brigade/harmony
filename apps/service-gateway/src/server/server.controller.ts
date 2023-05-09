@@ -27,6 +27,17 @@ export class ServerController {
     return await this.serverService.createServer(createServerType);
   }
 
+  @ApiOperation({ summary: "Get a server by ID" })
+  @ApiResponse({
+    status: 200,
+    description: "The server has been successfully retrieved.",
+  })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Get(":id")
+  async getServerById(@Param("id") id: string) {
+    return await this.serverService.getServerById(id);
+  }
+
   // @Put(":id")
   // async updateServer(
   //   @Param("id") serverId: string,
