@@ -4,9 +4,12 @@ import { NestFactory } from "@nestjs/core";
 import { GatewayModule } from "./gateway.module";
 import helmet from "helmet";
 import { RpcExceptionFilter } from "./core/filters/rpcException.filter";
+import { patchNestJsSwagger } from "nestjs-zod";
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
+  patchNestJsSwagger();
+
   const port = process.env.PORT || 3000;
 
   if (process.env.NODE_ENV === "development") {
@@ -14,6 +17,7 @@ async function bootstrap() {
       .setTitle("Harmony API")
       .setDescription("Harmony API")
       .setVersion("1")
+      .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, config);

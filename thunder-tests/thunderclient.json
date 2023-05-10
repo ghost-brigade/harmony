@@ -4,16 +4,16 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "8e479524-a14f-4f7a-8a73-1244f40f1e2a",
     "name": "login",
-    "url": "localhost:3000/api/v1/login",
+    "url": "localhost:3000/login",
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-04-12T16:07:31.317Z",
-    "modified": "2023-04-13T15:15:40.322Z",
+    "modified": "2023-05-10T10:07:51.505Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"john@gmail.fr\",\n  \"password\": \"Abcde12345\"\n}",
+      "raw": "{\n  \"email\": \"test@antho.com\",\n  \"password\": \"arrrrrnthony\"\n}",
       "form": []
     },
     "tests": []
@@ -23,11 +23,11 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "6ffa3232-c65f-4d55-97fc-50b2beaaa8a6",
     "name": "create user",
-    "url": "localhost:3000/api/v1/user",
+    "url": "localhost:3000/account",
     "method": "POST",
     "sortNum": 20000,
     "created": "2023-04-12T16:07:41.784Z",
-    "modified": "2023-04-13T15:15:42.466Z",
+    "modified": "2023-05-09T13:38:43.662Z",
     "headers": [],
     "params": [],
     "body": {
@@ -42,11 +42,11 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "6ffa3232-c65f-4d55-97fc-50b2beaaa8a6",
     "name": "get users",
-    "url": "localhost:3000/api/v1/user",
+    "url": "localhost:3000/account",
     "method": "GET",
     "sortNum": 30000,
     "created": "2023-04-12T16:07:48.189Z",
-    "modified": "2023-04-12T16:08:55.881Z",
+    "modified": "2023-05-09T13:40:11.084Z",
     "headers": [],
     "params": [],
     "tests": []
@@ -56,16 +56,87 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "8e479524-a14f-4f7a-8a73-1244f40f1e2a",
     "name": "profile",
-    "url": "localhost:3000/api/v1/profile",
+    "url": "localhost:3000/profile",
     "method": "GET",
     "sortNum": 40000,
     "created": "2023-04-13T13:23:38.624Z",
-    "modified": "2023-04-13T13:29:26.605Z",
+    "modified": "2023-05-09T13:04:48.979Z",
     "headers": [],
     "params": [],
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBsYXlmYWRlIiwic3ViIjoiNjQzNTVkMzNmMjIzMTVmZDFlZDk5YTRiIiwiaWF0IjoxNjgxMzkyMTk1LCJleHAiOjE2ODE0Nzg1OTV9.ZHyHT_4KSBkIfncTOjRzx1saXigcrMbOokFFDMV40bU"
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjM3NDcyLCJleHAiOjE2ODM3MjM4NzJ9.PeJEsg3jyBeRNaHJkNEkaJm6jsIt83BCuu1Z7LYBNWw"
+    },
+    "tests": []
+  },
+  {
+    "_id": "9ddd244f-7809-46fe-89a8-a3cf092924f2",
+    "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
+    "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
+    "name": "create server",
+    "url": "localhost:3000/server",
+    "method": "POST",
+    "sortNum": 60000,
+    "created": "2023-05-09T13:53:39.639Z",
+    "modified": "2023-05-09T14:07:28.255Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "name",
+        "value": "test",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"test\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjQwNDM1LCJleHAiOjE2ODM3MjY4MzV9.HLrdrRwFosW5WkHvovRxBbCFCOZxxAOeD9kN-LBfpvE"
+    },
+    "tests": []
+  },
+  {
+    "_id": "444c295b-189b-4d4f-9e42-59b017ad8c48",
+    "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
+    "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
+    "name": "get server by id",
+    "url": "localhost:3000/server/6442cb620e26bac5fa7a0593",
+    "method": "GET",
+    "sortNum": 70000,
+    "created": "2023-05-09T14:19:24.133Z",
+    "modified": "2023-05-09T16:47:45.850Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjQxOTg1LCJleHAiOjE2ODM3MjgzODV9.1IP219-Fefu2JSsIhClRK4claJ97-L0qeO6Ck5hi6GU"
+    },
+    "tests": []
+  },
+  {
+    "_id": "00d16f85-84eb-47aa-b38d-e2014508b4a4",
+    "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
+    "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
+    "name": "add member to server",
+    "url": "localhost:3000/server/6442cb620e26bac5fa7a0593/members",
+    "method": "PUT",
+    "sortNum": 80000,
+    "created": "2023-05-09T15:04:02.498Z",
+    "modified": "2023-05-10T08:21:01.603Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"memberId\": \"64456ca89684a2566d8686ee\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjQ3NDMyLCJleHAiOjE2ODM3MzM4MzJ9.bj3h4otAXJGdp-ZDUT02kzRzHloEAoKQPjyOfGy2fEE"
     },
     "tests": []
   }
