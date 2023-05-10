@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from "@nestjs/common";
 import { AuthenticationModule } from "./authentication/authentication.module";
 import { AccountModule } from "./account/account.module";
+import { ServerModule } from "./server/server.module";
 import { JwtAuthGuard } from './core/guards/passport/jwt-auth.guard';
 
 @Module({
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from './core/guards/passport/jwt-auth.guard';
     }),
     AuthenticationModule,
     AccountModule,
+    ServerModule,
   ],
   providers: [
     {

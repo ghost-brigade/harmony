@@ -15,7 +15,14 @@ export class AccountController {
   @MessagePattern("account_find_one")
   async findOne(data: userType) {
     try {
-      const user = await this.accountService.findOneBy(data);
+      let user: userType;
+
+      if (Object.keys(data).length === 1 && "id" in data) {
+        user = await this.accountService.findOne(data.id);
+      } else {
+        user = await this.accountService.findOneBy(data);
+      }
+
       return user;
     } catch (error) {
       console.log(error);

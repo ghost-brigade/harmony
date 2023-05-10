@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { z } from 'nestjs-zod/z';
+import { createZodDto } from 'nestjs-zod';
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -7,7 +8,10 @@ const loginSchema = z.object({
 
 type loginType = z.infer<typeof loginSchema>;
 
+class LoginDto extends createZodDto(loginSchema) { }
+
 export {
     loginSchema,
     loginType,
+    LoginDto
 }

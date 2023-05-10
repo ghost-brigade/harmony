@@ -1,10 +1,11 @@
-import {ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnprocessableEntityResponse,} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnprocessableEntityResponse,} from "@nestjs/swagger";
 import {AccountService} from "./account.service";
 import {Body, Controller, Get, InternalServerErrorException, NotFoundException, Param, Post, Query, UseGuards} from "@nestjs/common";
 import {User} from "@harmony/nest-schemas";
-import {createUserType, publicUserSchema, publicUserType, userParamsSchema, userParamsType, userSchema, userType} from "@harmony/zod";
+import {createUserType, publicUserDto, publicUserSchema, publicUserType, userParamsSchema, userParamsType, userSchema, userType} from "@harmony/zod";
 import { map } from 'rxjs/operators';
 import { RpcException } from "@nestjs/microservices";
+import { Public } from "../core/decorators/public.decorator";
 
 @Controller("account")
 export class AccountController {
@@ -12,9 +13,10 @@ export class AccountController {
 
   @ApiOperation({ summary: "Get all users" })
   @ApiOkResponse({
-    description: "Users found",
-    type: [User],
+    description: "User",
+    type: publicUserDto
   })
+  @ApiBearerAuth()
   @ApiNotFoundResponse({ description: "Users not found" })
   @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })

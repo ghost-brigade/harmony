@@ -10,7 +10,7 @@ export class RpcExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     response
-      .status(error.statusCode)
+      .status(error.statusCode || 500)
       .json(error);
   }
 }
