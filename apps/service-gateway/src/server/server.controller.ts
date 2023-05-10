@@ -38,6 +38,24 @@ export class ServerController {
     return await this.serverService.getServerById(id);
   }
 
+  @ApiOperation({ summary: "Add a member to a server" })
+  @ApiResponse({
+    status: 200,
+    description: "The member has been successfully added to the server.",
+  })
+  @ApiResponse({ status: 404, description: "Server or user not found" })
+  @ApiResponse({
+    status: 409,
+    description: "User is already a member of the server",
+  })
+  @Put(":id/members")
+  async addMemberToServer(
+    @Param("id") serverId: string,
+    @Body("memberId") memberId: string
+  ) {
+    return await this.serverService.addMemberToServer({serverId, memberId});
+  }
+
   // @Put(":id")
   // async updateServer(
   //   @Param("id") serverId: string,
