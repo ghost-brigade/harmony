@@ -15,6 +15,7 @@ async function bootstrap() {
     .setTitle("Harmony API")
     .setDescription("Harmony API")
     .setVersion("1")
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
