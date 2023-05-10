@@ -1,58 +1,69 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const userSchema = z.object({
-    /*
-     * Email max length is 320 characters, according to RFC 3696
-     * https://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
-    */
-    email: z.string().email().min(3).max(320),
-    password: z.string().min(8).max(128),
-    username: z.string().min(4).max(18),
-    avatar: z.string().optional(),
-    isVerified: z.boolean().optional(),
-    blockedUsers: z.array(z.string()).optional(),
-    id: z.string().optional(),
+  /*
+   * Email max length is 320 characters, according to RFC 3696
+   * https://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
+   */
+  id: z.string().optional(),
+  email: z.string().email().min(3).max(320),
+  password: z.string().min(8).max(128),
+  username: z.string().min(4).max(18),
+  avatar: z.string().optional(),
+  isVerified: z.boolean().optional(),
+  blockedUsers: z.array(z.string()).optional(),
+});
+
+const ProfileSchema = userSchema.omit({
+  password: true,
 });
 
 const publicUserSchema = userSchema.omit({
-    password: true,
-    blockedUsers: true,
+  password: true,
+  blockedUsers: true,
 });
 
 const createUserSchema = userSchema.omit({
-    id: true,
-    avatar: true,
-    isVerified: true,
-    blockedUsers: true,
+  id: true,
+  avatar: true,
+  isVerified: true,
+  blockedUsers: true,
 });
 
-const updateUserSchema = userSchema.omit({
+const updateUserSchema = userSchema
+  .omit({
     username: true,
     blockedUsers: true,
     isVerified: true,
-}).partial();
+  })
+  .partial();
 
-const userParamsSchema = userSchema.pick({
+const userParamsSchema = userSchema
+  .pick({
     id: true,
     email: true,
     username: true,
-}).partial();
+  })
+  .partial();
 
 type userType = z.infer<typeof userSchema>;
 type publicUserType = z.infer<typeof publicUserSchema>;
 type updateUserType = z.infer<typeof updateUserSchema>;
 type createUserType = z.infer<typeof createUserSchema>;
 type userParamsType = z.infer<typeof userParamsSchema>;
+type ProfileType = z.infer<typeof ProfileSchema>;
 
 export {
-    userSchema,
-    userType,
-    publicUserSchema,
-    publicUserType,
-    updateUserSchema,
-    updateUserType,
-    createUserSchema,
-    createUserType,
-    userParamsSchema,
-    userParamsType,
-}
+  userSchema,
+  userType,
+  publicUserSchema,
+  publicUserType,
+  updateUserSchema,
+  updateUserType,
+  createUserSchema,
+  createUserType,
+  userParamsSchema,
+  userParamsType,
+  ProfileSchema,
+  ProfileType,
+};

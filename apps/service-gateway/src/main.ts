@@ -8,14 +8,17 @@ import { RpcExceptionFilter } from "./core/filters/rpcException.filter";
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
   const port = process.env.PORT || 3000;
-  const config = new DocumentBuilder()
-    .setTitle("Harmony API")
-    .setDescription("Harmony API")
-    .setVersion("1")
-    .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("docs", app, document);
+  if (process.env.NODE_ENV === "development") {
+    const config = new DocumentBuilder()
+      .setTitle("Harmony API")
+      .setDescription("Harmony API")
+      .setVersion("1")
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("docs", app, document);
+  }
 
   app.use(helmet());
   app.enableCors({ origin: [process.env?.CORS_ORIGIN || "*"] });

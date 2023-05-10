@@ -2,17 +2,20 @@ import { genSalt, hash } from "bcryptjs";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
+  ProfileSchema,
+  UserJwtType,
   createUserType,
   publicUserType,
   updateUserType,
   userParamsSchema,
   userParamsType,
+  userSchema,
   userType,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 
 @Injectable()
-export class AccountService {
+export class UserService {
   constructor(@InjectModel("User") private readonly userModel) {}
 
   async create(createUser: createUserType): Promise<publicUserType> {
@@ -37,9 +40,9 @@ export class AccountService {
     const result = userParamsSchema.safeParse(params);
 
     if (result.success === false) {
-    console.table(result.error.message)
+      console.table(result.error.message);
       throw new RpcException(
-        new UnprocessableEntityException(result.error.message),
+        new UnprocessableEntityException(result.error.message)
       );
     }
 
@@ -51,7 +54,11 @@ export class AccountService {
   }
 
   async findOneBy(params: userType): Promise<userType | null> {
-    return await this.userModel.findOne(params).exec();
+    try {
+      return await this.userModel.findOne(params).exec();
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
@@ -91,9 +98,27 @@ export class AccountService {
     }
 
     if (user) {
-      return await user.isVerified;
+      return user.isVerified;
     }
 
     return false;
+  }
+
+  async profile({ user }: { user: UserJwtType }): Promise<userType> {
+    try {
+      const result = ProfileSchema.safeParse(
+        await this.findOneBy({ email: user.email })
+      );
+
+      if (result.success === false) {
+        throw new RpcException(
+          new UnprocessableEntityException(result.error.message)
+        );
+      }
+
+      return result.data;
+    } catch (error) {
+      return null;
+    }
   }
 }
