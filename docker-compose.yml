@@ -27,23 +27,23 @@ services:
       service: service-template
     command: npx nx serve service-server
 
-  service-message:
-    extends:
-      file: docker-compose.template.yml
-      service: service-template
-    command: npx nx serve service-message
+  # service-message:
+  #   extends:
+  #     file: docker-compose.template.yml
+  #     service: service-template
+  #   command: npx nx serve service-message
 
-  service-search-message:
-    extends:
-      file: docker-compose.template.yml
-      service: service-template
-    command: npx nx serve service-search-message
+  # service-search-message:
+  #   extends:
+  #     file: docker-compose.template.yml
+  #     service: service-template
+  #   command: npx nx serve service-search-message
 
-  service-file:
-    extends:
-      file: docker-compose.template.yml
-      service: service-template
-    command: npx nx serve service-file
+  # service-file:
+  #   extends:
+  #     file: docker-compose.template.yml
+  #     service: service-template
+  #   command: npx nx serve service-file
 
 volumes:
   mono-node-modules: null
