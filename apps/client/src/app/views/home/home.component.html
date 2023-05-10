@@ -44,6 +44,7 @@
       {{ "HOME_HERO_TITLE" | i18n }}
     </h1>
     <p
+      (click)="openLoader()"
       class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400">
       {{ "HOME_HERO_SUBTITLE" | i18n }}
     </p>
