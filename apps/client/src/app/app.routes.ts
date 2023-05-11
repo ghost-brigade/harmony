@@ -37,6 +37,11 @@ export const appRoutes: Route[] = [
       import("./views/contact/contact.component").then((m) => m.ContactComponent),
   },
   {
+    path: "password-reset",
+    loadComponent: () =>
+      import("./views/password-reset/password-reset.component").then((m) => m.PasswordResetComponent),
+  },
+  {
     path: "*",
     loadComponent: () =>
       import("./views/home/home.component").then((m) => m.HomeComponent),
