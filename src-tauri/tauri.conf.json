@@ -7,7 +7,7 @@
     "distDir": "../dist/apps/client"
   },
   "package": {
-    "productName": "harmony",
+    "productName": "Harmony",
     "version": "0.1.0"
   },
   "tauri": {
