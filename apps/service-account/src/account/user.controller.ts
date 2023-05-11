@@ -1,15 +1,15 @@
 import { Controller } from "@nestjs/common";
 import { MessagePattern } from "@nestjs/microservices";
-import { AccountService } from "./account.service";
+import { UserService } from "./user.service";
 import { userParamsType, userType } from "@harmony/zod";
 
 @Controller()
-export class AccountController {
-  constructor(private readonly accountService: AccountService) {}
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
   @MessagePattern("account_find_all")
   async findAll(params: userParamsType) {
-    return await this.accountService.findAll(params);
+    return await this.userService.findAll(params);
   }
 
   @MessagePattern("account_find_one")
@@ -18,9 +18,9 @@ export class AccountController {
       let user: userType;
 
       if (Object.keys(data).length === 1 && "id" in data) {
-        user = await this.accountService.findOne(data.id);
+        user = await this.userService.findOne(data.id);
       } else {
-        user = await this.accountService.findOneBy(data);
+        user = await this.userService.findOneBy(data);
       }
 
       return user;
@@ -31,10 +31,6 @@ export class AccountController {
 
   @MessagePattern("account_create")
   async create(data) {
-    try {
-      return await this.accountService.create(data);
-    } catch (error) {
-      console.log(error);
-    }
+    return await this.userService.create(data);
   }
 }

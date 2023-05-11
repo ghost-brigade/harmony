@@ -2,6 +2,10 @@ import { genSalt, hash } from "bcryptjs";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
+  FormatZodResponse,
+  ProfileSchema,
+  UserJwtType,
+  createUserSchema,
   createUserType,
   publicUserType,
   updateUserType,
@@ -10,16 +14,41 @@ import {
   userType,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
+import { Errors } from "@harmony/enums";
 
 @Injectable()
-export class AccountService {
+export class UserService {
   constructor(@InjectModel("User") private readonly userModel) {}
 
   async create(createUser: createUserType): Promise<publicUserType> {
+    const result = createUserSchema.safeParse(createUser);
+
+    if (result.success === false) {
+      throw new RpcException(
+        new UnprocessableEntityException(FormatZodResponse(result.error.issues))
+      );
+    }
+
+    const isUnique = (await this.userModel
+      .findOne()
+      .or([{ username: createUser.username }, { email: createUser.email }])
+      .exec()) as userType;
+
+    if (isUnique) {
+      throw new RpcException(
+        new UnprocessableEntityException(
+          isUnique.username === createUser.username
+            ? Errors.ERROR_USERNAME_ALREADY_EXISTS
+            : Errors.ERROR_EMAIL_ALREADY_EXISTS
+        )
+      );
+    }
+
     const createdUser = new this.userModel({
       ...createUser,
       password: await this.hashPassword(createUser.password),
     });
+
     return await createdUser.save();
   }
 
@@ -37,9 +66,9 @@ export class AccountService {
     const result = userParamsSchema.safeParse(params);
 
     if (result.success === false) {
-    console.table(result.error.message)
+      console.table(result.error.message);
       throw new RpcException(
-        new UnprocessableEntityException(result.error.message),
+        new UnprocessableEntityException(result.error.message)
       );
     }
 
@@ -51,7 +80,11 @@ export class AccountService {
   }
 
   async findOneBy(params: userType): Promise<userType | null> {
-    return await this.userModel.findOne(params).exec();
+    try {
+      return await this.userModel.findOne(params).exec();
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
@@ -91,9 +124,27 @@ export class AccountService {
     }
 
     if (user) {
-      return await user.isVerified;
+      return user.isVerified;
     }
 
     return false;
+  }
+
+  async profile({ user }: { user: UserJwtType }): Promise<userType> {
+    try {
+      const result = ProfileSchema.safeParse(
+        await this.findOneBy({ email: user.email })
+      );
+
+      if (result.success === false) {
+        throw new RpcException(
+          new UnprocessableEntityException(result.error.message)
+        );
+      }
+
+      return result.data;
+    } catch (error) {
+      return null;
+    }
   }
 }
