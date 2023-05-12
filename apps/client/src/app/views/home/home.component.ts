@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { HomeNavbarComponent } from "../../shared/components/home/navbar/navbar.component";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
 import { HomeFooterComponent } from "../../shared/components/home/footer/footer.component";
-import { LoaderService } from "../../core/components/loader/loader.service";
+import { AlertService } from "../../core/components/alert/alert.service";
 
 @Component({
   selector: "harmony-home",
@@ -12,9 +12,12 @@ import { LoaderService } from "../../core/components/loader/loader.service";
   templateUrl: "./home.component.html",
 })
 export class HomeComponent {
-  constructor(private loaderService: LoaderService) {}
+  constructor(private loaderService: AlertService) {}
 
   openLoader() {
-    this.loaderService.show();
+    this.loaderService.show({
+      message: "EMPTY",
+      type: "success",
+    });
   }
 }
