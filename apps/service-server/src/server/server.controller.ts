@@ -1,3 +1,4 @@
+import { SERVER_MESSAGE_PATTERN } from "@harmony/service-config";
 import {
   Controller,
   InternalServerErrorException,
@@ -15,7 +16,7 @@ import {
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
-  @MessagePattern("server.create")
+  @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
   async createServer(createServerType: ServerCreateType) {
     try {
       const server = await this.serverService.create(createServerType);
@@ -25,7 +26,7 @@ export class ServerController {
     }
   }
 
-  @MessagePattern("server.getServerById")
+  @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
   async getServerById(id: string) {
     try {
       const server = await this.serverService.getServerById(id);
@@ -50,7 +51,7 @@ export class ServerController {
     }
   }
 
-  @MessagePattern("server.addMember")
+  @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
   async addMemberToServer(addMemberData: ServerMemberAddType) {
     try {
       console.log(addMemberData);
