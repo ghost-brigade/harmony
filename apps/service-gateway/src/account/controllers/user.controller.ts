@@ -10,7 +10,7 @@ import {
   Body,
   Controller,
   Get,
-  InternalServerErrorException,
+  Inject,
   NotFoundException,
   Param,
   Post,
@@ -18,27 +18,34 @@ import {
 } from "@nestjs/common";
 import { User } from "@harmony/nest-schemas";
 import {
-  createUserType,
-  publicUserDto,
-  publicUserSchema,
-  publicUserType,
-  userParamsType,
+  UserCreateType,
+  UserPublicDto,
+  UserPublicSchema,
+  UserPublicType,
+  UserParamsType,
 } from "@harmony/zod";
+import { Services, getServiceProperty } from "@harmony/service-config";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { Observable, catchError, throwError } from "rxjs";
 
 @Controller("user")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
+    private readonly client: ClientProxy
+  ) {}
 
   @ApiOperation({ summary: "Get all users" })
   @ApiOkResponse({
     description: "User",
-    type: publicUserDto,
+    type: UserPublicDto,
   })
   @ApiNotFoundResponse({ description: "Users not found" })
   @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
   @Get()
-  findAll(@Query() params?: userParamsType | undefined) {
+  findAll(@Query() params?: UserParamsType | undefined) {
     return this.userService.findAll(params);
   }
 
@@ -52,7 +59,7 @@ export class UserController {
   async findOne(@Param("id") id: string) {
     try {
       const user = await this.userService.findOne(id);
-      return publicUserSchema.parse(user) as publicUserType;
+      return UserPublicSchema.parse(user) as UserPublicType;
     } catch (error) {
       throw new NotFoundException("User not found");
     }
@@ -65,16 +72,13 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: "User not found" })
   @Post()
-  async create(@Body() createUser: createUserType) {
-    try {
-      console.log(createUser);
-      const user = await this.userService.create(createUser);
-      return user;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        "An error occurred while creating the user"
+  public create(@Body() createUser: UserCreateType): Observable<User> {
+    return this.client
+      .send("account_create", createUser)
+      .pipe(
+        catchError((error) =>
+          throwError(() => new RpcException(error.response))
+        )
       );
-    }
   }
 }

@@ -5,7 +5,7 @@ import {
   getServiceProperty,
   Services,
 } from "@harmony/service-config";
-import { loginType, userType } from "@harmony/zod";
+import { LoginType, UserType } from "@harmony/zod";
 import { Observable, catchError, throwError } from "rxjs";
 
 @Injectable()
@@ -15,7 +15,7 @@ export class AuthenticationService {
     private readonly client: ClientProxy
   ) {}
 
-  login(loginType: loginType): Observable<userType> {
+  login(loginType: LoginType): Observable<UserType> {
     return this.client
       .send(AUTHENTICATION_MESSAGE_PATTERN.LOGIN, loginType)
       .pipe(

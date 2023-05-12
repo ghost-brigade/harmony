@@ -1,5 +1,5 @@
 import { compare } from "bcryptjs";
-import { loginType, userType } from "@harmony/zod";
+import { LoginType, UserType } from "@harmony/zod";
 import { Services, getServiceProperty } from "@harmony/service-config";
 import {
   Inject,
@@ -20,9 +20,8 @@ export class AuthenticationService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(user: userType) {
+  async validateUser(user: UserType) {
     console.log(user);
-
 
     // if (
     //   user &&
@@ -35,7 +34,7 @@ export class AuthenticationService {
     return null;
   }
 
-  async login(loginType: loginType) {
+  async login(loginType: LoginType) {
     if (!loginType.email || !loginType.password) {
       throw new RpcException(
         new UnprocessableEntityException("Email and password are required")
@@ -43,7 +42,7 @@ export class AuthenticationService {
     }
 
     try {
-      const user: userType = await firstValueFrom(
+      const user: UserType = await firstValueFrom(
         this.accountService.send("account_find_one", { email: loginType.email })
       );
 

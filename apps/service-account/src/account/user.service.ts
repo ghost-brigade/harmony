@@ -3,15 +3,15 @@ import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
   FormatZodResponse,
-  ProfileSchema,
+  UserProfileSchema,
   UserJwtType,
-  createUserSchema,
-  createUserType,
-  publicUserType,
-  updateUserType,
-  userParamsSchema,
-  userParamsType,
-  userType,
+  UserCreateSchema,
+  UserCreateType,
+  UserPublicType,
+  UserUpdateType,
+  UserParamsSchema,
+  UserParamsType,
+  UserType,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -20,8 +20,8 @@ import { Errors } from "@harmony/enums";
 export class UserService {
   constructor(@InjectModel("User") private readonly userModel) {}
 
-  async create(createUser: createUserType): Promise<publicUserType> {
-    const result = createUserSchema.safeParse(createUser);
+  async create(createUser: UserCreateType): Promise<UserPublicType> {
+    const result = UserCreateSchema.safeParse(createUser);
 
     if (result.success === false) {
       throw new RpcException(
@@ -32,7 +32,7 @@ export class UserService {
     const isUnique = (await this.userModel
       .findOne()
       .or([{ username: createUser.username }, { email: createUser.email }])
-      .exec()) as userType;
+      .exec()) as UserType;
 
     if (isUnique) {
       throw new RpcException(
@@ -52,7 +52,7 @@ export class UserService {
     return await createdUser.save();
   }
 
-  async update(updateUser: updateUserType): Promise<publicUserType> {
+  async update(updateUser: UserUpdateType): Promise<UserPublicType> {
     const updatedUser = new this.userModel(updateUser);
     return await updatedUser.save();
   }
@@ -62,8 +62,8 @@ export class UserService {
     return await deletedUser;
   }
 
-  async findAll(params: userParamsType): Promise<publicUserType[] | null> {
-    const result = userParamsSchema.safeParse(params);
+  async findAll(params: UserParamsType): Promise<UserPublicType[] | null> {
+    const result = UserParamsSchema.safeParse(params);
 
     if (result.success === false) {
       console.table(result.error.message);
@@ -75,11 +75,11 @@ export class UserService {
     return await this.userModel.find(params).exec();
   }
 
-  async findOne(id: string): Promise<userType | null> {
+  async findOne(id: string): Promise<UserType | null> {
     return await this.userModel.findById(id).exec();
   }
 
-  async findOneBy(params: userType): Promise<userType | null> {
+  async findOneBy(params: UserType): Promise<UserType | null> {
     try {
       return await this.userModel.findOne(params).exec();
     } catch (error) {
@@ -117,7 +117,7 @@ export class UserService {
     user = null,
   }: {
     email?: string | null;
-    user?: publicUserType | null;
+    user?: UserPublicType | null;
   }): Promise<boolean> {
     if (!user && email) {
       user = await this.findOneBy({ email });
@@ -130,9 +130,9 @@ export class UserService {
     return false;
   }
 
-  async profile({ user }: { user: UserJwtType }): Promise<userType> {
+  async profile({ user }: { user: UserJwtType }): Promise<UserType> {
     try {
-      const result = ProfileSchema.safeParse(
+      const result = UserProfileSchema.safeParse(
         await this.findOneBy({ email: user.email })
       );
 

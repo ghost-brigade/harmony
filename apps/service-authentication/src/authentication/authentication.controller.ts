@@ -1,6 +1,6 @@
 import { AUTHENTICATION_MESSAGE_PATTERN } from '@harmony/service-config';
 import { Controller } from '@nestjs/common';
-import { loginType } from "@harmony/zod";
+import { LoginType } from "@harmony/zod";
 import { AuthenticationService } from './authentication.service';
 import { MessagePattern } from '@nestjs/microservices';
 
@@ -9,7 +9,7 @@ export class AuthenticationController {
     constructor(private readonly authenticationService: AuthenticationService) { }
 
     @MessagePattern(AUTHENTICATION_MESSAGE_PATTERN.LOGIN)
-    login(loginType: loginType) {
+    login(loginType: LoginType) {
       return this.authenticationService.login(loginType);
     }
 
