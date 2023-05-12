@@ -2,27 +2,6 @@ import { z } from "zod";
 import { IdSchema } from "./global/id.zod";
 import { createZodDto } from "nestjs-zod";
 
-/* temporary disable use IdSchema instead */
-// const categorySchema = z.object({
-//   id: IdSchema.optional(),
-//   name: z.string(),
-// });
-
-// const channelSchema = z.object({
-//   id: IdSchema.optional(),
-//   name: z.string(),
-// });
-
-// const roleSchema = z.object({
-//   id: IdSchema.optional(),
-//   name: z.string(),
-// });
-
-// const emojiSchema = z.object({
-//   id: z.string().optional(),
-//   name: z.string(),
-// });
-
 export const ServerSchema = z.object({
   id: IdSchema.optional(),
   name: z.string(),
