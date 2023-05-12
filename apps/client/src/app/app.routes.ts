@@ -41,8 +41,10 @@ export const appRoutes: Route[] = [
       ),
   },
   {
-    path: "*",
+    path: "**",
     loadComponent: () =>
-      import("./views/home/home.component").then((m) => m.HomeComponent),
+      import("./views/not-found/not-found.component").then(
+        (m) => m.NotFoundComponent
+      ),
   },
 ];
