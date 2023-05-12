@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from "@nestjs/common";
-import { createServerType } from "@harmony/zod";
+import { createServerDto, createServerType } from "@harmony/zod";
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Controller("server")
@@ -21,9 +21,8 @@ export class ServerController {
     description: "The server has been successfully created.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiBody({})
   @Post()
-  async createServer(@Body() createServerType: createServerType) {
+  async createServer(@Body() createServerType: createServerDto) {
     return await this.serverService.createServer(createServerType);
   }
 
