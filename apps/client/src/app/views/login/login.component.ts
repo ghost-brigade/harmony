@@ -22,7 +22,7 @@ export class LoginComponent {
     this.requestService.post({
       endpoint: PostEndpoint.Login,
       body: {
-        username: this.email(),
+        email: this.email(),
         password: this.password(),
       },
     });

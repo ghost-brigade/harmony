@@ -4,6 +4,7 @@ import { HomeNavbarComponent } from "../../shared/components/home/navbar/navbar.
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
 import { HomeFooterComponent } from "../../shared/components/home/footer/footer.component";
 import { AlertService } from "../../core/components/alert/alert.service";
+import { ToastService } from "../../core/components/toast/toast.service";
 
 @Component({
   selector: "harmony-home",
@@ -12,11 +13,11 @@ import { AlertService } from "../../core/components/alert/alert.service";
   templateUrl: "./home.component.html",
 })
 export class HomeComponent {
-  constructor(private loaderService: AlertService) {}
+  constructor(private loaderService: ToastService) {}
 
   openLoader() {
     this.loaderService.show({
-      message: "HOME_HERO_SUBTITLE",
+      message: "APP_NAME",
       type: "success",
     });
   }

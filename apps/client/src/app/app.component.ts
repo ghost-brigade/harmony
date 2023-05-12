@@ -9,13 +9,14 @@ import {
   setBackForwardNavigationGestures,
   setWebviewBounce,
 } from "capacitor-plugin-ios-webview-configurator";
+import { ToastComponent } from "./core/components/toast/toast.component";
 
 @Component({
   selector: "harmony-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
   standalone: true,
-  imports: [RouterOutlet, LoaderComponent, AlertComponent],
+  imports: [RouterOutlet, LoaderComponent, AlertComponent, ToastComponent],
 })
 export class AppComponent implements OnInit {
   constructor(private i18nService: I18nService) {}
