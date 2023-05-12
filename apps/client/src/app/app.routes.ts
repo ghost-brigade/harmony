@@ -29,17 +29,16 @@ export const appRoutes: Route[] = [
   {
     path: "privacy",
     loadComponent: () =>
-      import("./views/privacy/privacy.component").then((m) => m.PrivacyComponent),
+      import("./views/privacy/privacy.component").then(
+        (m) => m.PrivacyComponent
+      ),
   },
   {
     path: "contact",
     loadComponent: () =>
-      import("./views/contact/contact.component").then((m) => m.ContactComponent),
-  },
-  {
-    path: "password-reset",
-    loadComponent: () =>
-      import("./views/password-reset/password-reset.component").then((m) => m.PasswordResetComponent),
+      import("./views/contact/contact.component").then(
+        (m) => m.ContactComponent
+      ),
   },
   {
     path: "*",
