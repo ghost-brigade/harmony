@@ -7,10 +7,10 @@ import {
 } from "@harmony/service-config";
 import {
   UserJwtType,
-  createUserType,
-  publicUserType,
-  userParamsType,
-  userType,
+  UserCreateType,
+  UserPublicType,
+  UserParamsType,
+  UserType,
 } from "@harmony/zod";
 import { Observable, catchError, throwError } from "rxjs";
 
@@ -21,7 +21,7 @@ export class UserService {
     private readonly client: ClientProxy
   ) {}
 
-  findAll(params: userParamsType): Observable<userType[]> {
+  findAll(params: UserParamsType): Observable<UserType[]> {
     return this.client
       .send("account_find_all", params)
       .pipe(
@@ -31,7 +31,7 @@ export class UserService {
       );
   }
 
-  async findOne(id: string): Promise<Observable<publicUserType>> {
+  async findOne(id: string): Promise<Observable<UserType>> {
     return await this.client
       .send("account_find_one", { id })
       .pipe(
@@ -41,27 +41,24 @@ export class UserService {
       );
   }
 
-  create(user: createUserType): Observable<userType> {
-    return this.client
-      .send("account_create", user)
-      .pipe(
-        catchError((error) =>
-          throwError(() => new RpcException(error.response))
-        )
-      );
+  create(user: UserCreateType): Observable<UserType> {
+    return this.client.send("account_create", user);
+    // .pipe(
+    //   catchError((error) =>
+    //     throwError(() => new RpcException(error.response))
+    //   )
+    // );
   }
 
   /**
    * Get the profile of the current logged in user.
    * @returns publicUserType
    */
-  profile({ user }: { user: UserJwtType }): Observable<publicUserType> {
+  profile({ user }: { user: UserJwtType }): Observable<UserPublicType> {
     return this.client
       .send(ACCOUNT_MESSAGE_PATTERN.PROFILE, { user })
       .pipe(
-        catchError((error) =>
-          throwError(() => new RpcException(error.message))
-        )
+        catchError((error) => throwError(() => new RpcException(error.message)))
       );
   }
 }
