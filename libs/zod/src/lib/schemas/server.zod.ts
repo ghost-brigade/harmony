@@ -1,41 +1,41 @@
 import { z } from "zod";
-import { userSchema } from "./user.zod";
+import { IdSchema } from "./global/id.zod";
 import { createZodDto } from "nestjs-zod";
-import { IdSchema } from "./id.zod";
 
-const categorySchema = z.object({
+/* temporary disable use IdSchema instead */
+// const categorySchema = z.object({
+//   id: IdSchema.optional(),
+//   name: z.string(),
+// });
+
+// const channelSchema = z.object({
+//   id: IdSchema.optional(),
+//   name: z.string(),
+// });
+
+// const roleSchema = z.object({
+//   id: IdSchema.optional(),
+//   name: z.string(),
+// });
+
+// const emojiSchema = z.object({
+//   id: z.string().optional(),
+//   name: z.string(),
+// });
+
+export const ServerSchema = z.object({
   id: IdSchema.optional(),
   name: z.string(),
-});
-
-const channelSchema = z.object({
-  id: IdSchema.optional(),
-  name: z.string(),
-});
-
-const roleSchema = z.object({
-  id: IdSchema.optional(),
-  name: z.string(),
-});
-
-const emojiSchema = z.object({
-  id: IdSchema.optional(),
-  name: z.string(),
-});
-
-const serverSchema = z.object({
-  id: IdSchema.optional(),
-  name: z.string(),
-  owner: userSchema.optional(),
-  members: z.array(userSchema).optional(),
-  categories: z.array(categorySchema).optional(),
-  channels: z.array(channelSchema).optional(),
-  roles: z.array(roleSchema).optional(),
-  emojis: z.array(emojiSchema).optional(),
+  owner: IdSchema.optional(),
+  members: z.array(IdSchema).optional(),
+  categories: z.array(IdSchema).optional(),
+  channels: z.array(IdSchema).optional(),
+  roles: z.array(IdSchema).optional(),
+  emojis: z.array(IdSchema).optional(),
   cover: z.string().optional(),
 });
 
-const createServerSchema = serverSchema.omit({
+export const ServerCreateSchema = ServerSchema.omit({
   id: true,
   avatar: true,
   isVerified: true,
@@ -48,23 +48,15 @@ const createServerSchema = serverSchema.omit({
   emojis: true,
 });
 
-const addMemberSchema = z.object({
-  serverId: IdSchema,
-  memberId: IdSchema,
+export const ServerMemberAddSchema = z.object({
+  serverId: z.string(),
+  memberId: z.string(),
 });
 
-type serverType = z.infer<typeof serverSchema>;
-type createServerType = z.infer<typeof createServerSchema>;
-type addMemberType = z.infer<typeof addMemberSchema>;
+export type ServerType = z.infer<typeof ServerSchema>;
+export type ServerCreateType = z.infer<typeof ServerCreateSchema>;
+export type ServerMemberAddType = z.infer<typeof ServerMemberAddSchema>;
 
-class createServerDto extends createZodDto(createServerSchema) {}
-
-export {
-  serverSchema,
-  serverType,
-  createServerSchema,
-  createServerType,
-  createServerDto,
-  addMemberSchema,
-  addMemberType,
-};
+export class ServerDto extends createZodDto(ServerSchema) {}
+export class ServerCreateDto extends createZodDto(ServerCreateSchema) {}
+export class ServerMemberAddDto extends createZodDto(ServerMemberAddSchema) {}

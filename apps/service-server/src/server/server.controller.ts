@@ -1,14 +1,22 @@
-import { Controller, InternalServerErrorException, UnprocessableEntityException } from "@nestjs/common";
+import {
+  Controller,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import { ServerService } from "./server.service";
 import { MessagePattern, RpcException } from "@nestjs/microservices";
-import { addMemberType, createServerType, serverSchema } from "@harmony/zod";
+import {
+  ServerMemberAddType,
+  ServerCreateType,
+  ServerSchema,
+} from "@harmony/zod";
 
 @Controller()
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
   @MessagePattern("server.create")
-  async createServer(createServerType: createServerType) {
+  async createServer(createServerType: ServerCreateType) {
     try {
       const server = await this.serverService.create(createServerType);
       return server;
@@ -28,7 +36,7 @@ export class ServerController {
         );
       }
 
-      const result = serverSchema.safeParse(server);
+      const result = ServerSchema.safeParse(server);
 
       if (!result.success) {
         throw new RpcException(
@@ -43,7 +51,7 @@ export class ServerController {
   }
 
   @MessagePattern("server.addMember")
-  async addMemberToServer(addMemberData: addMemberType) {
+  async addMemberToServer(addMemberData: ServerMemberAddType) {
     try {
       console.log(addMemberData);
       const server = await this.serverService.addMember(

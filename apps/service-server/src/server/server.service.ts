@@ -1,17 +1,14 @@
 import {
-  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { createServerType, serverType, userType } from "@harmony/zod";
+import { ServerCreateType, ServerType, UserType } from "@harmony/zod";
 import { InjectModel } from "@nestjs/mongoose";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Services, getServiceProperty } from "@harmony/service-config";
 import { firstValueFrom } from "rxjs";
-import mongoose, { Types } from "mongoose";
-import { nullable } from "zod";
 
 @Injectable()
 export class ServerService {
@@ -21,7 +18,7 @@ export class ServerService {
     private readonly accountService: ClientProxy
   ) {}
 
-  async create(createServer: createServerType): Promise<serverType> {
+  async create(createServer: ServerCreateType): Promise<ServerType> {
     if (!createServer.name) {
       throw new RpcException(
         new UnprocessableEntityException("Name is required")
@@ -35,7 +32,7 @@ export class ServerService {
     return createdServer.save();
   }
 
-  async getServerById(id: string): Promise<serverType> {
+  async getServerById(id: string): Promise<ServerType> {
     try {
       return await this.serverModel.findById(id).exec();
     } catch (error) {
@@ -51,7 +48,7 @@ export class ServerService {
     }
 
     try {
-      const user: userType = await firstValueFrom(
+      const user: UserType = await firstValueFrom(
         this.accountService.send("account_find_one", {
           id: memberId,
         })

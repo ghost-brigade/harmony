@@ -1,4 +1,4 @@
-import { LoginDto, LoginResponseDto, loginSchema, loginType, userSchema } from "@harmony/zod";
+import { LoginDto, LoginResponseDto } from "@harmony/zod";
 import { AuthenticationService } from "./authentication.service";
 import { Body, Controller, Post } from "@nestjs/common";
 import {
@@ -21,7 +21,7 @@ export class AuthenticationController {
   @Post("login")
   @Throttle(5, 300)
   @Public()
-  login(@Body() loginType: LoginDto) {
-    return this.authenticationService.login(loginType);
+  login(@Body() LoginType: LoginDto) {
+    return this.authenticationService.login(LoginType);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { getServiceProperty, Services } from "@harmony/service-config";
-import { addMemberType, serverType } from "@harmony/zod";
+import { ServerMemberAddType, ServerType } from "@harmony/zod";
 import { catchError, throwError } from "rxjs";
 
 @Injectable()
@@ -15,7 +15,7 @@ export class ServerService {
     return "Hello World!";
   }
 
-  async createServer(serverData: serverType) {
+  async createServer(serverData: ServerType) {
     return this.client
       .send("server.create", serverData)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
@@ -27,7 +27,7 @@ export class ServerService {
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 
-  async addMemberToServer(addMemberData: addMemberType) {
+  async addMemberToServer(addMemberData: ServerMemberAddType) {
     return this.client
       .send("server.addMember", addMemberData)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));

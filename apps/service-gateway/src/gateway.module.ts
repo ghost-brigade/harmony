@@ -1,10 +1,10 @@
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { ConfigModule } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { ConfigModule } from "@nestjs/config";
 import { Module } from "@nestjs/common";
 import { AuthenticationModule } from "./authentication/authentication.module";
-import { AccountModule } from "./account/account.module";
+import { UserModule } from "./account/user.module";
 import { ServerModule } from "./server/server.module";
-import { JwtAuthGuard } from './core/guards/passport/jwt-auth.guard';
+import { JwtAuthGuard } from "./core/guards/passport/jwt-auth.guard";
 
 @Module({
   imports: [
@@ -16,16 +16,16 @@ import { JwtAuthGuard } from './core/guards/passport/jwt-auth.guard';
       limit: parseInt(process.env?.RATE_LIMIT_COUNT || "10"),
     }),
     AuthenticationModule,
-    AccountModule,
     ServerModule,
+    UserModule,
   ],
   providers: [
     {
       provide: "APP_GUARD",
-      useClass: JwtAuthGuard
+      useClass: JwtAuthGuard,
     },
     {
-      provide: "APP_GUARD",
+      provide: process.env?.NODE_ENV === "development" ? "null" : "APP_GUARD",
       useClass: ThrottlerGuard,
     },
   ],

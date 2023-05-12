@@ -2,12 +2,13 @@ import { Component, computed, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
-import { LogoComponent } from "../../core/components/logo/logo/logo.component";
+import { LogoComponent } from "../../core/components/logo/logo.component";
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: "harmony-signup",
   standalone: true,
-  imports: [CommonModule, I18nPipe, FormsModule, LogoComponent],
+  imports: [CommonModule, I18nPipe, FormsModule, LogoComponent, RouterModule],
   templateUrl: "./signup.component.html",
 })
 export class SignupComponent {
