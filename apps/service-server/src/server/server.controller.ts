@@ -1,7 +1,15 @@
-import { Controller, InternalServerErrorException, UnprocessableEntityException } from "@nestjs/common";
+import {
+  Controller,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import { ServerService } from "./server.service";
 import { MessagePattern, RpcException } from "@nestjs/microservices";
-import { ServerMemberAddType, ServerCreateType, ServerSchema } from "@harmony/zod";
+import {
+  ServerMemberAddType,
+  ServerCreateType,
+  ServerSchema,
+} from "@harmony/zod";
 
 @Controller()
 export class ServerController {

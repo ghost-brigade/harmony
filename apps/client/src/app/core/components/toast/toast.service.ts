@@ -11,7 +11,7 @@ export class ToastService {
   type: WritableSignal<ToastKind> = signal("info");
   delay: WritableSignal<number> = signal(5000);
 
-  show(config: { message: I18nKey; type: ToastKind, delay?: number }) {
+  show(config: { message: I18nKey; type: ToastKind; delay?: number }) {
     this.message.set(config.message);
     this.type.set(config.type);
     this.visible.set(true);
