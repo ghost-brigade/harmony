@@ -3,6 +3,12 @@ import { RouterOutlet } from "@angular/router";
 import { I18nService } from "./core/services/i18n.service";
 import { LoaderComponent } from "./core/components/loader/loader.component";
 import { AlertComponent } from "./core/components/alert/alert.component";
+import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+import {
+  setBackForwardNavigationGestures,
+  setWebviewBounce,
+} from "capacitor-plugin-ios-webview-configurator";
 
 @Component({
   selector: "harmony-root",
@@ -16,5 +22,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.i18nService.getUserLanguage();
+    setBackForwardNavigationGestures(true);
+    setWebviewBounce(true);
+    if (Capacitor.getPlatform() === "android") this.registerAndroidListener();
+  }
+
+  registerAndroidListener() {
+    App.addListener("backButton", (data) => {
+      if (data.canGoBack) window.history.back();
+      else App.exitApp();
+    });
   }
 }

@@ -16,7 +16,7 @@ export class HomeComponent {
 
   openLoader() {
     this.loaderService.show({
-      message: "EMPTY",
+      message: "HOME_HERO_SUBTITLE",
       type: "success",
     });
   }
