@@ -2,7 +2,7 @@
   <div
     class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:min-h-screen lg:py-0">
     <a
-      href="#"
+      [routerLink]="['/']"
       class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
       <harmony-core-logo mainClasses="h-10 w-10 mr-2" />
       {{ "APP_NAME" | i18n }}
@@ -71,7 +71,7 @@
               </div>
             </div>
             <a
-              href="/password-reset"
+              [routerLink]="['/password-reset']"
               class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
               >{{ "LOGIN_FORGOT_PASSWORD" | i18n }}</a
             >
@@ -84,7 +84,7 @@
           <p class="text-sm font-light text-gray-500 dark:text-gray-400">
             {{ "LOGIN_NO_ACCOUNT" | i18n }}
             <a
-              href="/signup"
+              [routerLink]="['/signup']"
               class="font-medium text-primary-600 hover:underline dark:text-primary-500"
               >{{ "LOGIN_CREATE_ACCOUNT" | i18n }}</a
             >

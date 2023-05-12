@@ -5,11 +5,12 @@ import { LogoComponent } from "../../core/components/logo/logo.component";
 import { FormsModule } from "@angular/forms";
 import { RequestService } from "../../core/services/request.service";
 import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: "harmony-login",
   standalone: true,
-  imports: [CommonModule, I18nPipe, LogoComponent, FormsModule],
+  imports: [CommonModule, I18nPipe, LogoComponent, FormsModule, RouterModule],
   templateUrl: "./login.component.html",
 })
 export class LoginComponent {

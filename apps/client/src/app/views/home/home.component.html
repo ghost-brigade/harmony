@@ -13,7 +13,7 @@
     <div
       class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
       <a
-        href="/signup"
+        [routerLink]="['/signup']"
         class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
         {{ "HOME_SIGNUP" | i18n }}
         <svg
@@ -29,7 +29,7 @@
         </svg>
       </a>
       <a
-        href="/login"
+        [routerLink]="['/login']"
         class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
         {{ "HOME_LOGIN" | i18n }}
       </a>
@@ -103,11 +103,11 @@
     <div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
       <div
         class="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
-        <a href="#">
+        <a>
           <img
             class="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
             src="/assets/home/louis.jpg"
-            alt="Bonnie Avatar" />
+            alt="Louis Avatar" />
         </a>
         <div class="p-5">
           <h3
