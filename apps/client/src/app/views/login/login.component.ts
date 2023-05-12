@@ -1,7 +1,7 @@
 import { Component, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
-import { LogoComponent } from "../../core/components/logo/logo/logo.component";
+import { LogoComponent } from "../../core/components/logo/logo.component";
 import { FormsModule } from "@angular/forms";
 import { RequestService } from "../../core/services/request.service";
 import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
@@ -22,7 +22,7 @@ export class LoginComponent {
     this.requestService.post({
       endpoint: PostEndpoint.Login,
       body: {
-        username: this.email(),
+        email: this.email(),
         password: this.password(),
       },
     });

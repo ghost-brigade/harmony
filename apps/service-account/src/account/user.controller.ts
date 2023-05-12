@@ -15,7 +15,6 @@ export class UserController {
   @MessagePattern("account_find_one")
   async findOne(data: UserType) {
     try {
-
       let user: UserType;
 
       if (Object.keys(data).length === 1 && "id" in data) {
@@ -32,6 +31,6 @@ export class UserController {
 
   @MessagePattern("account_create")
   async create(data) {
-      return await this.userService.create(data);
+    return await this.userService.create(data);
   }
 }

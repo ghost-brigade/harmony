@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { I18nPipe } from "../../../../core/pipes/i18n.pipe";
-import { LogoComponent } from "../../../../core/components/logo/logo/logo.component";
+import { LogoComponent } from "../../../../core/components/logo/logo.component";
 
 @Component({
   selector: "harmony-home-navbar",
