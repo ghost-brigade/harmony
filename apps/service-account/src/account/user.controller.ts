@@ -2,17 +2,18 @@ import { Controller } from "@nestjs/common";
 import { MessagePattern } from "@nestjs/microservices";
 import { UserService } from "./user.service";
 import { UserParamsType, UserType } from "@harmony/zod";
+import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @MessagePattern("account_find_all")
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL)
   async findAll(params: UserParamsType) {
     return await this.userService.findAll(params);
   }
 
-  @MessagePattern("account_find_one")
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
   async findOne(data: UserType) {
     try {
       let user: UserType;
@@ -29,7 +30,7 @@ export class UserController {
     }
   }
 
-  @MessagePattern("account_create")
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.CREATE)
   async create(data) {
     return await this.userService.create(data);
   }

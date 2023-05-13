@@ -3,7 +3,7 @@ import { Logger, VERSION_NEUTRAL, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { GatewayModule } from "./gateway.module";
 import helmet from "helmet";
-import { RpcExceptionFilter } from "./core/filters/rpcException.filter";
+import { RpcExceptionFilter } from "./core/filters/rpc-exception.filter";
 import { patchNestJsSwagger } from "nestjs-zod";
 
 async function bootstrap() {
