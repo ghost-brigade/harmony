@@ -48,15 +48,9 @@ export class ServerController {
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
   async addMemberToServer(addMemberData: ServerMemberAddType) {
-    try {
-      console.log(addMemberData);
-      const server = await this.serverService.addMember(
-        addMemberData.serverId,
-        addMemberData.memberId
-      );
-      return server;
-    } catch (error) {
-      throw new RpcException(error.message);
-    }
+    return await this.serverService.addMember(
+      addMemberData.serverId,
+      addMemberData.memberId
+    );
   }
 }

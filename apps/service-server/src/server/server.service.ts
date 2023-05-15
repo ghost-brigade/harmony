@@ -16,6 +16,7 @@ import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Services, getServiceProperty } from "@harmony/service-config";
 import { firstValueFrom } from "rxjs";
 import { Errors } from "@harmony/enums";
+import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 
 @Injectable()
 export class ServerService {
@@ -77,13 +78,17 @@ export class ServerService {
 
     try {
       const user: UserType = await firstValueFrom(
-        this.accountService.send("account_find_one", {
-          id: memberId,
-        })
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { id: "6461fb1c2bf603dd53d66153" })
       );
+      console.log(user);
+
+      if (!user) {
+        throw new RpcException(new NotFoundException("User not found"));
+      }
     } catch (error) {
       throw new RpcException(new NotFoundException("User not found"));
     }
+
 
     const isUserAlreadyMember = server.members.some(
       (member) => member.toString() === memberId
