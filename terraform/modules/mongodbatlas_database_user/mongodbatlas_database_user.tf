@@ -14,7 +14,7 @@ locals {
 resource "mongodbatlas_database_user" "db-user" {
   for_each = local.database_names
 
-  username = each.key
+  username = var.auth_database_name //each.key temporarily disabled
   password = var.database_password
   project_id = var.project_id
   auth_database_name = var.auth_database_name
