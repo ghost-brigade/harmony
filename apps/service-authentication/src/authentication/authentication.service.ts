@@ -1,6 +1,6 @@
 import { compare } from "bcryptjs";
 import { LoginType, UserType } from "@harmony/zod";
-import { Services, getServiceProperty } from "@harmony/service-config";
+import { ACCOUNT_MESSAGE_PATTERN, Services, getServiceProperty } from "@harmony/service-config";
 import {
   Inject,
   Injectable,
@@ -43,7 +43,7 @@ export class AuthenticationService {
 
     try {
       const user: UserType = await firstValueFrom(
-        this.accountService.send("account_find_one", { email: loginType.email })
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { email: loginType.email })
       );
 
       if (!user) {

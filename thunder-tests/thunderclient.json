@@ -8,12 +8,12 @@
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-04-12T16:07:31.317Z",
-    "modified": "2023-05-10T10:07:51.505Z",
+    "modified": "2023-05-15T11:29:07.608Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"test@antho.com\",\n  \"password\": \"arrrrrnthony\"\n}",
+      "raw": "{\n  \"email\": \"louis@test.fr\",\n  \"password\": \"Abcd1234\"\n}",
       "form": []
     },
     "tests": []
@@ -23,16 +23,16 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "6ffa3232-c65f-4d55-97fc-50b2beaaa8a6",
     "name": "create user",
-    "url": "localhost:3000/account",
+    "url": "localhost:3000/user",
     "method": "POST",
     "sortNum": 20000,
     "created": "2023-04-12T16:07:41.784Z",
-    "modified": "2023-05-09T13:38:43.662Z",
+    "modified": "2023-05-15T11:36:16.100Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"username\": \"john\",\n  \"email\": \"john@gmail.fr\",\n  \"password\": \"Abcde12345\"\n}",
+      "raw": "{\n  \"userndame\": \"louiss\",\n  \"email\": \"louiss@test.fr\",\n  \"password\": \"Abcde1234\"\n}",
       "form": []
     },
     "tests": []
@@ -42,13 +42,17 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "6ffa3232-c65f-4d55-97fc-50b2beaaa8a6",
     "name": "get users",
-    "url": "localhost:3000/account",
+    "url": "localhost:3000/user",
     "method": "GET",
     "sortNum": 30000,
     "created": "2023-04-12T16:07:48.189Z",
-    "modified": "2023-05-09T13:40:11.084Z",
+    "modified": "2023-05-15T09:35:18.835Z",
     "headers": [],
     "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "your jwt token"
+    },
     "tests": []
   },
   {
@@ -60,12 +64,12 @@
     "method": "GET",
     "sortNum": 40000,
     "created": "2023-04-13T13:23:38.624Z",
-    "modified": "2023-05-09T13:04:48.979Z",
+    "modified": "2023-05-15T09:36:05.512Z",
     "headers": [],
     "params": [],
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjM3NDcyLCJleHAiOjE2ODM3MjM4NzJ9.PeJEsg3jyBeRNaHJkNEkaJm6jsIt83BCuu1Z7LYBNWw"
+      "bearer": "your jwt token"
     },
     "tests": []
   },
@@ -78,7 +82,7 @@
     "method": "POST",
     "sortNum": 60000,
     "created": "2023-05-09T13:53:39.639Z",
-    "modified": "2023-05-09T14:07:28.255Z",
+    "modified": "2023-05-15T11:48:17.044Z",
     "headers": [],
     "params": [
       {
@@ -90,7 +94,7 @@
     ],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"test\"\n}",
+      "raw": "{\n  \"name\": \"testt\"\n}",
       "form": []
     },
     "auth": {
@@ -104,11 +108,11 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
     "name": "get server by id",
-    "url": "localhost:3000/server/6442cb620e26bac5fa7a0593",
+    "url": "localhost:3000/server/645e8605e144dd9f472b1302",
     "method": "GET",
     "sortNum": 70000,
     "created": "2023-05-09T14:19:24.133Z",
-    "modified": "2023-05-09T16:47:45.850Z",
+    "modified": "2023-05-15T19:51:31.607Z",
     "headers": [],
     "params": [],
     "auth": {
@@ -122,21 +126,39 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
     "name": "add member to server",
-    "url": "localhost:3000/server/6442cb620e26bac5fa7a0593/members",
+    "url": "localhost:3000/server/64621c01a29a519615e8a3ad/members",
     "method": "PUT",
     "sortNum": 80000,
     "created": "2023-05-09T15:04:02.498Z",
-    "modified": "2023-05-10T08:21:01.603Z",
+    "modified": "2023-05-15T19:56:04.484Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"memberId\": \"64456ca89684a2566d8686ee\"\n}",
+      "raw": "{\n  \"memberId\": \"6461fab42bf603dd53d6614e\"\n}",
       "form": []
     },
     "auth": {
       "type": "bearer",
       "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjQ3NDMyLCJleHAiOjE2ODM3MzM4MzJ9.bj3h4otAXJGdp-ZDUT02kzRzHloEAoKQPjyOfGy2fEE"
+    },
+    "tests": []
+  },
+  {
+    "_id": "eed2ae10-12a1-4926-8a30-48b02de85a67",
+    "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
+    "containerId": "6ffa3232-c65f-4d55-97fc-50b2beaaa8a6",
+    "name": "get user by id",
+    "url": "localhost:3000/user/64456ca89684a2566d8686ee",
+    "method": "GET",
+    "sortNum": 90000,
+    "created": "2023-05-15T09:35:24.692Z",
+    "modified": "2023-05-15T09:35:45.750Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "your jwt token"
     },
     "tests": []
   }

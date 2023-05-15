@@ -1,3 +1,4 @@
+import { SERVER_MESSAGE_PATTERN } from "@harmony/service-config";
 import { Injectable, Inject } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { getServiceProperty, Services } from "@harmony/service-config";
@@ -17,19 +18,19 @@ export class ServerService {
 
   async createServer(serverData: ServerType) {
     return this.client
-      .send("server.create", serverData)
+      .send(SERVER_MESSAGE_PATTERN.CREATE, serverData)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 
   async getServerById(id: string) {
     return this.client
-      .send("server.getServerById", id)
+      .send(SERVER_MESSAGE_PATTERN.GET_BY_ID, id)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 
   async addMemberToServer(addMemberData: ServerMemberAddType) {
     return this.client
-      .send("server.addMember", addMemberData)
+      .send(SERVER_MESSAGE_PATTERN.ADD_MEMBER, addMemberData)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 }

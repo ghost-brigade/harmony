@@ -1,3 +1,4 @@
+import { SERVER_MESSAGE_PATTERN } from "@harmony/service-config";
 import {
   Controller,
   InternalServerErrorException,
@@ -15,20 +16,15 @@ import {
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
-  @MessagePattern("server.create")
-  async createServer(createServerType: ServerCreateType) {
-    try {
-      const server = await this.serverService.create(createServerType);
-      return server;
-    } catch (error) {
-      throw new RpcException(error.message);
-    }
+  @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
+  async createServer(data: ServerCreateType) {
+    return await this.serverService.create(data);
   }
 
-  @MessagePattern("server.getServerById")
+  @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
   async getServerById(id: string) {
     try {
-      const server = await this.serverService.getServerById(id);
+      const server = await this.serverService.findOne(id);
 
       if (!server) {
         throw new RpcException(
@@ -50,17 +46,11 @@ export class ServerController {
     }
   }
 
-  @MessagePattern("server.addMember")
+  @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
   async addMemberToServer(addMemberData: ServerMemberAddType) {
-    try {
-      console.log(addMemberData);
-      const server = await this.serverService.addMember(
-        addMemberData.serverId,
-        addMemberData.memberId
-      );
-      return server;
-    } catch (error) {
-      throw new RpcException(error.message);
-    }
+    return await this.serverService.addMember(
+      addMemberData.serverId,
+      addMemberData.memberId
+    );
   }
 }

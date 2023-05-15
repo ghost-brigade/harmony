@@ -5,13 +5,11 @@ import {
   ApiOperation,
   ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
-import { UserService } from "../user.service";
 import {
   Body,
   Controller,
   Get,
   Inject,
-  NotFoundException,
   Param,
   Post,
   Query,
@@ -20,18 +18,21 @@ import { User } from "@harmony/nest-schemas";
 import {
   UserCreateType,
   UserPublicDto,
-  UserPublicSchema,
   UserPublicType,
   UserParamsType,
 } from "@harmony/zod";
-import { Services, getServiceProperty } from "@harmony/service-config";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { Observable, catchError, throwError } from "rxjs";
+import {
+  ACCOUNT_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
+import { ClientProxy } from "@nestjs/microservices";
+import { Observable } from "rxjs";
+import { Public } from "../../core/decorators/public.decorator";
 
 @Controller("user")
 export class UserController {
   constructor(
-    private readonly userService: UserService,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly client: ClientProxy
   ) {}
@@ -45,8 +46,10 @@ export class UserController {
   @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
   @Get()
-  findAll(@Query() params?: UserParamsType | undefined) {
-    return this.userService.findAll(params);
+  findAll(
+    @Query() params?: UserParamsType | undefined
+  ): Observable<UserPublicType[]> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ALL, params);
   }
 
   @ApiOperation({ summary: "Get a user by id" })
@@ -56,13 +59,8 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: "User not found" })
   @Get(":id")
-  async findOne(@Param("id") id: string) {
-    try {
-      const user = await this.userService.findOne(id);
-      return UserPublicSchema.parse(user) as UserPublicType;
-    } catch (error) {
-      throw new NotFoundException("User not found");
-    }
+  findOne(@Param("id") id: string): Observable<UserPublicType> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { id });
   }
 
   @ApiOperation({ summary: "Create a user" })
@@ -71,14 +69,9 @@ export class UserController {
     type: User,
   })
   @ApiNotFoundResponse({ description: "User not found" })
+  @Public()
   @Post()
   public create(@Body() createUser: UserCreateType): Observable<User> {
-    return this.client
-      .send("account_create", createUser)
-      .pipe(
-        catchError((error) =>
-          throwError(() => new RpcException(error.response))
-        )
-      );
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.CREATE, createUser);
   }
 }

@@ -1,26 +1,6 @@
 import { z } from "zod";
 import { IdSchema } from "./global/id.zod";
-
-/* temporary disable use IdSchema instead */
-// const categorySchema = z.object({
-//   id: IdSchema.optional(),
-//   name: z.string(),
-// });
-
-// const channelSchema = z.object({
-//   id: IdSchema.optional(),
-//   name: z.string(),
-// });
-
-// const roleSchema = z.object({
-//   id: IdSchema.optional(),
-//   name: z.string(),
-// });
-
-// const emojiSchema = z.object({
-//   id: z.string().optional(),
-//   name: z.string(),
-// });
+import { createZodDto } from "nestjs-zod";
 
 export const ServerSchema = z.object({
   id: IdSchema.optional(),
@@ -39,6 +19,12 @@ export const ServerCreateSchema = ServerSchema.omit({
   avatar: true,
   isVerified: true,
   blockedUsers: true,
+  owner: true,
+  members: true,
+  categories: true,
+  channels: true,
+  roles: true,
+  emojis: true,
 });
 
 export const ServerMemberAddSchema = z.object({
@@ -49,3 +35,7 @@ export const ServerMemberAddSchema = z.object({
 export type ServerType = z.infer<typeof ServerSchema>;
 export type ServerCreateType = z.infer<typeof ServerCreateSchema>;
 export type ServerMemberAddType = z.infer<typeof ServerMemberAddSchema>;
+
+export class ServerDto extends createZodDto(ServerSchema) {}
+export class ServerCreateDto extends createZodDto(ServerCreateSchema) {}
+export class ServerMemberAddDto extends createZodDto(ServerMemberAddSchema) {}

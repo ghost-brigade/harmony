@@ -7,6 +7,5 @@ import { getService, Services } from "@harmony/service-config";
 @Module({
   imports: [ClientsModule.register([getService(Services.SERVER)])],
   controllers: [ServerController],
-  providers: [ServerService],
 })
 export class ServerModule {}
