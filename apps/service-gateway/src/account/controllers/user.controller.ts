@@ -28,6 +28,7 @@ import {
 } from "@harmony/service-config";
 import { ClientProxy } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Public } from "../../core/decorators/public.decorator";
 
 @Controller("user")
 export class UserController {
@@ -68,6 +69,7 @@ export class UserController {
     type: User,
   })
   @ApiNotFoundResponse({ description: "User not found" })
+  @Public()
   @Post()
   public create(@Body() createUser: UserCreateType): Observable<User> {
     return this.client.send(ACCOUNT_MESSAGE_PATTERN.CREATE, createUser);
