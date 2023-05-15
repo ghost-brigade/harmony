@@ -56,12 +56,20 @@ export class ServerService {
     return createdServer.save();
   }
 
-  async getServerById(id: string): Promise<ServerType> {
+  async findOne(id: string): Promise<ServerType> {
     return await this.serverModel.findById(id).exec();
   }
 
+  async findOneBy(params: ServerType): Promise<ServerType | null> {
+    try {
+      return await this.serverModel.findOne(params).exec();
+    } catch (error) {
+      return null;
+    }
+  }
+
   async addMember(serverId: string, memberId: string) {
-    const server = await this.getServerById(serverId);
+    const server = await this.findOne(serverId);
 
     if (!server) {
       throw new NotFoundException(`Server with ID ${serverId} not found`);

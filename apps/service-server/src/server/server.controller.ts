@@ -24,7 +24,7 @@ export class ServerController {
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
   async getServerById(id: string) {
     try {
-      const server = await this.serverService.getServerById(id);
+      const server = await this.serverService.findOne(id);
 
       if (!server) {
         throw new RpcException(
