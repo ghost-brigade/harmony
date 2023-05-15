@@ -17,13 +17,8 @@ export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
-  async createServer(createServerType: ServerCreateType) {
-    try {
-      const server = await this.serverService.create(createServerType);
-      return server;
-    } catch (error) {
-      throw new RpcException(error.message);
-    }
+  async createServer(data: ServerCreateType) {
+    return await this.serverService.create(data);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)

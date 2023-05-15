@@ -4,11 +4,18 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { ServerCreateType, ServerType, UserType } from "@harmony/zod";
+import {
+  FormatZodResponse,
+  ServerCreateSchema,
+  ServerCreateType,
+  ServerType,
+  UserType,
+} from "@harmony/zod";
 import { InjectModel } from "@nestjs/mongoose";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Services, getServiceProperty } from "@harmony/service-config";
 import { firstValueFrom } from "rxjs";
+import { Errors } from "@harmony/enums";
 
 @Injectable()
 export class ServerService {
@@ -19,9 +26,26 @@ export class ServerService {
   ) {}
 
   async create(createServer: ServerCreateType): Promise<ServerType> {
-    if (!createServer.name) {
+    const result = ServerCreateSchema.safeParse(createServer);
+
+    if (result.success === false) {
       throw new RpcException(
-        new UnprocessableEntityException("Name is required")
+        new UnprocessableEntityException(FormatZodResponse(result.error.issues))
+      );
+    }
+
+    const isUnique = (await this.serverModel
+      .findOne()
+      .or([{ name: createServer.name }])
+      .exec()) as ServerType;
+
+    if (isUnique) {
+      throw new RpcException(
+        new UnprocessableEntityException(
+          isUnique.name === createServer.name
+            ? Errors.ERROR_SERVER_NAME_ALREADY_EXISTS
+            : null
+        )
       );
     }
 
@@ -33,11 +57,7 @@ export class ServerService {
   }
 
   async getServerById(id: string): Promise<ServerType> {
-    try {
-      return await this.serverModel.findById(id).exec();
-    } catch (error) {
-      return null;
-    }
+    return await this.serverModel.findById(id).exec();
   }
 
   async addMember(serverId: string, memberId: string) {
