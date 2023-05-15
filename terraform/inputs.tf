@@ -43,7 +43,3 @@ variable "cloudflare_zone_id" {
   type        = string
   description = "The Cloudflare zone ID"
 }
-variable "domain_name" {
-  type        = string
-  description = "The domain name to use"
-}
