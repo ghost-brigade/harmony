@@ -35,3 +35,15 @@ variable "mongodbatlas_cluster_names" {
   description = "The name of the cluster."
   default     = ["account", "server", "message"]
 }
+variable "cloudflare_api_token" {
+  type        = string
+  description = "The Cloudflare API token"
+}
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "The Cloudflare zone ID"
+}
+variable "domain_name" {
+  type        = string
+  description = "The domain name to use"
+}
