@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/docker.yml"
+      - "apps/**"
+      - "libs/**"
+      - "tools/**"
+      - "package.json"
 
 jobs:
   build-with-docker-engine:
