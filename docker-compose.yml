@@ -45,5 +45,11 @@ services:
   #     service: service-template
   #   command: npx nx serve service-file
 
+  service-role:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-role
+
 volumes:
   mono-node-modules: null
