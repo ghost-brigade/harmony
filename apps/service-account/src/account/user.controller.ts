@@ -1,7 +1,7 @@
 import { Controller } from "@nestjs/common";
 import { MessagePattern } from "@nestjs/microservices";
 import { UserService } from "./user.service";
-import { UserParamsType, UserType } from "@harmony/zod";
+import { UserCreateType, UserParamsType, UserPublicType, UserType } from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 
 @Controller()
@@ -31,7 +31,12 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.CREATE)
-  async create(data) {
+  async create(data: UserCreateType): Promise<UserPublicType> {
     return await this.userService.create(data);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.UPDATE)
+  async update(data: UserType): Promise<UserPublicType> {
+    return await this.userService.update(data);
   }
 }
