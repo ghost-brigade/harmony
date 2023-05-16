@@ -15,6 +15,9 @@ export class Role {
 
   @Prop({ type: [{ type: String, enum: Permissions }] })
   permissions: Array<Permissions>;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
+  users: Array<Types.ObjectId>;
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);
