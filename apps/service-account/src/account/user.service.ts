@@ -53,6 +53,18 @@ export class UserService {
   }
 
   async update(updateUser: UserUpdateType): Promise<UserPublicType> {
+    const parse = UserCreateSchema.safeParse(updateUser);
+
+    if (parse.success === false) {
+      throw new RpcException(
+        new UnprocessableEntityException(FormatZodResponse(parse.error.issues))
+      );
+    }
+
+    if (updateUser.password) {
+      updateUser.password = await this.hashPassword(updateUser.password);
+    }
+
     const updatedUser = new this.userModel(updateUser);
     return await updatedUser.save();
   }
