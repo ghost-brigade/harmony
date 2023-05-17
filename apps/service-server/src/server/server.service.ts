@@ -26,35 +26,51 @@ export class ServerService {
     private readonly accountService: ClientProxy
   ) {}
 
-  async create(createServer: ServerCreateType): Promise<ServerType> {
-    const result = ServerCreateSchema.safeParse(createServer);
+  async create(createServer: ServerCreateType, user): Promise<ServerType> {
+    try {
+      const loggedUser = await firstValueFrom(
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          email: user.email,
+        })
+      );
+      console.log(user);
 
-    if (result.success === false) {
+      const result = ServerCreateSchema.safeParse(createServer);
+
+      if (result.success === false) {
+        throw new RpcException(
+          new UnprocessableEntityException(
+            FormatZodResponse(result.error.issues)
+          )
+        );
+      }
+
+      const isUnique = (await this.serverModel
+        .findOne()
+        .or([{ name: createServer.name }])
+        .exec()) as ServerType;
+
+      if (isUnique) {
+        throw new RpcException(
+          new UnprocessableEntityException(
+            isUnique.name === createServer.name
+              ? Errors.ERROR_SERVER_NAME_ALREADY_EXISTS
+              : null
+          )
+        );
+      }
+
+      const createdServer = new this.serverModel({
+        ...createServer,
+        owner: loggedUser._id,
+      });
+
+      return createdServer.save();
+    } catch (error) {
       throw new RpcException(
-        new UnprocessableEntityException(FormatZodResponse(result.error.issues))
+        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
       );
     }
-
-    const isUnique = (await this.serverModel
-      .findOne()
-      .or([{ name: createServer.name }])
-      .exec()) as ServerType;
-
-    if (isUnique) {
-      throw new RpcException(
-        new UnprocessableEntityException(
-          isUnique.name === createServer.name
-            ? Errors.ERROR_SERVER_NAME_ALREADY_EXISTS
-            : null
-        )
-      );
-    }
-
-    const createdServer = new this.serverModel({
-      ...createServer,
-    });
-
-    return createdServer.save();
   }
 
   async findOne(id: string): Promise<ServerType> {
@@ -78,24 +94,31 @@ export class ServerService {
 
     try {
       const user: UserType = await firstValueFrom(
-        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { id: "6461fb1c2bf603dd53d66153" })
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          id: memberId,
+        })
       );
       console.log(user);
 
       if (!user) {
-        throw new RpcException(new NotFoundException("User not found"));
+        throw new RpcException(
+          new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+        );
       }
     } catch (error) {
-      throw new RpcException(new NotFoundException("User not found"));
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+      );
     }
-
 
     const isUserAlreadyMember = server.members.some(
       (member) => member.toString() === memberId
     );
 
     if (isUserAlreadyMember) {
-      throw new RpcException(new NotFoundException("User already in server"));
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_ALREADY_IN_SERVER)
+      );
     }
 
     const updatedServer = await this.serverModel
