@@ -1,5 +1,11 @@
-import { FormatZodResponse, RoleCreateType, RoleSchema } from "@harmony/zod";
-import { RoleType } from "@harmony/zod";
+import {
+  FormatZodResponse,
+  RoleCreateSchema,
+  RoleCreateType,
+  IdType,
+  RoleType,
+  RoleSchema
+} from "@harmony/zod";
 import {
   BadRequestException,
   Injectable,
@@ -12,8 +18,8 @@ import { InjectModel } from "@nestjs/mongoose";
 export class RoleService {
   constructor(@InjectModel("Role") private readonly roleModel) {}
 
-  async createRole({role}: {role: RoleCreateType}) {
-    const parse = RoleSchema.safeParse(role);
+  async createRole({ role, user }: { role: RoleCreateType; user: any }) {
+    const parse = RoleCreateSchema.safeParse(role);
 
     if (parse.success === false) {
       throw new RpcException(
@@ -23,16 +29,28 @@ export class RoleService {
 
     const { name, server } = parse.data;
 
-    const isRoleExist = await this.getRoleByNameAndServerId(name, server);
+    const isRoleExist = await this.getRoleByNameAndServerId({ name, server });
+    if (isRoleExist) {
+      throw new RpcException(
+        new BadRequestException(
+          `Role with name ${name} already exist on this server`
+        )
+      );
+    }
 
-    console.log(isRoleExist);
     const newRole = new this.roleModel(role);
-    return await newRole.save();
+    return RoleSchema.parse((await newRole.save()) as RoleType);
   }
 
-  private async getRoleByNameAndServerId(name: string, serverId: string) {
+  private async getRoleByNameAndServerId({
+    name,
+    server,
+  }: {
+    name: string;
+    server: IdType;
+  }) {
     try {
-      return await this.roleModel.findOne({ name, serverId });
+      return await this.roleModel.findOne({ name, server }).exec();
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }

@@ -10,6 +10,6 @@ export class RoleController {
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.CREATE)
   async createRole({ role, user }: { role: RoleCreateType; user: any }) {
-    return await this.roleService.createRole({ role });
+    return await this.roleService.createRole({ role, user });
   }
 }
