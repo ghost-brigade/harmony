@@ -2,6 +2,7 @@ import { SERVER_MESSAGE_PATTERN } from "@harmony/service-config";
 import {
   Controller,
   InternalServerErrorException,
+  NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { ServerService } from "./server.service";
@@ -11,8 +12,9 @@ import {
   ServerCreateType,
   ServerSchema,
 } from "@harmony/zod";
+import { Errors } from "@harmony/enums";
 
-@Controller()
+@Controller("server")
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
@@ -28,7 +30,7 @@ export class ServerController {
 
       if (!server) {
         throw new RpcException(
-          new UnprocessableEntityException("Server not found")
+          new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
         );
       }
 
@@ -36,7 +38,7 @@ export class ServerController {
 
       if (!result.success) {
         throw new RpcException(
-          new InternalServerErrorException("Internal server error")
+          new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
         );
       }
 

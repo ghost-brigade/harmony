@@ -78,24 +78,31 @@ export class ServerService {
 
     try {
       const user: UserType = await firstValueFrom(
-        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { id: "6461fb1c2bf603dd53d66153" })
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          id: memberId,
+        })
       );
       console.log(user);
 
       if (!user) {
-        throw new RpcException(new NotFoundException("User not found"));
+        throw new RpcException(
+          new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+        );
       }
     } catch (error) {
-      throw new RpcException(new NotFoundException("User not found"));
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+      );
     }
-
 
     const isUserAlreadyMember = server.members.some(
       (member) => member.toString() === memberId
     );
 
     if (isUserAlreadyMember) {
-      throw new RpcException(new NotFoundException("User already in server"));
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_ALREADY_IN_SERVER)
+      );
     }
 
     const updatedServer = await this.serverModel
