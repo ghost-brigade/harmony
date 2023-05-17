@@ -2,18 +2,13 @@ import { z } from "zod";
 import { IdSchema } from "./id.zod";
 import { createZodDto } from "nestjs-zod";
 
-export const RoleUserSchema = z.object({
-  users: z.array(IdSchema),
-});
-
-export const RolePermissionSchema = z.object({
-  permissions: z.array(IdSchema),
-});
+export const RoleUserSchema = z.array(IdSchema);
+export const RolePermissionSchema = z.array(IdSchema);
 
 export const RoleSchema = z.object({
   id: IdSchema,
   server: IdSchema,
-  name: z.string(),
+  name: z.string().min(3).max(30),
   permissions: RolePermissionSchema.optional(),
   users: RoleUserSchema.optional(),
 });
