@@ -3,6 +3,7 @@ import { AuthenticationService } from "./authentication.service";
 import { Body, Controller, Post } from "@nestjs/common";
 import {
   ApiOkResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import { Public } from "../core/decorators/public.decorator";
@@ -11,6 +12,7 @@ import { Throttle } from "@nestjs/throttler";
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
+  @ApiTags('Authentication')
   @ApiOkResponse({
     description: 'JWT token',
     type: LoginResponseDto,
