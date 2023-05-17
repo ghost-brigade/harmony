@@ -3,6 +3,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import {
@@ -25,6 +26,7 @@ export class ProfileController {
     private readonly client: ClientProxy
   ) {}
 
+  @ApiTags('User')
   @ApiOperation({ summary: "Get the profile of the current logged in user" })
   @ApiOkResponse({ description: "Profile found" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })

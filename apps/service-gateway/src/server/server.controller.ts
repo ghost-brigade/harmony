@@ -16,7 +16,7 @@ import {
   Req,
 } from "@nestjs/common";
 import { ServerCreateDto, ServerCreateType, ServerUpdateDto } from "@harmony/zod";
-import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
 import {
   RequestWithUser,
@@ -30,6 +30,7 @@ export class ServerController {
     private readonly client: ClientProxy
   ) {}
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Create a new server" })
   @ApiResponse({
     status: 201,
@@ -47,6 +48,7 @@ export class ServerController {
     });
   }
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Get a server by ID" })
   @ApiResponse({
     status: 200,
@@ -58,6 +60,7 @@ export class ServerController {
     return this.client.send(SERVER_MESSAGE_PATTERN.GET_BY_ID, id);
   }
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Add a member to a server" })
   @ApiResponse({
     status: 200,
@@ -79,6 +82,7 @@ export class ServerController {
     });
   }
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Get all servers" })
   @ApiResponse({
     status: 200,
@@ -89,6 +93,7 @@ export class ServerController {
     return this.client.send(SERVER_MESSAGE_PATTERN.GET_ALL, {});
   }
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Update a server" })
   @ApiResponse({
     status: 200,
@@ -107,6 +112,7 @@ export class ServerController {
     });
   }
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Delete a server" })
   @ApiResponse({
     status: 200,
@@ -118,6 +124,7 @@ export class ServerController {
     return this.client.send(SERVER_MESSAGE_PATTERN.DELETE, id);
   }
 
+  @ApiTags('Server')
   @ApiOperation({ summary: "Remove a member from a server" })
   @ApiResponse({
     status: 200,
