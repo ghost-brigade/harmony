@@ -13,10 +13,15 @@ import {
   Param,
   Post,
   Put,
+  Req,
 } from "@nestjs/common";
 import { ServerCreateDto, ServerCreateType } from "@harmony/zod";
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
+import {
+  RequestWithUser,
+  getUserFromRequest,
+} from "../core/utils/get-user-from-request";
 
 @Controller("server")
 export class ServerController {
@@ -32,8 +37,14 @@ export class ServerController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post()
-  async createServer(@Body() ServerCreateType: ServerCreateDto) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.CREATE, ServerCreateType);
+  async createServer(
+    @Body() ServerCreateType: ServerCreateDto,
+    @Req() request: RequestWithUser
+  ) {
+    return this.client.send(SERVER_MESSAGE_PATTERN.CREATE, {
+      server: ServerCreateType,
+      user: await getUserFromRequest(request),
+    });
   }
 
   @ApiOperation({ summary: "Get a server by ID" })

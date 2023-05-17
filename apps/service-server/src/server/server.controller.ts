@@ -19,8 +19,9 @@ export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
-  async createServer(data: ServerCreateType) {
-    return await this.serverService.create(data);
+  // async createServer(data: ServerCreateType) {
+  async createServer(data) {
+    return await this.serverService.create(data.server, data.user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
