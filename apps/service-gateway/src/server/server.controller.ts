@@ -15,7 +15,7 @@ import {
   Put,
   Req,
 } from "@nestjs/common";
-import { ServerCreateDto, ServerCreateType } from "@harmony/zod";
+import { ServerCreateDto, ServerCreateType, ServerUpdateDto } from "@harmony/zod";
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
 import {
@@ -74,6 +74,62 @@ export class ServerController {
     @Body("memberId") memberId: string
   ) {
     return this.client.send(SERVER_MESSAGE_PATTERN.ADD_MEMBER, {
+      serverId,
+      memberId,
+    });
+  }
+
+  @ApiOperation({ summary: "Get all servers" })
+  @ApiResponse({
+    status: 200,
+    description: "Successfully retrieved all servers.",
+  })
+  @Get()
+  async getAllServers() {
+    return this.client.send(SERVER_MESSAGE_PATTERN.GET_ALL, {});
+  }
+
+  @ApiOperation({ summary: "Update a server" })
+  @ApiResponse({
+    status: 200,
+    description: "The server has been successfully updated.",
+  })
+  @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Put(":id")
+  async updateServer(
+    @Param("id") id: string,
+    @Body() serverUpdateDto: ServerUpdateDto
+  ) {
+    return this.client.send(SERVER_MESSAGE_PATTERN.UPDATE, {
+      id,
+      server: serverUpdateDto,
+    });
+  }
+
+  @ApiOperation({ summary: "Delete a server" })
+  @ApiResponse({
+    status: 200,
+    description: "The server has been successfully deleted.",
+  })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Delete(":id")
+  async deleteServer(@Param("id") id: string) {
+    return this.client.send(SERVER_MESSAGE_PATTERN.DELETE, id);
+  }
+
+  @ApiOperation({ summary: "Remove a member from a server" })
+  @ApiResponse({
+    status: 200,
+    description: "The member has been successfully removed from the server.",
+  })
+  @ApiResponse({ status: 404, description: "Server or user not found" })
+  @Delete(":id/members/:memberId")
+  async removeMemberFromServer(
+    @Param("id") serverId: string,
+    @Param("memberId") memberId: string
+  ) {
+    return this.client.send(SERVER_MESSAGE_PATTERN.REMOVE_MEMBER, {
       serverId,
       memberId,
     });
