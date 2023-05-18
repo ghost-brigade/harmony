@@ -13,19 +13,23 @@ export class RoleController {
   ) {}
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
-  async getRoles({ params, user }: { params: RoleParamsType; user: any }) {
-    //return await this.roleService.getRoles(params);
-    return "getRoles";
+  async findAll({ params, user }: { params: RoleParamsType; user: any }) {
+    return await this.roleService.findAll({ params });
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ONE)
-  async getRole(id: string) {
-    //return await this.roleService.getRole(id);
-    return "getRole";
+  async findOneById(id: string) {
+    return await this.roleService.findOneBy(id);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.CREATE)
-  async createRole({ role, user }: { role: RoleCreateType; user: any }): Promise<RoleType> {
+  async createRole({
+    role,
+    user,
+  }: {
+    role: RoleCreateType;
+    user: any;
+  }): Promise<RoleType> {
     return await this.roleCreateService.createRole({ role, user });
   }
 }

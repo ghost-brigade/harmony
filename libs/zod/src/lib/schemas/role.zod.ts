@@ -14,6 +14,8 @@ export const RoleSchema = z.object({
   users: RoleUserSchema.optional(),
 });
 
+export const RolesSchema = z.array(RoleSchema);
+
 export const RoleParamsSchema = RoleSchema.pick({
   server: true,
   name: true,
