@@ -15,12 +15,22 @@ import {
   Req,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
 import {
   RequestWithUser,
   getUserFromRequest,
 } from "../core/utils/get-user-from-request";
-import { RoleCreateDto, IdType, RoleUpdateDto, RoleParamsType } from "@harmony/zod";
+import {
+  RoleCreateDto,
+  IdType,
+  RoleUpdateDto,
+  RoleParamsType,
+} from "@harmony/zod";
 
 @Controller("role")
 @ApiTags("Role")
@@ -43,8 +53,8 @@ export class RoleController {
   @ApiResponse({ status: 200, description: "Return all roles" })
   @ApiResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @Get('server/:id')
-  async getRolesForServer(@Param('id') id: IdType) {
+  @Get("server/:id")
+  async getRolesForServer(@Param("id") id: IdType) {
     return this.client.send(ROLE_MESSAGE_PATTERN.FIND_ALL, { server: id });
   }
 
@@ -52,8 +62,8 @@ export class RoleController {
   @ApiResponse({ status: 200, description: "Return a role by id" })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Get(":id")
-  async getRole(@Param("id") id: IdType) {
-    return this.client.send(ROLE_MESSAGE_PATTERN.FIND_ONE, id);
+  async getRole(@Param("id") id: IdType, @Req() request: RequestWithUser) {
+    return this.client.send(ROLE_MESSAGE_PATTERN.FIND_ONE, { id, user: getUserFromRequest(request) });
   }
 
   @ApiOperation({ summary: "Create a role for a server" })

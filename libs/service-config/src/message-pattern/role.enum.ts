@@ -1,4 +1,5 @@
 export enum ROLE_MESSAGE_PATTERN {
+  HAS_RIGHTS = "role.hasRights",
   FIND_ALL = "role.find.all",
   FIND_ONE = "role.find.one",
   CREATE = "role.create",

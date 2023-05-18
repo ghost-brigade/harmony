@@ -4,6 +4,9 @@ import {
   RoleSchema,
   RoleParamsType,
   RolesSchema,
+  RolePermissionSchema,
+  FormatZodResponse,
+  RolesPermissionType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -17,22 +20,57 @@ import {} from "@harmony/nest-schemas";
 export class RoleService {
   constructor(@InjectModel("Role") private readonly roleModel) {}
 
+  public async hasRight({
+    server,
+    user,
+    permissions,
+  }: {
+    server: IdType;
+    user: IdType;
+    permissions: RolesPermissionType;
+  }): Promise<boolean> {
+    const parse = RolePermissionSchema.safeParse(permissions);
+
+    if (parse.success === false) {
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(parse.error.issues))
+      );
+    }
+
+    try {
+      const hasRight = this.roleModel.findOne({ server, user });
+
+      /*
+       * Return true if user has one of the permissions in the array
+       */
+      return hasRight.some((permission) => permissions.includes(permission));
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
+
   public async findAll({
     params,
+    user,
   }: {
     params: RoleParamsType;
+    user: IdType;
   }): Promise<RoleType[]> {
     try {
       const roles = (await this.roleModel.find(params).exec()) as RoleType[];
-
-      //TODO remove permission array if user has no admin permission on server
       return roles ? RolesSchema.parse(roles) : [];
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
 
-  public async findOneBy(id: IdType): Promise<RoleType> {
+  public async findOneBy({
+    id,
+    user,
+  }: {
+    id: IdType;
+    user: any;
+  }): Promise<RoleType> {
     try {
       const role = (await this.roleModel.findById(id).exec()) as RoleType;
 
