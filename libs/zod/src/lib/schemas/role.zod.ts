@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { IdSchema } from "./id.zod";
 import { createZodDto } from "nestjs-zod";
+import { Permissions } from "@harmony/enums";
 
 export const RoleUserSchema = z.array(IdSchema);
-export const RolePermissionSchema = z.array(IdSchema);
+export const RolePermissionSchema = z.array(z.nativeEnum(Permissions));
 
 export const RoleSchema = z.object({
   id: IdSchema,
