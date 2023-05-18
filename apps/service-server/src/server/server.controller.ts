@@ -12,8 +12,10 @@ import {
   ServerCreateType,
   ServerSchema,
   ServerMemberRemoveType,
+  ServerRemoveType,
 } from "@harmony/zod";
 import { Errors } from "@harmony/enums";
+import { IdType } from "@harmony/zod";
 
 @Controller("server")
 export class ServerController {
@@ -63,6 +65,14 @@ export class ServerController {
     return await this.serverService.removeMember(
       removeMemberData.serverId,
       removeMemberData.memberId
+    );
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.DELETE)
+  async deleteServer(removeServerData: ServerRemoveType) {
+    return await this.serverService.removeServer(
+      removeServerData.serverId,
+      removeServerData.user
     );
   }
 }

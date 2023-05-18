@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from "@nestjs/common";
 import {
@@ -33,7 +34,6 @@ export class ServerService {
           email: user.email,
         })
       );
-      console.log(user);
 
       const result = ServerCreateSchema.safeParse(createServer);
 
@@ -67,9 +67,7 @@ export class ServerService {
 
       return createdServer.save();
     } catch (error) {
-      throw new RpcException(
-        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
-      );
+      throw new RpcException(new UnprocessableEntityException(error.message));
     }
   }
 
@@ -153,5 +151,39 @@ export class ServerService {
       .exec();
 
     return updatedServer;
+  }
+
+  async removeServer(serverId: string, user) {
+    const server = await this.findOne(serverId);
+
+    if (!server) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
+      );
+    }
+
+    const loggedUser = await firstValueFrom(
+      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+        email: user.email,
+      })
+    );
+
+    if (!loggedUser) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+      );
+    }
+
+    if (server.owner.toString() !== loggedUser._id.toString()) {
+      throw new RpcException(
+        new UnauthorizedException(Errors.ERROR_ONLY_SERVER_OWNER_CAN_REMOVE)
+      );
+    }
+
+    const deletedServer = await this.serverModel
+      .findByIdAndDelete(serverId)
+      .exec();
+
+    return deletedServer;
   }
 }

@@ -15,7 +15,11 @@ import {
   Put,
   Req,
 } from "@nestjs/common";
-import { ServerCreateDto, ServerCreateType, ServerUpdateDto } from "@harmony/zod";
+import {
+  ServerCreateDto,
+  ServerCreateType,
+  ServerUpdateDto,
+} from "@harmony/zod";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
 import {
@@ -30,7 +34,7 @@ export class ServerController {
     private readonly client: ClientProxy
   ) {}
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Create a new server" })
   @ApiResponse({
     status: 201,
@@ -48,7 +52,7 @@ export class ServerController {
     });
   }
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Get a server by ID" })
   @ApiResponse({
     status: 200,
@@ -60,7 +64,7 @@ export class ServerController {
     return this.client.send(SERVER_MESSAGE_PATTERN.GET_BY_ID, id);
   }
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Add a member to a server" })
   @ApiResponse({
     status: 200,
@@ -82,7 +86,7 @@ export class ServerController {
     });
   }
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Get all servers" })
   @ApiResponse({
     status: 200,
@@ -93,7 +97,7 @@ export class ServerController {
     return this.client.send(SERVER_MESSAGE_PATTERN.GET_ALL, {});
   }
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Update a server" })
   @ApiResponse({
     status: 200,
@@ -112,7 +116,7 @@ export class ServerController {
     });
   }
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Delete a server" })
   @ApiResponse({
     status: 200,
@@ -120,11 +124,17 @@ export class ServerController {
   })
   @ApiResponse({ status: 404, description: "Server not found" })
   @Delete(":id")
-  async deleteServer(@Param("id") id: string) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.DELETE, id);
+  async deleteServer(
+    @Param("id") serverId: string,
+    @Req() request: RequestWithUser
+  ) {
+    return this.client.send(SERVER_MESSAGE_PATTERN.DELETE, {
+      serverId,
+      user: await getUserFromRequest(request),
+    });
   }
 
-  @ApiTags('Server')
+  @ApiTags("Server")
   @ApiOperation({ summary: "Remove a member from a server" })
   @ApiResponse({
     status: 200,
