@@ -15,7 +15,7 @@ import {
   Req,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import {
   RequestWithUser,
   getUserFromRequest,
@@ -33,9 +33,19 @@ export class RoleController {
   @ApiOperation({ summary: "Get all roles" })
   @ApiResponse({ status: 200, description: "Return all roles" })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get()
   async getRoles(@Param() params?: RoleParamsType) {
     return this.client.send(ROLE_MESSAGE_PATTERN.FIND_ALL, params);
+  }
+
+  @ApiOperation({ summary: "Get all roles for a server" })
+  @ApiResponse({ status: 200, description: "Return all roles" })
+  @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @Get('server/:id')
+  async getRolesForServer(@Param('id') id: IdType) {
+    return this.client.send(ROLE_MESSAGE_PATTERN.FIND_ALL, { server: id });
   }
 
   @ApiOperation({ summary: "Get a role by id" })
@@ -54,11 +64,11 @@ export class RoleController {
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post()
   async createRole(
-    @Body() RoleCreateType: RoleCreateDto,
+    @Body() role: RoleCreateDto,
     @Req() request: RequestWithUser
   ) {
     return this.client.send(ROLE_MESSAGE_PATTERN.CREATE, {
-      role: RoleCreateType,
+      role,
       user: await getUserFromRequest(request),
     });
   }

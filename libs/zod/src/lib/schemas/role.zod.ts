@@ -19,7 +19,7 @@ export const RoleParamsSchema = RoleSchema.pick({
   name: true,
 }).partial();
 
-export const RoleCreateSchema = RoleSchema.omit({ id: true });
+export const RoleCreateSchema = RoleSchema.omit({ id: true, users: true });
 export const RoleUpdateSchema = RoleSchema.pick({ name: true }).required();
 
 export type RoleUserType = z.infer<typeof RoleUserSchema>;

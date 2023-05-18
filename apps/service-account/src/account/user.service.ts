@@ -12,6 +12,10 @@ import {
   UserParamsSchema,
   UserParamsType,
   UserType,
+  IdType,
+  UsersSchema,
+  UsersPublicSchema,
+  UserSchema,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -125,21 +129,65 @@ export class UserService {
   }
 
   async isUserAccountActive({
-    email = null,
-    user = null,
+    id,
+    username,
+    email,
   }: {
-    email?: string | null;
-    user?: UserPublicType | null;
+    id?: IdType;
+    username?: string;
+    email?: string;
   }): Promise<boolean> {
-    if (!user && email) {
-      user = await this.findOneBy({ email });
-    }
+    try {
+      const isVerified = this.isUsersAccountActive({
+        ids: [id],
+        emails: [email],
+        usernames: [username],
+      }) as Promise<UserPublicType[]>;
 
-    if (user) {
-      return user.isVerified;
-    }
+      if (isVerified === undefined) {
+        return true;
+      }
 
-    return false;
+      return false;
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  /* Return a list of users that are not active */
+  async isUsersAccountActive({
+    ids,
+    emails,
+    usernames,
+  }: {
+    ids?: IdType[];
+    emails?: string[];
+    usernames?: string[];
+  }): Promise<UserPublicType[]> {
+    try {
+      const users = (await this.userModel
+        .find()
+        .or([
+          { _id: { $in: ids } },
+          { email: { $in: emails } },
+          { username: { $in: usernames } },
+        ])
+        .exec()) as UserType[];
+
+      const result = UsersPublicSchema.safeParse(users);
+
+      if (result.success === false) {
+        throw new RpcException(
+          new UnprocessableEntityException(
+            FormatZodResponse(result.error.issues)
+          )
+        );
+      }
+
+      return result.data.filter((user) => user.isVerified === false);
+    } catch (error) {
+      return undefined;
+    }
   }
 
   async profile({ user }: { user: UserJwtType }): Promise<UserType> {

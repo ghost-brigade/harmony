@@ -16,6 +16,8 @@ export const UserSchema = z.object({
   blockedUsers: z.array(z.string()).optional(),
 });
 
+export const UsersSchema = z.array(UserSchema);
+
 export const UserProfileSchema = UserSchema.omit({
   password: true,
 });
@@ -24,6 +26,8 @@ export const UserPublicSchema = UserSchema.omit({
   password: true,
   blockedUsers: true,
 });
+
+export const UsersPublicSchema = z.array(UserPublicSchema);
 
 export const UserParamsSchema = UserSchema.pick({
   id: true,
