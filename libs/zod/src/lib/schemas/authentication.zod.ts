@@ -12,7 +12,7 @@ class LoginResponseDto {
     description: "JWT token",
     type: String,
   })
-  access_token: string = "test";
+  access_token = "test";
 }
 
 type LoginType = z.infer<typeof LoginSchema>;
