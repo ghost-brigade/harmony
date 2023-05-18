@@ -87,34 +87,22 @@ export class ServerService {
 
   async addMember(serverId: string, memberId: string) {
     const server = await this.findOne(serverId);
-
     if (!server) {
       throw new NotFoundException(`Server with ID ${serverId} not found`);
     }
 
-    try {
-      const user: UserType = await firstValueFrom(
-        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
-          id: memberId,
-        })
-      );
-      console.log(user);
-
-      if (!user) {
-        throw new RpcException(
-          new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
-        );
-      }
-    } catch (error) {
+    const user: UserType = await firstValueFrom(
+      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+        id: memberId,
+      })
+    );
+    if (!user) {
       throw new RpcException(
         new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
       );
     }
 
-    const isUserAlreadyMember = server.members.some(
-      (member) => member.toString() === memberId
-    );
-
+    const isUserAlreadyMember = server.members.includes(memberId);
     if (isUserAlreadyMember) {
       throw new RpcException(
         new NotFoundException(Errors.ERROR_USER_ALREADY_IN_SERVER)
@@ -125,7 +113,42 @@ export class ServerService {
       .findByIdAndUpdate(
         serverId,
         { $addToSet: { members: memberId } },
-        { new: true, useFindAndModify: false }
+        { new: true }
+      )
+      .exec();
+
+    return updatedServer;
+  }
+
+  async removeMember(serverId: string, memberId: string) {
+    const server = await this.findOne(serverId);
+    if (!server) {
+      throw new NotFoundException(`Server with ID ${serverId} not found`);
+    }
+
+    const user: UserType = await firstValueFrom(
+      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+        id: memberId,
+      })
+    );
+    if (!user) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+      );
+    }
+
+    const isUserAlreadyMember = server.members.includes(memberId);
+    if (!isUserAlreadyMember) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_IN_SERVER)
+      );
+    }
+
+    const updatedServer = await this.serverModel
+      .findByIdAndUpdate(
+        serverId,
+        { $pull: { members: memberId } },
+        { new: true }
       )
       .exec();
 

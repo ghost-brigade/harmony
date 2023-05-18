@@ -8,12 +8,12 @@
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-04-12T16:07:31.317Z",
-    "modified": "2023-05-15T11:29:07.608Z",
+    "modified": "2023-05-17T12:28:57.529Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"louis@test.fr\",\n  \"password\": \"Abcd1234\"\n}",
+      "raw": "{\n  \"email\": \"louissss@test.fr\",\n  \"password\": \"Abcde1234\"\n}",
       "form": []
     },
     "tests": []
@@ -27,12 +27,12 @@
     "method": "POST",
     "sortNum": 20000,
     "created": "2023-04-12T16:07:41.784Z",
-    "modified": "2023-05-15T11:36:16.100Z",
+    "modified": "2023-05-17T12:28:37.094Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"userndame\": \"louiss\",\n  \"email\": \"louiss@test.fr\",\n  \"password\": \"Abcde1234\"\n}",
+      "raw": "{\n  \"username\": \"louissss\",\n  \"email\": \"louissss@test.fr\",\n  \"password\": \"Abcde1234\"\n}",
       "form": []
     },
     "tests": []
@@ -82,7 +82,7 @@
     "method": "POST",
     "sortNum": 60000,
     "created": "2023-05-09T13:53:39.639Z",
-    "modified": "2023-05-15T11:48:17.044Z",
+    "modified": "2023-05-17T12:48:04.952Z",
     "headers": [],
     "params": [
       {
@@ -94,12 +94,12 @@
     ],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"testt\"\n}",
+      "raw": "{\n  \"name\": \"test1\"\n}",
       "form": []
     },
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgzNjQwNDM1LCJleHAiOjE2ODM3MjY4MzV9.HLrdrRwFosW5WkHvovRxBbCFCOZxxAOeD9kN-LBfpvE"
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxvdWlzc3NzQHRlc3QuZnIiLCJpYXQiOjE2ODQzMjY1MzcsImV4cCI6MTY4NDQxMjkzN30._at-cUd6G2agg_aBnr6HSaXHvCILIa-19p9Frnl1_Yw"
     },
     "tests": []
   },
@@ -126,16 +126,16 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
     "name": "add member to server",
-    "url": "localhost:3000/server/64621c01a29a519615e8a3ad/members",
+    "url": "localhost:3000/server/6464cd04aea7e9bb16b60be5/members",
     "method": "PUT",
     "sortNum": 80000,
     "created": "2023-05-09T15:04:02.498Z",
-    "modified": "2023-05-15T19:56:04.484Z",
+    "modified": "2023-05-17T12:48:32.571Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"memberId\": \"6461fab42bf603dd53d6614e\"\n}",
+      "raw": "{\n  \"memberId\": \"6464c875d560aaa682c31145\"\n}",
       "form": []
     },
     "auth": {
@@ -159,6 +159,24 @@
     "auth": {
       "type": "bearer",
       "bearer": "your jwt token"
+    },
+    "tests": []
+  },
+  {
+    "_id": "75daabda-084c-4ef3-b9d7-2d007f621fa3",
+    "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
+    "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
+    "name": "remove member of server",
+    "url": "localhost:3000/server/6464cd04aea7e9bb16b60be5/members/6464c875d560aaa682c31145",
+    "method": "DELETE",
+    "sortNum": 100000,
+    "created": "2023-05-18T09:53:42.362Z",
+    "modified": "2023-05-18T09:54:38.487Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "jwt token"
     },
     "tests": []
   }

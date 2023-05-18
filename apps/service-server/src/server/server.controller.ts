@@ -11,6 +11,7 @@ import {
   ServerMemberAddType,
   ServerCreateType,
   ServerSchema,
+  ServerMemberRemoveType,
 } from "@harmony/zod";
 import { Errors } from "@harmony/enums";
 
@@ -54,6 +55,14 @@ export class ServerController {
     return await this.serverService.addMember(
       addMemberData.serverId,
       addMemberData.memberId
+    );
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.REMOVE_MEMBER)
+  async removeMemberToServer(removeMemberData: ServerMemberRemoveType) {
+    return await this.serverService.removeMember(
+      removeMemberData.serverId,
+      removeMemberData.memberId
     );
   }
 }
