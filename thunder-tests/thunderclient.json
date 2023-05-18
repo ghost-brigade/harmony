@@ -8,12 +8,12 @@
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-04-12T16:07:31.317Z",
-    "modified": "2023-05-17T12:28:57.529Z",
+    "modified": "2023-05-18T14:31:55.791Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"louissss@test.fr\",\n  \"password\": \"Abcde1234\"\n}",
+      "raw": "{\n  \"email\": \"louis2@test.fr\",\n  \"password\": \"Abcd1234\"\n}",
       "form": []
     },
     "tests": []
@@ -27,12 +27,12 @@
     "method": "POST",
     "sortNum": 20000,
     "created": "2023-04-12T16:07:41.784Z",
-    "modified": "2023-05-17T12:28:37.094Z",
+    "modified": "2023-05-18T14:19:38.001Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"username\": \"louissss\",\n  \"email\": \"louissss@test.fr\",\n  \"password\": \"Abcde1234\"\n}",
+      "raw": "{\n  \"username\": \"louis2\",\n  \"email\": \"louis2@test.fr\",\n  \"password\": \"Abcd1234\"\n}",
       "form": []
     },
     "tests": []
@@ -82,7 +82,7 @@
     "method": "POST",
     "sortNum": 60000,
     "created": "2023-05-09T13:53:39.639Z",
-    "modified": "2023-05-17T12:48:04.952Z",
+    "modified": "2023-05-18T14:31:07.001Z",
     "headers": [],
     "params": [
       {
@@ -94,12 +94,12 @@
     ],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"test1\"\n}",
+      "raw": "{\n  \"name\": \"server1\"\n}",
       "form": []
     },
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxvdWlzc3NzQHRlc3QuZnIiLCJpYXQiOjE2ODQzMjY1MzcsImV4cCI6MTY4NDQxMjkzN30._at-cUd6G2agg_aBnr6HSaXHvCILIa-19p9Frnl1_Yw"
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxvdWlzMUB0ZXN0LmZyIiwiaWF0IjoxNjg0NDIwMjA5LCJleHAiOjE2ODQ1MDY2MDl9.Wx3ZJffHXnWxLrS-Etq87x7V4U4yWH776NlpyBpchX4"
     },
     "tests": []
   },
@@ -108,11 +108,11 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
     "name": "get server by id",
-    "url": "localhost:3000/server/645e8605e144dd9f472b1302",
+    "url": "localhost:3000/server/6466082c132f84a85ee38c58",
     "method": "GET",
     "sortNum": 70000,
     "created": "2023-05-09T14:19:24.133Z",
-    "modified": "2023-05-15T19:51:31.607Z",
+    "modified": "2023-05-18T11:12:56.234Z",
     "headers": [],
     "params": [],
     "auth": {
@@ -126,11 +126,11 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
     "name": "add member to server",
-    "url": "localhost:3000/server/6464cd04aea7e9bb16b60be5/members",
+    "url": "localhost:3000/server/64662be060657bb4f7356e9d/members",
     "method": "PUT",
     "sortNum": 80000,
     "created": "2023-05-09T15:04:02.498Z",
-    "modified": "2023-05-17T12:48:32.571Z",
+    "modified": "2023-05-18T13:45:13.050Z",
     "headers": [],
     "params": [],
     "body": {
@@ -167,16 +167,34 @@
     "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
     "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
     "name": "remove member of server",
-    "url": "localhost:3000/server/6464cd04aea7e9bb16b60be5/members/6464c875d560aaa682c31145",
+    "url": "localhost:3000/server/64662be060657bb4f7356e9d/members/6464c875d560aaa682c31145",
     "method": "DELETE",
     "sortNum": 100000,
     "created": "2023-05-18T09:53:42.362Z",
-    "modified": "2023-05-18T09:54:38.487Z",
+    "modified": "2023-05-18T13:45:18.429Z",
     "headers": [],
     "params": [],
     "auth": {
       "type": "bearer",
       "bearer": "jwt token"
+    },
+    "tests": []
+  },
+  {
+    "_id": "273c013d-46e1-44b9-8c79-5892b71af705",
+    "colId": "4c623281-78f8-49d4-8647-23c3ca3e2a7c",
+    "containerId": "3832ec78-f5d9-47d0-8851-b3e6b8bc9382",
+    "name": "delete server",
+    "url": "localhost:3000/server/646636c62504fa5d0ef03b84",
+    "method": "DELETE",
+    "sortNum": 65000,
+    "created": "2023-05-18T10:59:50.810Z",
+    "modified": "2023-05-18T14:32:01.845Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxvdWlzMkB0ZXN0LmZyIiwiaWF0IjoxNjg0NDIwMzE1LCJleHAiOjE2ODQ1MDY3MTV9.1juhDONNDu4VRi7D6EWUNw7BOFYHrW5CfO0aC-HLFQw"
     },
     "tests": []
   }
