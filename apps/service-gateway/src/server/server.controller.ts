@@ -151,4 +151,34 @@ export class ServerController {
       memberId,
     });
   }
+
+  @ApiTags("Server")
+  @ApiOperation({ summary: "Get all members of a server" })
+  @ApiResponse({
+    status: 200,
+    description: "Successfully retrieved all members of the server.",
+  })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Get(":id/members")
+  async getServerMembers(@Param("id") serverId: string) {
+    return this.client.send(
+      SERVER_MESSAGE_PATTERN.GET_MEMBERS_OF_SERVER,
+      serverId
+    );
+  }
+
+  @ApiTags("Server")
+  @ApiOperation({ summary: "Get all servers of a member" })
+  @ApiResponse({
+    status: 200,
+    description: "Successfully retrieved all servers of the member.",
+  })
+  @ApiResponse({ status: 404, description: "Member not found" })
+  @Get("member/:id/servers")
+  async getMemberServers(@Param("id") memberId: string) {
+    return this.client.send(
+      SERVER_MESSAGE_PATTERN.GET_SERVERS_OF_MEMBER,
+      memberId
+    );
+  }
 }
