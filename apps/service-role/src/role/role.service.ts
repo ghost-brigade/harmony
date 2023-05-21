@@ -7,13 +7,14 @@ import {
   RolePermissionSchema,
   FormatZodResponse,
   RolesPermissionType,
+  UserContextType,
 } from "@harmony/zod";
 import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { Payload, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import {} from "@harmony/nest-schemas";
 @Injectable()
@@ -49,30 +50,31 @@ export class RoleService {
     }
   }
 
-  public async findAll({
-    params,
-    user,
-  }: {
-    params: RoleParamsType;
-    user: IdType;
-  }): Promise<RoleType[]> {
+  public async findAll(
+    payload: { params: RoleParamsType },
+    user: UserContextType
+  ): Promise<RoleType[]> {
     try {
-      const roles = (await this.roleModel.find(params).exec()) as RoleType[];
+      console.log("params", payload);
+      const roles = (await this.roleModel
+        .find(payload.params)
+        .exec()) as RoleType[];
       return roles ? RolesSchema.parse(roles) : [];
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
 
-  public async findOneBy({
-    id,
-    user,
-  }: {
-    id: IdType;
-    user: any;
-  }): Promise<RoleType> {
+  public async findOneBy(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<RoleType> {
     try {
-      const role = (await this.roleModel.findById(id).exec()) as RoleType;
+      const role = (await this.roleModel
+        .findById(payload.id)
+        .exec()) as RoleType;
 
       //TODO remove permission array if user has no admin permission on server
       return role ? RoleSchema.parse(role) : undefined;

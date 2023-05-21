@@ -1,3 +1,4 @@
+import { NestMicroserviceModule } from '@harmony/nest-microservice';
 import { ConfigModule } from "@nestjs/config";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
@@ -10,6 +11,7 @@ import { RoleCreateService } from "./role-create.service";
 
 @Module({
   imports: [
+    NestMicroserviceModule,
     ClientsModule.register([getService(Services.ACCOUNT)]),
     ConfigModule.forRoot({
       isGlobal: true,

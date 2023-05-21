@@ -1,15 +1,17 @@
 import { ROLE_MESSAGE_PATTERN } from "@harmony/service-config";
 import { Controller } from "@nestjs/common";
 import { RoleService } from "./role.service";
-import { MessagePattern } from "@nestjs/microservices";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 import {
   IdType,
   RoleCreateType,
   RoleParamsType,
   RoleType,
   RolesPermissionType,
+  UserContextType,
 } from "@harmony/zod";
 import { RoleCreateService } from "./role-create.service";
+import { UserContext } from "@harmony/nest-microservice";
 
 @Controller()
 export class RoleController {
@@ -32,23 +34,23 @@ export class RoleController {
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
-  async findAll({ params, user }: { params: RoleParamsType; user: any }) {
-    return await this.roleService.findAll({ params, user });
+  async findAll(
+    @Payload() payload: { params: RoleParamsType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.roleService.findAll(payload, user);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ONE)
-  async findOneById({ id, user }: { id: IdType; user: any }) {
-    return await this.roleService.findOneBy({ id, user });
+  async findOneById(@Payload() payload: { id: IdType }, @UserContext() user: UserContextType) {
+    return await this.roleService.findOneBy(payload, user);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.CREATE)
-  async createRole({
-    role,
-    user,
-  }: {
-    role: RoleCreateType;
-    user: any;
-  }): Promise<RoleType> {
-    return await this.roleCreateService.createRole({ role, user });
+  async createRole(
+    @Payload() payload: { role: RoleCreateType },
+    @UserContext() user: UserContextType
+  ): Promise<RoleType> {
+    return await this.roleCreateService.createRole(payload, user);
   }
 }

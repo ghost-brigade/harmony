@@ -5,6 +5,7 @@ import {
   RoleCreateType,
   RoleType,
   RoleSchema,
+  UserContextType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -25,16 +26,16 @@ export class RoleCreateService {
     private readonly client: ClientProxy
   ) {}
 
-  async createRole({
-    role,
-    user,
-  }: {
-    role: RoleCreateType;
-    user: any;
-  }): Promise<RoleType> {
-    const parse = RoleCreateSchema.safeParse(role);
+  async createRole(
+    payload: {
+      role: RoleCreateType;
+    },
+    user: UserContextType
+  ): Promise<RoleType> {
+    const parse = RoleCreateSchema.safeParse(payload.role);
 
     if (parse.success === false) {
+      console.log(parse.error);
       throw new RpcException(
         new BadRequestException(FormatZodResponse(parse.error.issues))
       );
@@ -58,7 +59,11 @@ export class RoleCreateService {
     */
 
     try {
-      const newRole = new this.roleModel(role);
+      const newRole = new this.roleModel({
+        name,
+        server,
+        permissions,
+      });
       return RoleSchema.parse(await newRole.save());
     } catch (error) {
       throw new RpcException(
