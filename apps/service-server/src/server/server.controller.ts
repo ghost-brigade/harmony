@@ -27,6 +27,11 @@ export class ServerController {
     return await this.serverService.create(data.server, data.user);
   }
 
+  @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)
+  async getAllServers() {
+    return await this.serverService.findAll();
+  }
+
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
   async getServerById(id: string) {
     try {

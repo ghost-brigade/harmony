@@ -71,6 +71,10 @@ export class ServerService {
     }
   }
 
+  async findAll(): Promise<ServerType[]> {
+    return await this.serverModel.find().exec();
+  }
+
   async findOne(id: string): Promise<ServerType> {
     return await this.serverModel.findById(id).exec();
   }
@@ -197,14 +201,10 @@ export class ServerService {
 
     const memberIds = server.members;
 
-    const members = await Promise.all(
-      memberIds.map((memberId) =>
-        firstValueFrom(
-          this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
-            id: memberId,
-          })
-        )
-      )
+    const members = await firstValueFrom(
+      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS, {
+        ids: memberIds,
+      })
     );
 
     return members.filter((member) => member !== null) as UserType[];
