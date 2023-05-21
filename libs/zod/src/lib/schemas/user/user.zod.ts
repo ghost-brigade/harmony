@@ -11,6 +11,7 @@ export const UserSchema = z.object({
   email: z.string().email().min(3).max(320),
   password: z.string().min(8).max(128),
   username: z.string().min(4).max(18),
+  status: z.string().optional(),
   avatar: z.string().optional(),
   isVerified: z.boolean().optional(),
   blockedUsers: z.array(z.string()).optional(),
@@ -36,6 +37,7 @@ export const UserCreateSchema = UserSchema.omit({
   avatar: true,
   isVerified: true,
   blockedUsers: true,
+  status: true,
 });
 
 const UserUpdateSchema = UserSchema.omit({
