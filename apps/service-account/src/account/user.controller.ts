@@ -13,6 +13,11 @@ export class UserController {
     return await this.userService.findAll(params);
   }
 
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS)
+  async findAllByIds(data) {
+    return await this.userService.findAllByIds(data.ids);
+  }
+
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
   async findOne(data: UserType) {
     try {
