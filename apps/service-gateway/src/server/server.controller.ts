@@ -18,9 +18,11 @@ import {
 import {
   ServerCreateDto,
   ServerCreateType,
+  ServerDto,
   ServerUpdateDto,
+  UserPublicDto,
 } from "@harmony/zod";
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
 import {
   RequestWithUser,
@@ -54,6 +56,11 @@ export class ServerController {
 
   @ApiTags("Server")
   @ApiOperation({ summary: "Get a server by ID" })
+  @ApiOkResponse({
+    description: "Server",
+    type: ServerDto,
+    isArray: false,
+  })
   @ApiResponse({
     status: 200,
     description: "The server has been successfully retrieved.",
@@ -88,6 +95,11 @@ export class ServerController {
 
   @ApiTags("Server")
   @ApiOperation({ summary: "Get all servers" })
+  @ApiOkResponse({
+    description: "Server",
+    type: ServerDto,
+    isArray: true,
+  })
   @ApiResponse({
     status: 200,
     description: "Successfully retrieved all servers.",
@@ -173,6 +185,11 @@ export class ServerController {
     status: 200,
     description: "Successfully retrieved all servers of the member.",
   })
+  @ApiOkResponse({
+    description: "User",
+    type: UserPublicDto,
+    isArray: true,
+  })  
   @ApiResponse({ status: 404, description: "Member not found" })
   @Get("member/:id/servers")
   async getMemberServers(@Param("id") memberId: string) {
