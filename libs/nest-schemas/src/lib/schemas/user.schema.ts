@@ -1,10 +1,19 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument, ObjectId, model } from "mongoose";
-import { UserStatus } from "@harmony/enums";
+import { HydratedDocument, ObjectId, model } from "mongoose";
+import { Roles, UserStatus } from "@harmony/enums";
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
+})
 export class User {
   @Prop({ type: String, required: true, unique: true })
   username: string;
@@ -23,6 +32,9 @@ export class User {
 
   @Prop({ type: Boolean })
   isVerified: boolean;
+
+  @Prop({ type: String, enum: Roles, default: Roles.USER })
+  role: string;
 
   @Prop({ type: String })
   blockedUsers: ObjectId[];

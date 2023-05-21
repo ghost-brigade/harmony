@@ -7,11 +7,10 @@ import {
   RoleCreateType,
   RoleParamsType,
   RoleType,
-  RolesPermissionType,
   UserContextType,
 } from "@harmony/zod";
-import { RoleCreateService } from "./role-create.service";
 import { UserContext } from "@harmony/nest-microservice";
+import { RoleCreateService } from "./role-create.service";
 
 @Controller()
 export class RoleController {
@@ -19,19 +18,6 @@ export class RoleController {
     private readonly roleService: RoleService,
     private readonly roleCreateService: RoleCreateService
   ) {}
-
-  @MessagePattern(ROLE_MESSAGE_PATTERN.HAS_RIGHTS)
-  async hasRight({
-    server,
-    user,
-    permissions,
-  }: {
-    server: IdType;
-    user: IdType;
-    permissions: RolesPermissionType;
-  }): Promise<boolean> {
-    return await this.roleService.hasRight({ server, user, permissions });
-  }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
   async findAll(
@@ -42,7 +28,10 @@ export class RoleController {
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ONE)
-  async findOneById(@Payload() payload: { id: IdType }, @UserContext() user: UserContextType) {
+  async findOneById(
+    @Payload() payload: { id: IdType },
+    @UserContext() user: UserContextType
+  ) {
     return await this.roleService.findOneBy(payload, user);
   }
 

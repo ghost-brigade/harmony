@@ -1,6 +1,15 @@
 import { compare } from "bcryptjs";
-import { LoginType, UserType } from "@harmony/zod";
-import { ACCOUNT_MESSAGE_PATTERN, Services, getServiceProperty } from "@harmony/service-config";
+import {
+  LoginType,
+  UserContextSchema,
+  UserJwtType,
+  UserType,
+} from "@harmony/zod";
+import {
+  ACCOUNT_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 import {
   Inject,
   Injectable,
@@ -43,7 +52,9 @@ export class AuthenticationService {
 
     try {
       const user: UserType = await firstValueFrom(
-        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { email: loginType.email })
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          email: loginType.email,
+        })
       );
 
       if (!user) {
@@ -79,11 +90,20 @@ export class AuthenticationService {
 
   async JwtLogin(access_token: string) {
     try {
-      const payload = await this.jwtService.verifyAsync(access_token, {
-        secret: jwtConstants.secret,
-      });
+      const payload: UserJwtType = await this.jwtService.verifyAsync(
+        access_token,
+        {
+          secret: jwtConstants.secret,
+        }
+      );
 
-      return payload;
+      const user = await firstValueFrom(
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          email: payload.email,
+        })
+      );
+
+      return UserContextSchema.parse(user);
     } catch {
       throw new RpcException(
         new UnauthorizedException("Token is invalid or expired")

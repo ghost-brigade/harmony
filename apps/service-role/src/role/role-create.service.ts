@@ -43,20 +43,13 @@ export class RoleCreateService {
 
     const { name, server, permissions } = parse.data;
 
-    await this.roleService.isRoleAlreadyExist({
+    this.roleService.isRoleNameValid({ name, throwError: true });
+
+    await this.roleService.isRoleNameAlreadyExist({
       name,
       server,
       throwError: true,
     });
-
-    /* use this on add user to role */
-    /*
-    await this.roleService.isUserInServer({
-      user,
-      server,
-      throwError: true,
-    });
-    */
 
     try {
       const newRole = new this.roleModel({

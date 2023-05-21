@@ -1,12 +1,9 @@
+import { throwError } from "rxjs";
 import {
   IdType,
   RoleType,
   RoleSchema,
   RoleParamsType,
-  RolesSchema,
-  RolePermissionSchema,
-  FormatZodResponse,
-  RolesPermissionType,
   UserContextType,
 } from "@harmony/zod";
 import {
@@ -14,41 +11,12 @@ import {
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { Payload, RpcException } from "@nestjs/microservices";
+import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
-import {} from "@harmony/nest-schemas";
+
 @Injectable()
 export class RoleService {
   constructor(@InjectModel("Role") private readonly roleModel) {}
-
-  public async hasRight({
-    server,
-    user,
-    permissions,
-  }: {
-    server: IdType;
-    user: IdType;
-    permissions: RolesPermissionType;
-  }): Promise<boolean> {
-    const parse = RolePermissionSchema.safeParse(permissions);
-
-    if (parse.success === false) {
-      throw new RpcException(
-        new BadRequestException(FormatZodResponse(parse.error.issues))
-      );
-    }
-
-    try {
-      const hasRight = this.roleModel.findOne({ server, user });
-
-      /*
-       * Return true if user has one of the permissions in the array
-       */
-      return hasRight.some((permission) => permissions.includes(permission));
-    } catch (error) {
-      throw new RpcException(new InternalServerErrorException(error.message));
-    }
-  }
 
   public async findAll(
     payload: { params: RoleParamsType },
@@ -59,7 +27,7 @@ export class RoleService {
       const roles = (await this.roleModel
         .find(payload.params)
         .exec()) as RoleType[];
-      return roles ? RolesSchema.parse(roles) : [];
+      return roles;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
@@ -101,7 +69,30 @@ export class RoleService {
     }
   }
 
-  public async isRoleAlreadyExist({
+  /**
+   * Check if role name is valid (not starting with @)
+   * @param name
+   * @returns
+   */
+  public isRoleNameValid({
+    name,
+    throwError,
+  }: {
+    name: string;
+    throwError: boolean;
+  }): boolean {
+    const isValid = !name.startsWith("@");
+
+    if (!isValid && throwError) {
+      throw new RpcException(
+        new BadRequestException(`Role name cannot start with @`)
+      );
+    }
+
+    return isValid;
+  }
+
+  public async isRoleNameAlreadyExist({
     name,
     server,
     throwError = false,

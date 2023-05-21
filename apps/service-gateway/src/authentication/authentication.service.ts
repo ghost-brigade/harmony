@@ -1,6 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
+  ACCOUNT_MESSAGE_PATTERN,
   AUTHENTICATION_MESSAGE_PATTERN,
   getServiceProperty,
   Services,
@@ -15,8 +16,17 @@ export class AuthenticationService {
     private readonly client: ClientProxy
   ) {}
 
+  getLoggedInUser(email: string): Observable<any> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+      email,
+    });
+  }
+
   login(loginType: LoginType): Observable<{ access_token: string }> {
-    return this.client.send(AUTHENTICATION_MESSAGE_PATTERN.LOGIN, loginType);
+    return this.client.send(
+      AUTHENTICATION_MESSAGE_PATTERN.LOGIN,
+      loginType
+    );
   }
 
   jwtLogin(
