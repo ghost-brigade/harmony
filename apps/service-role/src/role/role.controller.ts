@@ -42,4 +42,16 @@ export class RoleController {
   ): Promise<RoleType> {
     return await this.roleCreateService.createRole(payload, user);
   }
+
+  @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)
+  async internalFindRoleBy(
+    @Payload() payload: { name?: string;
+      serverId?: IdType;
+      permissions?: string[];
+      usersId?: IdType[];
+    },
+    @UserContext() user: UserContextType
+  ): Promise<RoleType[]> {
+    return await this.roleService.findRoleBy(payload, user);
+  }
 }

@@ -1,5 +1,5 @@
 export enum ROLE_MESSAGE_PATTERN {
-  HAS_RIGHTS = "role.hasRights",
+  INTERNAL_FIND_ROLE_BY = "role.internal.find.by",
   FIND_ALL = "role.find.all",
   FIND_ONE = "role.find.one",
   CREATE = "role.create",

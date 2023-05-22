@@ -1,6 +1,8 @@
+import { UserContext } from '@harmony/nest-microservice';
 import { Roles } from "@harmony/enums";
 import {
   ACCOUNT_MESSAGE_PATTERN,
+  ROLE_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
@@ -19,15 +21,15 @@ import {
   InternalServerErrorException,
 } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { InjectModel } from "@nestjs/mongoose";
 import { firstValueFrom } from "rxjs";
 
 @Injectable()
-export class RightService {
+export class AuthorizationService {
   constructor(
-    @InjectModel("Role") private readonly roleModel,
+    @Inject(getServiceProperty(Services.ROLE, "name"))
+    private readonly clientRole: ClientProxy,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
-    private readonly client: ClientProxy
+    private readonly clientAccount: ClientProxy
   ) {}
 
   public async hasRight(
@@ -44,7 +46,7 @@ export class RightService {
       const hasRight = await this.checkServerPermissions(payload);
 
       if (!hasRight) {
-        return await this.checkGlobalPermissions(payload);
+        return await this.isAdmin(payload);
       }
 
       return hasRight;
@@ -55,14 +57,17 @@ export class RightService {
     }
   }
 
-  private async checkGlobalPermissions({
-    userId,
-  }: {
-    userId: IdType;
-  }): Promise<boolean> {
+  public async isAdmin(
+    {
+      userId,
+    }: {
+      userId: IdType;
+    },
+    user: UserContextType
+  ): Promise<boolean> {
     try {
       const user: UserType = await firstValueFrom(
-        this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+        this.clientAccount.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
           id: userId,
         })
       );
@@ -87,13 +92,13 @@ export class RightService {
     permissions: RolesPermissionType;
   }): Promise<boolean> {
     try {
-      const hasRight = await this.roleModel
-        .find({
-          server: serverId,
-          permissions: { $in: permissions },
-          users: { $in: [userId] },
+      const hasRight = await firstValueFrom(
+        this.clientRole.send(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY, {
+          serverId,
+          userId,
+          permissions,
         })
-        .exec();
+      );
 
       if (!hasRight) {
         return false;

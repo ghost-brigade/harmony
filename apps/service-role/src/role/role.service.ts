@@ -69,6 +69,34 @@ export class RoleService {
     }
   }
 
+  public async findRoleBy(
+    {
+      name,
+      serverId,
+      permissions,
+      usersId,
+    }: {
+      name?: string;
+      serverId?: IdType;
+      permissions?: string[];
+      usersId?: IdType[];
+    },
+    user: UserContextType
+  ): Promise<RoleType[]> {
+    try {
+      const query = {};
+
+      if (name) query["name"] = name;
+      if (serverId) query["server"] = serverId;
+      if (permissions) query["permissions"] = { $in: permissions };
+      if (usersId) query["users"] = { $in: [usersId] };
+
+      return await this.roleModel.find(query).exec();
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
+
   /**
    * Check if role name is valid (not starting with @)
    * @param name
