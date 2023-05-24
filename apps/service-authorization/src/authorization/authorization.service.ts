@@ -1,5 +1,5 @@
-import { UserContext } from '@harmony/nest-microservice';
-import { Roles } from "@harmony/enums";
+import { UserContext, ServiceRequest } from "@harmony/nest-microservice";
+import { Permissions, Roles } from "@harmony/enums";
 import {
   ACCOUNT_MESSAGE_PATTERN,
   ROLE_MESSAGE_PATTERN,
@@ -13,6 +13,7 @@ import {
   UserContextType,
   RolesPermissionSchema,
   UserType,
+  RoleType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -26,6 +27,7 @@ import { firstValueFrom } from "rxjs";
 @Injectable()
 export class AuthorizationService {
   constructor(
+    private readonly serviceRequest: ServiceRequest,
     @Inject(getServiceProperty(Services.ROLE, "name"))
     private readonly clientRole: ClientProxy,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
@@ -46,7 +48,7 @@ export class AuthorizationService {
       const hasRight = await this.checkServerPermissions(payload);
 
       if (!hasRight) {
-        return await this.isAdmin(payload);
+        return await this.isAdmin(payload, user);
       }
 
       return hasRight;
@@ -66,11 +68,14 @@ export class AuthorizationService {
     user: UserContextType
   ): Promise<boolean> {
     try {
-      const user: UserType = await firstValueFrom(
-        this.clientAccount.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+      const user: UserType = await this.serviceRequest.send({
+        client: this.clientAccount,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
+        data: {
           id: userId,
-        })
-      );
+        },
+        promise: true,
+      });
 
       if ([Roles.ADMIN, Roles.MODERATOR].includes(user.role)) {
         return true;
@@ -92,20 +97,25 @@ export class AuthorizationService {
     permissions: RolesPermissionType;
   }): Promise<boolean> {
     try {
-      const hasRight = await firstValueFrom(
-        this.clientRole.send(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY, {
+      const hasRight: RoleType[] = await this.serviceRequest.send({
+        client: this.clientRole,
+        pattern: ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY,
+        data: {
           serverId,
           userId,
-          permissions,
-        })
-      );
+          permissions: [...permissions, Permissions.SERVER_ADMIN],
+        },
+        promise: true,
+      });
 
       if (!hasRight) {
         return false;
       }
 
-      /** Return true if user has one of the permissions in the array */
-      return hasRight.some((permission) => permissions.includes(permission));
+      return hasRight
+        .map((role) => role.permissions)
+        .flat()
+        .some((permission) => permissions.includes(permission));
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }

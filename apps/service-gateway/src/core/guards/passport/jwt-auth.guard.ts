@@ -1,13 +1,13 @@
 import {
   CanActivate,
   ExecutionContext,
-  Inject,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthenticationService } from "../../../authentication/authentication.service";
 import { IS_PUBLIC_ROUTE_KEY } from "./../../constants/guard.constant";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -35,7 +35,7 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const payload = this.authenticationService.jwtLogin(token);
-      request["user"] = payload;
+      request["user"] = await firstValueFrom(payload);
     } catch {
       throw new UnauthorizedException();
     }
