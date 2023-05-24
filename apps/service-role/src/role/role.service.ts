@@ -23,7 +23,6 @@ export class RoleService {
     user: UserContextType
   ): Promise<RoleType[]> {
     try {
-      console.log("params", payload);
       const roles = (await this.roleModel
         .find(payload.params)
         .exec()) as RoleType[];

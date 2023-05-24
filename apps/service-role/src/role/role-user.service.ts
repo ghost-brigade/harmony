@@ -1,17 +1,13 @@
-import { Services, getServiceProperty } from "@harmony/service-config";
-import { RoleType, IdType } from "@harmony/zod";
-import { Inject, Injectable } from "@nestjs/common";
-import { ClientProxy } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { RoleService } from "./role.service";
+import { Injectable } from "@nestjs/common";
+import { IdType } from "@harmony/zod";
 
 @Injectable()
 export class RoleUserService {
   constructor(
     private readonly roleService: RoleService,
-    @InjectModel("Role") private readonly roleModel,
-    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
-    private readonly account: ClientProxy
+    @InjectModel("Role") private readonly roleModel
   ) {}
 
   async addUsersToRole({ role, user }: { role: IdType; user: IdType }) {
@@ -20,7 +16,10 @@ export class RoleUserService {
     // TODO: check if role exists
     // TODO: check if user is already in role
     //
+    return;
   }
 
-  async removeUsersFromRole({ role, user }: { role: IdType; user: IdType }) {}
+  async removeUsersFromRole({ role, user }: { role: IdType; user: IdType }) {
+    return;
+  }
 }

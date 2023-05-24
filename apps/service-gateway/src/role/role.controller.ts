@@ -22,10 +22,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import {
-  RequestWithUser,
-  getUserFromRequest,
-} from "../core/utils/get-user-from-request";
+import { RequestWithUser } from "../core/utils/get-user-from-request";
 import {
   RoleCreateDto,
   IdType,
@@ -47,12 +44,12 @@ export class RoleController {
   @ApiResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get()
-  async getRoles(@Param() params?: RoleParamsType) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.FIND_ALL,
-      params
-    );
+  async getRoles(@Param() data?: RoleParamsType) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.FIND_ALL,
+      data,
+    });
   }
 
   @ApiOperation({ summary: "Get all roles for a server" })
@@ -61,25 +58,23 @@ export class RoleController {
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get("server/:id")
   async getRolesForServer(@Param("id") id: IdType) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.FIND_ALL,
-      { server: id }
-    );
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.FIND_ALL,
+      data: { server: id },
+    });
   }
 
   @ApiOperation({ summary: "Get a role by id" })
   @ApiResponse({ status: 200, description: "Return a role by id" })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Get(":id")
-  async getRole(@Param("id") id: IdType, @Req() request: RequestWithUser) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.FIND_ONE,
-      {
-        id,
-      }
-    );
+  async getRole(@Param("id") id: IdType) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.FIND_ONE,
+      data: { id },
+    });
   }
 
   @ApiOperation({ summary: "Create a role for a server" })
@@ -90,8 +85,10 @@ export class RoleController {
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post()
   async createRole(@Body() role: RoleCreateDto) {
-    return this.serviceRequest.send(this.client, ROLE_MESSAGE_PATTERN.CREATE, {
-      role,
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.CREATE,
+      data: { role },
     });
   }
 
@@ -102,9 +99,11 @@ export class RoleController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Delete(":id")
-  async deleteRole(@Param("id") id: IdType, @Req() request: RequestWithUser) {
-    return this.serviceRequest.send(this.client, ROLE_MESSAGE_PATTERN.DELETE, {
-      id,
+  async deleteRole(@Param("id") id: IdType) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.DELETE,
+      data: { id },
     });
   }
 
@@ -116,9 +115,13 @@ export class RoleController {
   @ApiResponse({ status: 400, description: "Bad request" })
   @Put(":id")
   async updateRole(@Param("id") id: IdType, @Body() RoleUpdate: RoleUpdateDto) {
-    return this.serviceRequest.send(this.client, ROLE_MESSAGE_PATTERN.UPDATE, {
-      id,
-      role: RoleUpdate,
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.UPDATE,
+      data: {
+        id,
+        role: RoleUpdate,
+      },
     });
   }
 
@@ -130,14 +133,14 @@ export class RoleController {
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post(":id/user")
   async addUserToRole(@Param("id") id: IdType, @Body() users: IdType[]) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.ADD_USER,
-      {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.ADD_USER,
+      data: {
         id,
         users,
-      }
-    );
+      },
+    });
   }
 
   @ApiOperation({ summary: "Remove a user from a role" })
@@ -151,14 +154,14 @@ export class RoleController {
     @Param("id") id: IdType,
     @Param("userId") userId: IdType
   ) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.REMOVE_USER,
-      {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.REMOVE_USER,
+      data: {
         id,
         userId,
-      }
-    );
+      },
+    });
   }
 
   @ApiOperation({ summary: "Add a permission to a role" })
@@ -172,14 +175,14 @@ export class RoleController {
     @Param("id") id: IdType,
     @Body() permissions: IdType[]
   ) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.ADD_PERMISSION,
-      {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.ADD_PERMISSION,
+      data: {
         id,
         permissions,
-      }
-    );
+      },
+    });
   }
 
   @ApiOperation({ summary: "Remove a permission from a role" })
@@ -193,13 +196,13 @@ export class RoleController {
     @Param("id") id: IdType,
     @Param("permissionId") permissionId: IdType
   ) {
-    return this.serviceRequest.send(
-      this.client,
-      ROLE_MESSAGE_PATTERN.REMOVE_PERMISSION,
-      {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ROLE_MESSAGE_PATTERN.REMOVE_PERMISSION,
+      data: {
         id,
         permissionId,
-      }
-    );
+      },
+    });
   }
 }
