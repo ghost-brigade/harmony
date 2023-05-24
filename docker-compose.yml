@@ -15,6 +15,12 @@ services:
       service: service-template
     command: npx nx serve service-authentication
 
+  service-authorization:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-authorization
+
   service-account:
     extends:
       file: docker-compose.template.yml
