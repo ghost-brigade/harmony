@@ -1,4 +1,10 @@
-import { throwError } from "rxjs";
+import { Permissions } from "@harmony/enums";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import {
+  AUTHORIZATION_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 import {
   IdType,
   RoleType,
@@ -8,15 +14,46 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class RoleService {
-  constructor(@InjectModel("Role") private readonly roleModel) {}
+  constructor(
+    @InjectModel("Role") private readonly roleModel,
+    @Inject(getServiceProperty(Services.AUTHORIZATION, "name"))
+    private readonly client: ClientProxy,
+    private readonly serviceRequest: ServiceRequest
+  ) {}
+
+  public async canManageRole({
+    serverId,
+    user,
+  }: {
+    serverId: IdType;
+    user: UserContextType;
+  }) {
+    try {
+      return await this.serviceRequest.send({
+        client: this.client,
+        pattern: AUTHORIZATION_MESSAGE_PATTERN.HAS_RIGHTS,
+        data: {
+          serverId,
+          userId: user.id,
+          permissions: [Permissions.ROLE_MANAGE],
+        },
+        promise: true,
+      });
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error checking permissions")
+      );
+    }
+  }
 
   public async findAll(
     payload: { params: RoleParamsType },

@@ -11,12 +11,14 @@ import {
 } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
 import { RoleCreateService } from "./role-create.service";
+import { RoleUpdateService } from "./role-update.service";
 
 @Controller()
 export class RoleController {
   constructor(
     private readonly roleService: RoleService,
-    private readonly roleCreateService: RoleCreateService
+    private readonly roleCreateService: RoleCreateService,
+    private readonly roleUpdateService: RoleUpdateService,
   ) {}
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
@@ -43,6 +45,13 @@ export class RoleController {
     return await this.roleCreateService.createRole(payload, user);
   }
 
+  @MessagePattern(ROLE_MESSAGE_PATTERN.UPDATE)
+  async updateRole(
+    @Payload() payload: { id: IdType; role: RoleCreateType },
+    @UserContext() user: UserContextType
+  ): Promise<RoleType> {
+    return await this.roleUpdateService.updateRole(payload, user);
+  }
   @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)
   async internalFindRoleBy(
     @Payload() payload: { name?: string;

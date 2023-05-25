@@ -8,6 +8,7 @@ import { RoleController } from "./role.controller";
 import { Services, getService } from "@harmony/service-config";
 import { ClientsModule } from "@nestjs/microservices";
 import { RoleCreateService } from "./role-create.service";
+import { RoleUpdateService } from "./role-update.service";
 
 @Module({
   imports: [
@@ -20,7 +21,11 @@ import { RoleCreateService } from "./role-create.service";
     MongooseModule.forFeature([{ name: "Role", schema: RoleSchema }]),
   ],
   controllers: [RoleController],
-  providers: [RoleCreateService, RoleService],
-  exports: [RoleCreateService, RoleService],
+  providers: [
+    RoleService,
+    RoleCreateService,
+    RoleUpdateService,
+  ],
+  exports: [],
 })
 export class RoleModule {}

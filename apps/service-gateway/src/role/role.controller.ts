@@ -9,11 +9,11 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Inject,
   Param,
   Post,
   Put,
-  Req,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
@@ -22,7 +22,6 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import { RequestWithUser } from "../core/utils/get-user-from-request";
 import {
   RoleCreateDto,
   IdType,
@@ -98,6 +97,7 @@ export class RoleController {
     description: "The role has been successfully deleted.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @HttpCode(204)
   @Delete(":id")
   async deleteRole(@Param("id") id: IdType) {
     return this.serviceRequest.send({
