@@ -9,6 +9,7 @@ import { Services, getService } from "@harmony/service-config";
 import { ClientsModule } from "@nestjs/microservices";
 import { RoleCreateService } from "./role-create.service";
 import { RoleUpdateService } from "./role-update.service";
+import { RoleDeleteService } from "./role-delete.service";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RoleUpdateService } from "./role-update.service";
     RoleService,
     RoleCreateService,
     RoleUpdateService,
+    RoleDeleteService,
   ],
   exports: [],
 })

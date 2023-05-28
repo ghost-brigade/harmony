@@ -12,6 +12,7 @@ import {
 import { UserContext } from "@harmony/nest-microservice";
 import { RoleCreateService } from "./role-create.service";
 import { RoleUpdateService } from "./role-update.service";
+import { RoleDeleteService } from "./role-delete.service";
 
 @Controller()
 export class RoleController {
@@ -19,6 +20,7 @@ export class RoleController {
     private readonly roleService: RoleService,
     private readonly roleCreateService: RoleCreateService,
     private readonly roleUpdateService: RoleUpdateService,
+    private readonly roleDeleteService: RoleDeleteService
   ) {}
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
@@ -52,6 +54,15 @@ export class RoleController {
   ): Promise<RoleType> {
     return await this.roleUpdateService.updateRole(payload, user);
   }
+
+  @MessagePattern(ROLE_MESSAGE_PATTERN.DELETE)
+  async deleteRole(
+    @Payload() payload: { id: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<boolean> {
+    return await this.roleDeleteService.deleteRole(payload, user);
+  }
+
   @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)
   async internalFindRoleBy(
     @Payload() payload: { name?: string;
