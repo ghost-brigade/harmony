@@ -4,7 +4,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import {
   FormatZodResponse,
   UserProfileSchema,
-  UserJwtType,
   UserCreateSchema,
   UserCreateType,
   UserPublicType,
@@ -13,9 +12,8 @@ import {
   UserParamsType,
   UserType,
   IdType,
-  UsersSchema,
   UsersPublicSchema,
-  UserSchema,
+  UserContextType,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -190,7 +188,7 @@ export class UserService {
     }
   }
 
-  async profile({ user }: { user: UserJwtType }): Promise<UserType> {
+  async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
       const result = UserProfileSchema.safeParse(
         await this.findOneBy({ email: user.email })
