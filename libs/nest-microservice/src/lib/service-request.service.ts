@@ -15,12 +15,12 @@ export class ServiceRequest {
   public send({
     client,
     pattern,
-    data,
-    promise,
+    data = {},
+    promise = false,
   }: {
     client: ClientProxy;
     pattern: string;
-    data?: any;
+    data?: any,
     promise?: boolean;
   }) {
     if (data._user) {
