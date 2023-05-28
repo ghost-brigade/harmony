@@ -1,9 +1,3 @@
-import { ServiceRequest } from "@harmony/nest-microservice";
-import {
-  AUTHORIZATION_MESSAGE_PATTERN,
-  Services,
-  getServiceProperty,
-} from "@harmony/service-config";
 import {
   FormatZodResponse,
   RoleCreateSchema,
@@ -14,48 +8,19 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
-  Inject,
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { RoleService } from "./role.service";
-import { Permissions } from "@harmony/enums";
 
 @Injectable()
 export class RoleCreateService {
   constructor(
-    private readonly serviceRequest: ServiceRequest,
     private readonly roleService: RoleService,
-    @InjectModel("Role") private readonly roleModel,
-    @Inject(getServiceProperty(Services.AUTHORIZATION, "name"))
-    private readonly client: ClientProxy
+    @InjectModel("Role") private readonly roleModel
   ) {}
-
-  async canCreateRole(
-    payload: {
-      role: RoleCreateType;
-    },
-    user: UserContextType
-  ) {
-    try {
-      return await this.serviceRequest.send({
-        client: this.client,
-        pattern: AUTHORIZATION_MESSAGE_PATTERN.HAS_RIGHTS,
-        data: {
-          serverId: payload.role.server,
-          userId: user.id,
-          permissions: [Permissions.ROLE_MANAGE],
-        },
-        promise: true,
-      });
-    } catch (error) {
-      throw new RpcException(
-        new InternalServerErrorException("Error checking permissions")
-      );
-    }
-  }
 
   async createRole(
     payload: {
@@ -71,7 +36,12 @@ export class RoleCreateService {
       );
     }
 
-    if ((await this.canCreateRole(payload, user)) === false) {
+    if (
+      (await this.roleService.canManageRole({
+        serverId: payload.role.server,
+        user,
+      })) === false
+    ) {
       throw new RpcException(
         new BadRequestException("You don't have permission to create role")
       );
