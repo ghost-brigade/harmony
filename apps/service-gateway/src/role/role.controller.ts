@@ -131,18 +131,14 @@ export class RoleController {
     description: "The user has been successfully added to the role.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
-  @Post(":id/user/:userId")
-  async addUserToRole(
-    @Param("id") id: IdType,
-    @Param("userId") userId: IdType
-  ) {
+  @Post(":id/user")
+  async addUserToRole(@Param("id") id: IdType, @Body() userId: IdType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ROLE_MESSAGE_PATTERN.ADD_USER,
-      data: {
+      data: Object.assign(userId, {
         id,
-        userId,
-      },
+      }),
     });
   }
 
@@ -153,10 +149,7 @@ export class RoleController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Delete(":id/user/:userId")
-  async removeUserFromRole(
-    @Param("id") id: IdType,
-    @Param("userId") userId: IdType
-  ) {
+  async removeUserFromRole(@Param("id") id: IdType, @Body() userId: IdType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ROLE_MESSAGE_PATTERN.REMOVE_USER,
@@ -176,15 +169,14 @@ export class RoleController {
   @Post(":id/permission")
   async addPermissionToRole(
     @Param("id") id: IdType,
-    @Body() permissions: IdType[]
+    @Body() permission: IdType[]
   ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ROLE_MESSAGE_PATTERN.ADD_PERMISSION,
-      data: {
+      data: Object.assign(permission, {
         id,
-        permissions,
-      },
+      }),
     });
   }
 
