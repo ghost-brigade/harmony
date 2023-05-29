@@ -10,11 +10,15 @@ import { ClientsModule } from "@nestjs/microservices";
 import { RoleCreateService } from "./role-create.service";
 import { RoleUpdateService } from "./role-update.service";
 import { RoleDeleteService } from "./role-delete.service";
+import { RoleUserService } from "./role-user.service";
 
 @Module({
   imports: [
     NestMicroserviceModule,
-    ClientsModule.register([getService(Services.AUTHORIZATION)]),
+    ClientsModule.register([
+      getService(Services.AUTHORIZATION),
+      getService(Services.ACCOUNT),
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -27,6 +31,7 @@ import { RoleDeleteService } from "./role-delete.service";
     RoleCreateService,
     RoleUpdateService,
     RoleDeleteService,
+    RoleUserService,
   ],
   exports: [],
 })

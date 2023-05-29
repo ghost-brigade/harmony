@@ -1,5 +1,9 @@
 import { genSalt, hash } from "bcryptjs";
-import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
   FormatZodResponse,
@@ -126,65 +130,64 @@ export class UserService {
     return await hash(password, await genSalt(10));
   }
 
-  async isUserAccountActive({
-    id,
-    username,
-    email,
-  }: {
-    id?: IdType;
-    username?: string;
-    email?: string;
-  }): Promise<boolean> {
-    try {
-      const isVerified = this.isUsersAccountActive({
-        ids: [id],
-        emails: [email],
-        usernames: [username],
-      }) as Promise<UserPublicType[]>;
-
-      if (isVerified === undefined) {
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      return undefined;
-    }
-  }
-
-  /* Return a list of users that are not active */
-  async isUsersAccountActive({
-    ids,
-    emails,
-    usernames,
-  }: {
-    ids?: IdType[];
-    emails?: string[];
-    usernames?: string[];
-  }): Promise<UserPublicType[]> {
+  private async findUserFromPayload(
+    payload: {
+      ids?: IdType[];
+      emails?: string[];
+      usernames?: string[];
+    } = {},
+    user?: UserContextType
+  ): Promise<UserType[]> {
     try {
       const users = (await this.userModel
         .find()
         .or([
-          { _id: { $in: ids } },
-          { email: { $in: emails } },
-          { username: { $in: usernames } },
+          { _id: { $in: payload?.ids } },
+          { email: { $in: payload?.emails } },
+          { username: { $in: payload?.usernames } },
         ])
         .exec()) as UserType[];
 
-      const result = UsersPublicSchema.safeParse(users);
-
-      if (result.success === false) {
-        throw new RpcException(
-          new UnprocessableEntityException(
-            FormatZodResponse(result.error.issues)
-          )
-        );
+      return users;
+    } catch (error) {
+      if (error.message.includes("_id")) {
+        throw new BadRequestException("Invalid ids provided");
       }
 
-      return result.data.filter((user) => user.isVerified === false);
-    } catch (error) {
-      return undefined;
+      //todo for email, username
+      throw new RpcException(new UnprocessableEntityException());
+    }
+  }
+
+  /* Return a list of users that are not active */
+  async isUsersAccountActive(
+    payload: {
+      ids?: IdType[];
+      emails?: string[];
+      usernames?: string[];
+    } = {},
+    user?: UserContextType
+  ): Promise<UserPublicType[]> {
+    const users = await this.findUserFromPayload(payload, user);
+    return users ? users.filter((user) => user.isVerified === false) : null;
+  }
+
+  async isUsersAccountExist(
+    payload: {
+      ids?: IdType[];
+      emails?: string[];
+      usernames?: string[];
+    } = {},
+    user?: UserContextType
+  ): Promise<UserPublicType[]> {
+    const users = await this.findUserFromPayload(payload, user);
+
+    if (payload.ids) {
+      return users.length === payload.ids.length ? users : null;
+    } else if (payload.emails) {
+      return users.length === payload.emails.length ? users : null;
+    } else if (payload.usernames) {
+      return users.length === payload.usernames.length ? users : null;
     }
   }
 

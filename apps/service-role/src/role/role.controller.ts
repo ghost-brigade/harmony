@@ -13,6 +13,7 @@ import { UserContext } from "@harmony/nest-microservice";
 import { RoleCreateService } from "./role-create.service";
 import { RoleUpdateService } from "./role-update.service";
 import { RoleDeleteService } from "./role-delete.service";
+import { RoleUserService } from "./role-user.service";
 
 @Controller()
 export class RoleController {
@@ -20,7 +21,8 @@ export class RoleController {
     private readonly roleService: RoleService,
     private readonly roleCreateService: RoleCreateService,
     private readonly roleUpdateService: RoleUpdateService,
-    private readonly roleDeleteService: RoleDeleteService
+    private readonly roleDeleteService: RoleDeleteService,
+    private readonly roleUserService: RoleUserService
   ) {}
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
@@ -63,6 +65,14 @@ export class RoleController {
     return await this.roleDeleteService.deleteRole(payload, user);
   }
 
+  @MessagePattern(ROLE_MESSAGE_PATTERN.ADD_USER)
+  async addUserToRole(
+    @Payload() payload: { id: IdType; userId: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<RoleType> {
+    return await this.roleUserService.addUsersToRole(payload, user);
+  }
+
   @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)
   async internalFindRoleBy(
     @Payload() payload: { name?: string;
@@ -74,4 +84,13 @@ export class RoleController {
   ): Promise<RoleType[]> {
     return await this.roleService.findRoleBy(payload, user);
   }
+
+  @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_IS_USER_IN_ROLE)
+  async internalIsUserInRole(
+    @Payload() payload: { id: IdType; userId: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<boolean> {
+    return await this.roleService.isUserInRole(payload, user);
+  }
+
 }

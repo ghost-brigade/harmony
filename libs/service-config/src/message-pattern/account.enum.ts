@@ -6,4 +6,5 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   FIND_ONE = "account.findOne",
   PROFILE = "account.profile",
   IS_ACTIVE = "account.isActive",
+  IS_EXIST = "account.isExist",
 };

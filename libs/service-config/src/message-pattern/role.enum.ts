@@ -9,4 +9,5 @@ export enum ROLE_MESSAGE_PATTERN {
   REMOVE_USER = "role.remove.user",
   ADD_PERMISSION = "role.add.permission",
   REMOVE_PERMISSION = "role.remove.permission",
-};
+  INTERNAL_IS_USER_IN_ROLE = "role.user.in.role",
+}

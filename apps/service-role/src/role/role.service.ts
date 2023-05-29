@@ -1,5 +1,5 @@
 import { Permissions } from "@harmony/enums";
-import { ServiceRequest } from "@harmony/nest-microservice";
+import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
 import {
   AUTHORIZATION_MESSAGE_PATTERN,
   Services,
@@ -18,7 +18,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { ClientProxy, Payload, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
@@ -74,14 +74,14 @@ export class RoleService {
       id: IdType;
     },
     user: UserContextType
-  ): Promise<RoleType> {
+  ): Promise<RoleType | null> {
     try {
       const role = (await this.roleModel
         .findById(payload.id)
         .exec()) as RoleType;
 
       //TODO remove permission array if user has no admin permission on server
-      return role ? RoleSchema.parse(role) : undefined;
+      return role ?? null;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
@@ -185,24 +185,14 @@ export class RoleService {
     }
   }
 
-  // TODO: check if user is in server
-  public async isUserInServer({
-    user,
-    server,
-    throwError = false,
-  }: {
-    user: IdType;
-    server: IdType;
-    throwError: boolean;
-  }): Promise<boolean> {
-    const isUserInServer = true;
+  public async isUserInRole(
+    @Payload() { id, userId }: { id: IdType; userId: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<boolean> {
+    const result = await this.roleModel
+      .findOne({ _id: id, users: { $in: [userId] } })
+      .exec();
 
-    if (throwError && !isUserInServer) {
-      throw new RpcException(
-        new BadRequestException(`User is not in this server`)
-      );
-    }
-
-    return true;
+    return result ? true : false;
   }
 }

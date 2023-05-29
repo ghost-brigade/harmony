@@ -131,14 +131,17 @@ export class RoleController {
     description: "The user has been successfully added to the role.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
-  @Post(":id/user")
-  async addUserToRole(@Param("id") id: IdType, @Body() users: IdType[]) {
+  @Post(":id/user/:userId")
+  async addUserToRole(
+    @Param("id") id: IdType,
+    @Param("userId") userId: IdType
+  ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ROLE_MESSAGE_PATTERN.ADD_USER,
       data: {
         id,
-        users,
+        userId,
       },
     });
   }
