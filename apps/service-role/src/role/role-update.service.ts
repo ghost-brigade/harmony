@@ -50,12 +50,17 @@ export class RoleUpdateService {
 
     this.roleService.isRoleNameValid({ name, throwError: true });
 
-    //fix here throwError code 500 instead of 400
+    //Todo: fix here throwError code 500 instead of 400
     await this.roleService.isRoleNameAlreadyExist({
       name,
       server: payload.id,
       throwError: true,
     });
+
+    // Check if role exists
+    if ((await this.roleService.findOneBy(payload)) === null) {
+      throw new RpcException(new BadRequestException("Role doesn't exist"));
+    }
 
     try {
       return RoleSchema.parse(

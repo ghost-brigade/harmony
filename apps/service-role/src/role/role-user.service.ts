@@ -79,7 +79,7 @@ export class RoleUserService {
     }
 
     // Check if role exists
-    if ((await this.roleService.findOneBy(payload, user)) === null) {
+    if ((await this.roleService.findOneBy(payload)) === null) {
       throw new RpcException(new BadRequestException("Role doesn't exist"));
     }
 
@@ -140,7 +140,7 @@ export class RoleUserService {
     }
 
     // Check if role exists
-    if ((await this.roleService.findOneBy(payload, user)) === null) {
+    if ((await this.roleService.findOneBy(payload)) === null) {
       throw new RpcException(new BadRequestException("Role doesn't exist"));
     }
 

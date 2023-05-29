@@ -1,5 +1,5 @@
 import { Permissions } from "@harmony/enums";
-import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
+import { ServiceRequest } from "@harmony/nest-microservice";
 import {
   AUTHORIZATION_MESSAGE_PATTERN,
   Services,
@@ -11,6 +11,7 @@ import {
   RoleSchema,
   RoleParamsType,
   UserContextType,
+  RolePermissionType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -18,7 +19,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { ClientProxy, Payload, RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
@@ -70,10 +71,8 @@ export class RoleService {
   }
 
   public async findOneBy(
-    payload: {
-      id: IdType;
-    },
-    user: UserContextType
+    payload: { id: IdType },
+    user?: UserContextType
   ): Promise<RoleType | null> {
     try {
       const role = (await this.roleModel
@@ -140,7 +139,7 @@ export class RoleService {
    */
   public isRoleNameValid({
     name,
-    throwError,
+    throwError = false,
   }: {
     name: string;
     throwError: boolean;
@@ -186,11 +185,22 @@ export class RoleService {
   }
 
   public async isUserInRole(
-    @Payload() { id, userId }: { id: IdType; userId: IdType },
-    @UserContext() user: UserContextType
+    { id, userId }: { id: IdType; userId: IdType },
+    user?: UserContextType
   ): Promise<boolean> {
     const result = await this.roleModel
       .findOne({ _id: id, users: { $in: [userId] } })
+      .exec();
+
+    return result ? true : false;
+  }
+
+  public async isPermissionInRole(
+    { id, permission }: { id: IdType; permission: RolePermissionType },
+    user?: UserContextType
+  ): Promise<boolean> {
+    const result = await this.roleModel
+      .findOne({ _id: id, permissions: { $in: [permission] } })
       .exec();
 
     return result ? true : false;

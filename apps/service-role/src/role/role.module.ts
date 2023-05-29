@@ -11,6 +11,7 @@ import { RoleCreateService } from "./role-create.service";
 import { RoleUpdateService } from "./role-update.service";
 import { RoleDeleteService } from "./role-delete.service";
 import { RoleUserService } from "./role-user.service";
+import { RolePermissionService } from "./role-permission.service";
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { RoleUserService } from "./role-user.service";
     RoleUpdateService,
     RoleDeleteService,
     RoleUserService,
+    RolePermissionService,
   ],
   exports: [],
 })

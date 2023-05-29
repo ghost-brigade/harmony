@@ -6,6 +6,7 @@ import {
   IdType,
   RoleCreateType,
   RoleParamsType,
+  RolePermissionType,
   RoleType,
   UserContextType,
 } from "@harmony/zod";
@@ -14,6 +15,7 @@ import { RoleCreateService } from "./role-create.service";
 import { RoleUpdateService } from "./role-update.service";
 import { RoleDeleteService } from "./role-delete.service";
 import { RoleUserService } from "./role-user.service";
+import { RolePermissionService } from "./role-permission.service";
 
 @Controller()
 export class RoleController {
@@ -22,7 +24,8 @@ export class RoleController {
     private readonly roleCreateService: RoleCreateService,
     private readonly roleUpdateService: RoleUpdateService,
     private readonly roleDeleteService: RoleDeleteService,
-    private readonly roleUserService: RoleUserService
+    private readonly roleUserService: RoleUserService,
+    private readonly rolePermissionService: RolePermissionService
   ) {}
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ALL)
@@ -70,6 +73,7 @@ export class RoleController {
     @Payload() payload: { id: IdType; userId: IdType },
     @UserContext() user: UserContextType
   ): Promise<RoleType> {
+    console.log("addUserToRole", payload, user)
     return await this.roleUserService.addUsersToRole(payload, user);
   }
 
@@ -79,6 +83,14 @@ export class RoleController {
     @UserContext() user: UserContextType
   ): Promise<RoleType> {
     return await this.roleUserService.removeUsersFromRole(payload, user);
+  }
+
+  @MessagePattern(ROLE_MESSAGE_PATTERN.ADD_PERMISSION)
+  async addPermissionToRole(
+    @Payload() payload: { id: IdType; permission: RolePermissionType },
+    @UserContext() user: UserContextType
+  ): Promise<RoleType> {
+    return await this.rolePermissionService.addPermissionToRole(payload, user);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)
