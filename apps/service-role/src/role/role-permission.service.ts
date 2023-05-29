@@ -10,8 +10,7 @@ import {
   FormatZodResponse,
   RolePermissionSchema,
 } from "@harmony/zod";
-import { Payload, RpcException } from "@nestjs/microservices";
-import { UserContext } from "@harmony/nest-microservice";
+import { RpcException } from "@nestjs/microservices";
 
 @Injectable()
 export class RolePermissionService {
@@ -21,8 +20,8 @@ export class RolePermissionService {
   ) {}
 
   async addPermissionToRole(
-    @Payload() payload: { id: IdType; permission: RolePermissionType },
-    @UserContext() user: UserContextType
+    payload: { id: IdType; permission: RolePermissionType },
+    user: UserContextType
   ): Promise<RoleType> {
     /**
      * Validate payload
@@ -58,7 +57,6 @@ export class RolePermissionService {
     /**
      * Check if role exists
      */
-    // Check if role exists
     if ((await this.roleService.findOneBy(payload)) === null) {
       throw new RpcException(new BadRequestException("Role doesn't exist"));
     }
@@ -88,7 +86,71 @@ export class RolePermissionService {
     }
   }
 
-  async removePermissionFromRole() {
-    return;
+  async removePermissionFromRole(
+    payload: { id: IdType; permission: RolePermissionType },
+    user: UserContextType
+  ): Promise<boolean> {
+    /**
+     * Validate payload
+     */
+    const idParsed = IdSchema.safeParse(payload.id);
+    if (idParsed.success === false) {
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(idParsed.error.issues))
+      );
+    }
+
+    const permissionParsed = RolePermissionSchema.safeParse(payload.permission);
+    if (permissionParsed.success === false) {
+      throw new RpcException(
+        new BadRequestException(
+          FormatZodResponse(permissionParsed.error.issues)
+        )
+      );
+    }
+
+    /**
+     * Check if user has permission to manage role
+     */
+    if (
+      (await this.roleService.canManageRole({ serverId: payload.id, user })) ===
+      false
+    ) {
+      throw new RpcException(
+        new BadRequestException("You don't have permission to update role")
+      );
+    }
+
+    /**
+     * Check if role exists
+     */
+    if ((await this.roleService.findOneBy(payload)) === null) {
+      throw new RpcException(new BadRequestException("Role doesn't exist"));
+    }
+
+    /**
+     * Check if permission is already in role
+     */
+    if ((await this.roleService.isPermissionInRole(payload)) === false) {
+      throw new RpcException(
+        new BadRequestException("Permission is not in role")
+      );
+    }
+
+    /**
+     * Remove permission from role
+     */
+    try {
+      await this.roleModel.updateOne(
+        { _id: payload.id },
+        { $pull: { permissions: payload.permission } }
+      );
+
+      return true;
+    } catch (e) {
+      throw new RpcException(
+        new BadRequestException("Failed to remove permission from role")
+      );
+    }
   }
 }

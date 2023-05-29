@@ -1,9 +1,4 @@
-import {
-  FormatZodResponse,
-  UserContextType,
-  IdSchema,
-  RoleType,
-} from "@harmony/zod";
+import { FormatZodResponse, UserContextType, IdSchema } from "@harmony/zod";
 import {
   BadRequestException,
   Injectable,
@@ -44,20 +39,9 @@ export class RoleDeleteService {
       );
     }
 
-    let role: RoleType | null = null;
-
-    try {
-      role = await this.roleModel.findOne({
-        _id: payload.id,
-      });
-    } catch (error) {
-      throw new RpcException(
-        new InternalServerErrorException("Error while fetching role")
-      );
-    }
-
-    if (!role) {
-      throw new RpcException(new NotFoundException("Role not found"));
+    // Check if role exists
+    if ((await this.roleService.findOneBy(payload)) === null) {
+      throw new RpcException(new NotFoundException("Role doesn't exist"));
     }
 
     try {
