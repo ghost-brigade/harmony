@@ -7,6 +7,8 @@ import {
   InternalServerErrorException,
 } from "@nestjs/common";
 import {
+  FormatZodResponse,
+  IdSchema,
   IdType,
   RoleType,
   UserContextType,
@@ -34,6 +36,20 @@ export class RoleUserService {
     @Payload() payload: { id: IdType; userId: IdType },
     @UserContext() user: UserContextType
   ): Promise<RoleType> {
+    const idParsed = IdSchema.safeParse(payload.id);
+    if (idParsed.success === false) {
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(idParsed.error.issues))
+      );
+    }
+
+    const userIdParsed = IdSchema.safeParse(payload.userId);
+    if (userIdParsed.success === false) {
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(userIdParsed.error.issues))
+      );
+    }
+
     // Check if user has permission to manage role
     if (
       (await this.roleService.canManageRole({ serverId: payload.id, user })) ===
@@ -98,7 +114,59 @@ export class RoleUserService {
   async removeUsersFromRole(
     @Payload() payload: { id: IdType; userId: IdType },
     @UserContext() user: UserContextType
-  ) {
-    return;
+  ): Promise<RoleType> {
+    const idParsed = IdSchema.safeParse(payload.id);
+    if (idParsed.success === false) {
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(idParsed.error.issues))
+      );
+    }
+
+    const userIdParsed = IdSchema.safeParse(payload.userId);
+    if (userIdParsed.success === false) {
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(userIdParsed.error.issues))
+      );
+    }
+
+    // Check if user has permission to manage role
+    if (
+      (await this.roleService.canManageRole({ serverId: payload.id, user })) ===
+      false
+    ) {
+      throw new RpcException(
+        new BadRequestException("You don't have permission to update role")
+      );
+    }
+
+    // Check if role exists
+    if ((await this.roleService.findOneBy(payload, user)) === null) {
+      throw new RpcException(new BadRequestException("Role doesn't exist"));
+    }
+
+    // Check if user is already in role
+    if (
+      (await this.roleService.isUserInRole(
+        { id: payload.id, userId: payload.userId },
+        user
+      )) === false
+    ) {
+      throw new RpcException(new BadRequestException("User is not in role"));
+    }
+
+    // Remove user from role
+    try {
+      return await this.roleModel.findOneAndUpdate(
+        { _id: payload.id },
+        { $pull: { users: payload.userId } },
+        { returnOriginal: false }
+      );
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while removing user from role"
+        )
+      );
+    }
   }
 }

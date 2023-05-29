@@ -73,9 +73,19 @@ export class RoleController {
     return await this.roleUserService.addUsersToRole(payload, user);
   }
 
+  @MessagePattern(ROLE_MESSAGE_PATTERN.REMOVE_USER)
+  async removeUserFromRole(
+    @Payload() payload: { id: IdType; userId: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<RoleType> {
+    return await this.roleUserService.removeUsersFromRole(payload, user);
+  }
+
   @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)
   async internalFindRoleBy(
-    @Payload() payload: { name?: string;
+    @Payload()
+    payload: {
+      name?: string;
       serverId?: IdType;
       permissions?: string[];
       usersId?: IdType[];
@@ -92,5 +102,4 @@ export class RoleController {
   ): Promise<boolean> {
     return await this.roleService.isUserInRole(payload, user);
   }
-
 }
