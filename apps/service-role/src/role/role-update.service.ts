@@ -10,6 +10,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
@@ -57,9 +58,18 @@ export class RoleUpdateService {
       throwError: true,
     });
 
+    const role = await this.roleService.findOneBy(payload);
+
     // Check if role exists
-    if ((await this.roleService.findOneBy(payload)) === null) {
-      throw new RpcException(new BadRequestException("Role doesn't exist"));
+    if (role === null) {
+      throw new RpcException(new NotFoundException("Role doesn't exist"));
+    }
+
+    // Check if role is default
+    if (role.name.startsWith("@")) {
+      throw new RpcException(
+        new BadRequestException("You can't update default roles name")
+      );
     }
 
     try {

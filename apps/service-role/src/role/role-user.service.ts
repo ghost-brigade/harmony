@@ -5,6 +5,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import {
   FormatZodResponse,
@@ -78,9 +79,18 @@ export class RoleUserService {
       throw new RpcException(new BadRequestException("Bad userId provided"));
     }
 
+    const role = await this.roleService.findOneBy(payload);
+
     // Check if role exists
-    if ((await this.roleService.findOneBy(payload)) === null) {
-      throw new RpcException(new BadRequestException("Role doesn't exist"));
+    if (role === null) {
+      throw new RpcException(new NotFoundException("Role doesn't exist"));
+    }
+
+    // Check if role is default
+    if (role.name.startsWith("@")) {
+      throw new RpcException(
+        new BadRequestException("You can't update default roles name")
+      );
     }
 
     // Check if user is already in role
@@ -139,9 +149,18 @@ export class RoleUserService {
       );
     }
 
+    const role = await this.roleService.findOneBy(payload);
+
     // Check if role exists
-    if ((await this.roleService.findOneBy(payload)) === null) {
-      throw new RpcException(new BadRequestException("Role doesn't exist"));
+    if (role === null) {
+      throw new RpcException(new NotFoundException("Role doesn't exist"));
+    }
+
+    // Check if role is default
+    if (role.name.startsWith("@")) {
+      throw new RpcException(
+        new BadRequestException("You can't update default roles name")
+      );
     }
 
     // Check if user is already in role

@@ -39,9 +39,18 @@ export class RoleDeleteService {
       );
     }
 
+    const role = await this.roleService.findOneBy(payload);
+
     // Check if role exists
-    if ((await this.roleService.findOneBy(payload)) === null) {
+    if (role === null) {
       throw new RpcException(new NotFoundException("Role doesn't exist"));
+    }
+
+    // Check if role is default
+    if (role.name.startsWith("@")) {
+      throw new RpcException(
+        new BadRequestException("You can't delete default roles")
+      );
     }
 
     try {
