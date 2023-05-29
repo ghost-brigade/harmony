@@ -6,6 +6,7 @@ import { UserModule } from "./account/user.module";
 import { ServerModule } from "./server/server.module";
 import { JwtAuthGuard } from "./core/guards/passport/jwt-auth.guard";
 import { GatewayErrorHandlerInterceptor } from "./core/interceptors/gateway-error-handler.interceptor";
+import { RoleModule } from "./role/role.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { GatewayErrorHandlerInterceptor } from "./core/interceptors/gateway-erro
       limit: parseInt(process.env?.RATE_LIMIT_COUNT || "10"),
     }),
     AuthenticationModule,
+    RoleModule,
     ServerModule,
     UserModule,
   ],

@@ -1,8 +1,16 @@
 import { Controller } from "@nestjs/common";
-import { MessagePattern } from "@nestjs/microservices";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 import { UserService } from "./user.service";
-import { UserParamsType, UserType } from "@harmony/zod";
+import {
+  IdType,
+  UserContextType,
+  UserCreateType,
+  UserParamsType,
+  UserPublicType,
+  UserType,
+} from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
+import { UserContext } from "@harmony/nest-microservice";
 
 @Controller()
 export class UserController {
@@ -36,7 +44,38 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.CREATE)
-  async create(data) {
+  async create(data: UserCreateType): Promise<UserPublicType> {
     return await this.userService.create(data);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.UPDATE)
+  async update(data: UserType): Promise<UserPublicType> {
+    return await this.userService.update(data);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.IS_ACTIVE)
+  async isUserAccountActive(
+    @Payload()
+    payload: {
+      ids?: IdType[];
+      usernames?: string[];
+      emails?: string[];
+    },
+    @UserContext() user: UserContextType
+  ): Promise<UserPublicType[]> {
+    return await this.userService.isUsersAccountActive(payload, user);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.IS_EXIST)
+  async isUsersAccountExist(
+    @Payload()
+    payload: {
+      ids?: IdType[];
+      usernames?: string[];
+      emails?: string[];
+    },
+    @UserContext() user: UserContextType
+  ): Promise<UserPublicType[]> {
+    return await this.userService.isUsersAccountExist(payload, user);
   }
 }

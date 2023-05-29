@@ -21,6 +21,7 @@ import {
   UserPublicDto,
   UserPublicType,
   UserParamsType,
+  UserUpdateType,
 } from "@harmony/zod";
 import {
   ACCOUNT_MESSAGE_PATTERN,
@@ -77,5 +78,16 @@ export class UserController {
   @Post()
   public create(@Body() createUser: UserCreateType): Observable<User> {
     return this.client.send(ACCOUNT_MESSAGE_PATTERN.CREATE, createUser);
+  }
+
+  @ApiOperation({ summary: "Update a user" })
+  @ApiOkResponse({
+    description: "User updated",
+    type: User,
+  })
+  @ApiNotFoundResponse({ description: "User not found" })
+  @Post(":id")
+  public update(@Body() updateUser: UserUpdateType): Observable<UserPublicType> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.UPDATE, updateUser);
   }
 }

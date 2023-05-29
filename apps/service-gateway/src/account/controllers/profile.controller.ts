@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Req } from "@nestjs/common";
+import { Controller, Get, Inject } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -7,36 +7,33 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import {
-  RequestWithUser,
-  getUserFromRequest,
-} from "../../core/utils/get-user-from-request";
-import {
   ACCOUNT_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
 import { ClientProxy } from "@nestjs/microservices";
+import { ServiceRequest } from "@harmony/nest-microservice";
 import { Observable } from "rxjs";
-import { UserProfileType } from "@harmony/zod";
+import { UserType } from "@harmony/zod";
 
 @Controller()
 export class ProfileController {
   constructor(
+    private readonly serviceRequest: ServiceRequest,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly client: ClientProxy
   ) {}
 
-  @ApiTags('User')
+  @ApiTags("User")
   @ApiOperation({ summary: "Get the profile of the current logged in user" })
   @ApiOkResponse({ description: "Profile found" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @ApiNotFoundResponse({ description: "Profile not found" })
   @Get("profile")
-  async profile(
-    @Req() request: RequestWithUser
-  ): Promise<Observable<UserProfileType>> {
-    return this.client.send(ACCOUNT_MESSAGE_PATTERN.PROFILE, {
-      user: await getUserFromRequest(request),
-    });
+  profile() {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ACCOUNT_MESSAGE_PATTERN.PROFILE,
+    }) as Observable<UserType>;
   }
 }

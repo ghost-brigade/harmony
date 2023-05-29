@@ -1,6 +1,9 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 import { IdSchema } from "../global/id.zod";
+import { Roles } from "@harmony/enums";
+
+const UserRoleSchema = z.nativeEnum(Roles).default(Roles.USER);
 
 export const UserSchema = z.object({
   /*
@@ -14,8 +17,11 @@ export const UserSchema = z.object({
   status: z.string().optional(),
   avatar: z.string().optional(),
   isVerified: z.boolean().optional(),
+  role: UserRoleSchema.optional(),
   blockedUsers: z.array(z.string()).optional(),
 });
+
+export const UsersSchema = z.array(UserSchema);
 
 export const UserProfileSchema = UserSchema.omit({
   password: true,
@@ -25,6 +31,8 @@ export const UserPublicSchema = UserSchema.omit({
   password: true,
   blockedUsers: true,
 });
+
+export const UsersPublicSchema = z.array(UserPublicSchema);
 
 export const UserParamsSchema = UserSchema.pick({
   id: true,
