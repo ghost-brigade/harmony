@@ -5,7 +5,16 @@ import { Permissions } from "@harmony/enums";
 
 export type RoleDocument = HydratedDocument<Role>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
+})
 export class Role {
   @Prop({ type: Types.ObjectId, ref: "Server" })
   server: Server;
@@ -15,6 +24,9 @@ export class Role {
 
   @Prop({ type: [{ type: String, enum: Permissions }] })
   permissions: Array<Permissions>;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
+  users: Array<Types.ObjectId>;
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

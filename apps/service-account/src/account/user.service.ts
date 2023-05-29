@@ -1,10 +1,13 @@
 import { genSalt, hash } from "bcryptjs";
-import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import {
   FormatZodResponse,
   UserProfileSchema,
-  UserJwtType,
   UserCreateSchema,
   UserCreateType,
   UserPublicType,
@@ -12,6 +15,9 @@ import {
   UserParamsSchema,
   UserParamsType,
   UserType,
+  IdType,
+  UsersPublicSchema,
+  UserContextType,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -124,25 +130,68 @@ export class UserService {
     return await hash(password, await genSalt(10));
   }
 
-  async isUserAccountActive({
-    email = null,
-    user = null,
-  }: {
-    email?: string | null;
-    user?: UserPublicType | null;
-  }): Promise<boolean> {
-    if (!user && email) {
-      user = await this.findOneBy({ email });
-    }
+  private async findUserFromPayload(
+    payload: {
+      ids?: IdType[];
+      emails?: string[];
+      usernames?: string[];
+    } = {},
+    user?: UserContextType
+  ): Promise<UserType[]> {
+    try {
+      const users = (await this.userModel
+        .find()
+        .or([
+          { _id: { $in: payload?.ids } },
+          { email: { $in: payload?.emails } },
+          { username: { $in: payload?.usernames } },
+        ])
+        .exec()) as UserType[];
 
-    if (user) {
-      return user.isVerified;
-    }
+      return users;
+    } catch (error) {
+      if (error.message.includes("_id")) {
+        throw new BadRequestException("Invalid ids provided");
+      }
 
-    return false;
+      //todo for email, username
+      throw new RpcException(new UnprocessableEntityException());
+    }
   }
 
-  async profile({ user }: { user: UserJwtType }): Promise<UserType> {
+  /* Return a list of users that are not active */
+  async isUsersAccountActive(
+    payload: {
+      ids?: IdType[];
+      emails?: string[];
+      usernames?: string[];
+    } = {},
+    user?: UserContextType
+  ): Promise<UserPublicType[]> {
+    const users = await this.findUserFromPayload(payload, user);
+    return users ? users.filter((user) => user.isVerified === false) : null;
+  }
+
+  async isUsersAccountExist(
+    payload: {
+      ids?: IdType[];
+      emails?: string[];
+      usernames?: string[];
+    } = {},
+    user?: UserContextType
+  ): Promise<UserPublicType[]> {
+    const users = await this.findUserFromPayload(payload, user);
+
+    if (payload.ids) {
+      return users.length === payload.ids.length ? users : null;
+    } else if (payload.emails) {
+      return users.length === payload.emails.length ? users : null;
+    } else if (payload.usernames) {
+      return users.length === payload.usernames.length ? users : null;
+    }
+  }
+
+  async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
       const result = UserProfileSchema.safeParse(
         await this.findOneBy({ email: user.email })

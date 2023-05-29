@@ -1,8 +1,9 @@
 import { UserService } from "./user.service";
-import { UserJwtType, UserType } from "@harmony/zod";
-import { Controller, InternalServerErrorException } from "@nestjs/common";
-import { MessagePattern, RpcException } from "@nestjs/microservices";
+import { UserContextType, UserType } from "@harmony/zod";
+import { Controller } from "@nestjs/common";
+import { MessagePattern } from "@nestjs/microservices";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
+import { UserContext } from "@harmony/nest-microservice";
 
 @Controller()
 export class ProfileController {
@@ -12,11 +13,7 @@ export class ProfileController {
    * Get the profile of the current logged in user.
    */
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.PROFILE)
-  async profile({ user }: { user: UserJwtType }): Promise<UserType> {
-    try {
-      return await this.userService.profile({ user });
-    } catch (error) {
-      throw new RpcException(new InternalServerErrorException(error.response));
-    }
+  async profile(@UserContext() user: UserContextType): Promise<UserType> {
+    return await this.userService.profile({ user });
   }
 }
