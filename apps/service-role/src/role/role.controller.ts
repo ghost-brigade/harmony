@@ -73,7 +73,7 @@ export class RoleController {
     @Payload() payload: { id: IdType; userId: IdType },
     @UserContext() user: UserContextType
   ): Promise<RoleType> {
-    console.log("addUserToRole", payload, user)
+    console.log("addUserToRole", payload, user);
     return await this.roleUserService.addUsersToRole(payload, user);
   }
 
@@ -81,7 +81,7 @@ export class RoleController {
   async removeUserFromRole(
     @Payload() payload: { id: IdType; userId: IdType },
     @UserContext() user: UserContextType
-  ): Promise<RoleType> {
+  ): Promise<boolean> {
     return await this.roleUserService.removeUsersFromRole(payload, user);
   }
 
@@ -91,6 +91,17 @@ export class RoleController {
     @UserContext() user: UserContextType
   ): Promise<RoleType> {
     return await this.rolePermissionService.addPermissionToRole(payload, user);
+  }
+
+  @MessagePattern(ROLE_MESSAGE_PATTERN.REMOVE_PERMISSION)
+  async removePermissionFromRole(
+    @Payload() payload: { id: IdType; permission: RolePermissionType },
+    @UserContext() user: UserContextType
+  ): Promise<boolean> {
+    return await this.rolePermissionService.removePermissionFromRole(
+      payload,
+      user
+    );
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_FIND_ROLE_BY)

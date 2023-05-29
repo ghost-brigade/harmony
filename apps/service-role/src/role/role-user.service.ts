@@ -114,7 +114,7 @@ export class RoleUserService {
   async removeUsersFromRole(
     @Payload() payload: { id: IdType; userId: IdType },
     @UserContext() user: UserContextType
-  ): Promise<RoleType> {
+  ): Promise<boolean> {
     const idParsed = IdSchema.safeParse(payload.id);
     if (idParsed.success === false) {
       throw new RpcException(
@@ -156,11 +156,12 @@ export class RoleUserService {
 
     // Remove user from role
     try {
-      return await this.roleModel.findOneAndUpdate(
+      await this.roleModel.updateOne(
         { _id: payload.id },
-        { $pull: { users: payload.userId } },
-        { returnOriginal: false }
+        { $pull: { users: payload.userId } }
       );
+
+      return true;
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(

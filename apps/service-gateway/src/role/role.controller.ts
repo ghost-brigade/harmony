@@ -27,6 +27,7 @@ import {
   IdType,
   RoleUpdateDto,
   RoleParamsType,
+  RolePermissionType,
 } from "@harmony/zod";
 
 @Controller("role")
@@ -147,9 +148,13 @@ export class RoleController {
     status: 204,
     description: "The user has been successfully removed from the role.",
   })
+  @HttpCode(204)
   @ApiResponse({ status: 400, description: "Bad request" })
   @Delete(":id/user/:userId")
-  async removeUserFromRole(@Param("id") id: IdType, @Body() userId: IdType) {
+  async removeUserFromRole(
+    @Param("id") id: IdType,
+    @Param("userId") userId: IdType
+  ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ROLE_MESSAGE_PATTERN.REMOVE_USER,
@@ -186,17 +191,18 @@ export class RoleController {
     description: "The permission has been successfully removed from the role.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
-  @Delete(":id/permission/:permissionId")
+  @HttpCode(204)
+  @Delete(":id/permission/:permission")
   async removePermissionFromRole(
     @Param("id") id: IdType,
-    @Param("permissionId") permissionId: IdType
+    @Param("permission") permission: RolePermissionType
   ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ROLE_MESSAGE_PATTERN.REMOVE_PERMISSION,
       data: {
         id,
-        permissionId,
+        permission,
       },
     });
   }
