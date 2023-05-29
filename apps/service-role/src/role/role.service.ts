@@ -18,6 +18,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
@@ -84,6 +85,19 @@ export class RoleService {
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
+  }
+
+  public async findOneById(
+    payload: { id: IdType },
+    user?: UserContextType
+  ): Promise<RoleType> {
+    const role = await this.findOneBy(payload, user);
+
+    if (!role) {
+      throw new RpcException(new NotFoundException("Role not found"));
+    }
+
+    return role;
   }
 
   public async getRoleByNameAndServerId({
