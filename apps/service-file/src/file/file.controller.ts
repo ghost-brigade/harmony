@@ -13,7 +13,8 @@ export class FileController {
   }
 
   @Post()
-  create(@Payload() payload: Buffer, ) {
+  create(@Payload() payload: any) {
+    console.log(payload);
     return this.fileService.create();
   }
 }

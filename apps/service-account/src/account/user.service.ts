@@ -207,7 +207,9 @@ export class UserService {
 
       if (result.success === false) {
         throw new RpcException(
-          new UnprocessableEntityException(result.error.message)
+          new UnprocessableEntityException(
+            FormatZodResponse(result.error.issues)
+          )
         );
       }
 

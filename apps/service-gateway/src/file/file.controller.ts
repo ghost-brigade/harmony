@@ -4,6 +4,7 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
+import { FileCreateDto, FileDto } from "@harmony/zod";
 import {
   Body,
   Controller,
@@ -13,15 +14,24 @@ import {
   Inject,
   Param,
   Post,
-  Put,
+  Req,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
+// Due to a bug we need to import Multer without using it
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Multer } from "multer";
 
 @Controller("file")
 @ApiTags("File")
@@ -33,39 +43,73 @@ export class FileController {
   ) {}
 
   @ApiOperation({ summary: "Get all files" })
-  @ApiResponse({ status: 200, description: "Return all files" })
-  @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiOkResponse({ status: 200, description: "Return all files" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get()
   async findAll() {
-    return this.client.send(FILE_MESSAGE_PATTERN.FIND_ALL, {});
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.FIND_ALL,
+    });
   }
 
   @ApiOperation({ summary: "Get file by id" })
-  @ApiResponse({ status: 200, description: "Return file by id" })
-  @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiOkResponse({
+    status: 200,
+    description: "Return file by id",
+    type: FileCreateDto,
+  })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get(":id")
   async findById(@Param("id") id: string) {
-    return this.client.send(FILE_MESSAGE_PATTERN.FIND_BY_ID, { id });
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+      data: { id },
+    });
   }
 
   @ApiOperation({ summary: "Create file" })
-  @ApiResponse({ status: 200, description: "Return created file" })
-  @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiCreatedResponse({
+    status: 201,
+    description: "Return created file",
+    type: FileDto,
+  })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @UseInterceptors(FileInterceptor("file"))
   @Post()
-  async create(@Body() payload: Buffer) {
-    return this.client.send(FILE_MESSAGE_PATTERN.CREATE, payload);
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() payload: FileCreateDto,
+    @Req() req: any
+  ) {
+    console.log(file, payload);
+    return {};
+
+    // return this.serviceRequest.send({
+    //   client: this.client,
+    //   pattern: FILE_MESSAGE_PATTERN.CREATE,
+    //   data: {
+    //     file,
+    //     ...payload,
+    //   },
+    // });
   }
 
   @ApiOperation({ summary: "Delete file" })
-  @ApiResponse({ status: 204, description: "Return deleted file" })
-  @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiNoContentResponse({ status: 204, description: "Return deleted file" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @HttpCode(204)
   @Delete(":id")
   async delete(@Param("id") id: string) {
-    return this.client.send(FILE_MESSAGE_PATTERN.DELETE, { id });
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.DELETE,
+      data: { id },
+    });
   }
 }
