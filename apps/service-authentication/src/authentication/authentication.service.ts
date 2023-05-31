@@ -103,7 +103,13 @@ export class AuthenticationService {
         })
       );
 
-      return UserContextSchema.parse(user);
+      const parse = UserContextSchema.safeParse(user);
+      if (parse.success === false) {
+        //TODO: Log error
+        console.log(parse.error);
+      }
+
+      return user;
     } catch {
       throw new RpcException(
         new UnauthorizedException("Token is invalid or expired")
