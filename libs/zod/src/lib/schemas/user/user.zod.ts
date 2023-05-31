@@ -15,10 +15,10 @@ export const UserSchema = z.object({
   password: z.string().min(8).max(128),
   username: z.string().min(4).max(18),
   status: z.string().optional(),
-  avatar: z.string().optional(),
+  avatar: z.array(IdSchema.optional()),
   isVerified: z.boolean().optional(),
   role: UserRoleSchema.optional(),
-  blockedUsers: z.array(z.string()).optional(),
+  blockedUsers: z.array(IdSchema).optional(),
 });
 
 export const UsersSchema = z.array(UserSchema);
