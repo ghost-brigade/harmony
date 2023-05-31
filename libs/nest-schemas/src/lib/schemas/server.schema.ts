@@ -5,6 +5,7 @@ import { Channel } from "./channel.schema";
 import { Emoji } from "./emoji.schema";
 import { Category } from "./category.schema";
 import { Role } from "./role.schema";
+import { File } from "./file.schema";
 
 export type ServerDocument = HydratedDocument<Server>;
 
@@ -31,8 +32,8 @@ export class Server {
   @Prop({ type: [{ type: Types.ObjectId, ref: "Emoji" }] })
   emojis: Emoji[];
 
-  @Prop({ type: String, required: false })
-  cover: string;
+  @Prop({ type: [{ type: Types.ObjectId, ref: "File" }] })
+  cover: File;
 }
 
 export const ServerSchema = SchemaFactory.createForClass(Server);

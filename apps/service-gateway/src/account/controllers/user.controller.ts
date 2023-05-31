@@ -33,13 +33,13 @@ import { Observable } from "rxjs";
 import { Public } from "../../core/decorators/public.decorator";
 
 @Controller("user")
+@ApiTags('User')
 export class UserController {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly client: ClientProxy
   ) {}
 
-  @ApiTags('User')
   @ApiOperation({ summary: "Get all users" })
   @ApiOkResponse({
     description: "User",
@@ -55,7 +55,6 @@ export class UserController {
     return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ALL, params);
   }
 
-  @ApiTags('User')
   @ApiOperation({ summary: "Get a user by id" })
   @ApiOkResponse({
     description: "User found",
@@ -67,7 +66,6 @@ export class UserController {
     return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, { id });
   }
 
-  @ApiTags('User')
   @ApiOperation({ summary: "Create a user" })
   @ApiOkResponse({
     description: "User created",

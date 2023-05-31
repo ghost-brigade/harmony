@@ -4,4 +4,5 @@ export enum Services {
   ACCOUNT = "account",
   SERVER = "server",
   ROLE = "role",
+  FILE = "file",
 }
