@@ -7,6 +7,7 @@ import { ServerModule } from "./server/server.module";
 import { JwtAuthGuard } from "./core/guards/passport/jwt-auth.guard";
 import { GatewayErrorHandlerInterceptor } from "./core/interceptors/gateway-error-handler.interceptor";
 import { RoleModule } from "./role/role.module";
+import { FileModule } from "./file/file.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RoleModule } from "./role/role.module";
     RoleModule,
     ServerModule,
     UserModule,
+    FileModule,
   ],
   providers: [
     {

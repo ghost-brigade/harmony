@@ -21,6 +21,7 @@ import {
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class UserService {
@@ -91,6 +92,13 @@ export class UserService {
     }
 
     return await this.userModel.find(params).exec();
+  }
+
+  async findAllByIds(ids: ObjectId[]): Promise<UserPublicType[] | null> {
+    return await this.userModel.find(
+      { _id: { $in: ids } },
+      { username: 1, email: 1, status: 1 }
+    );
   }
 
   async findOne(id: string): Promise<UserType | null> {
@@ -199,7 +207,9 @@ export class UserService {
 
       if (result.success === false) {
         throw new RpcException(
-          new UnprocessableEntityException(result.error.message)
+          new UnprocessableEntityException(
+            FormatZodResponse(result.error.issues)
+          )
         );
       }
 

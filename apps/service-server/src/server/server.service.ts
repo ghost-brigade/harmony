@@ -71,6 +71,10 @@ export class ServerService {
     }
   }
 
+  async findAll(): Promise<ServerType[]> {
+    return await this.serverModel.find().exec();
+  }
+
   async findOne(id: string): Promise<ServerType> {
     return await this.serverModel.findById(id).exec();
   }
@@ -185,5 +189,42 @@ export class ServerService {
       .exec();
 
     return deletedServer;
+  }
+
+  async getMembersOfServer(serverId: string): Promise<UserType[]> {
+    const server = await this.findOne(serverId);
+    if (!server) {
+      throw new RpcException(
+        new NotFoundException(`Server with ID ${serverId} not found`)
+      );
+    }
+
+    const memberIds = server.members;
+
+    const members = await firstValueFrom(
+      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS, {
+        ids: memberIds,
+      })
+    );
+
+    return members.filter((member) => member !== null) as UserType[];
+  }
+
+  async getServersOfMember(memberId: string): Promise<ServerType[]> {
+    const user: UserType = await firstValueFrom(
+      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+        id: memberId,
+      })
+    );
+
+    if (!user) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
+      );
+    }
+
+    const servers = await this.serverModel.find({ members: memberId }).exec();
+
+    return servers;
   }
 }

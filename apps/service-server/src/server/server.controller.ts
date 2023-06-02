@@ -27,6 +27,11 @@ export class ServerController {
     return await this.serverService.create(data.server, data.user);
   }
 
+  @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)
+  async getAllServers() {
+    return await this.serverService.findAll();
+  }
+
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
   async getServerById(id: string) {
     try {
@@ -75,4 +80,16 @@ export class ServerController {
       removeServerData.user
     );
   }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.GET_MEMBERS_OF_SERVER)
+  async getMembersOfServer(serverId: IdType) {
+    return await this.serverService.getMembersOfServer(serverId);
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.GET_SERVERS_OF_MEMBER)
+  async getServersOfMember(memberId: IdType) {
+    return await this.serverService.getServersOfMember(memberId);
+  }
+
+
 }

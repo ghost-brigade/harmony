@@ -14,10 +14,11 @@ export const UserSchema = z.object({
   email: z.string().email().min(3).max(320),
   password: z.string().min(8).max(128),
   username: z.string().min(4).max(18),
-  avatar: z.string().optional(),
+  status: z.string().optional(),
+  avatar: z.array(IdSchema.optional()),
   isVerified: z.boolean().optional(),
   role: UserRoleSchema.optional(),
-  blockedUsers: z.array(z.string()).optional(),
+  blockedUsers: z.array(IdSchema).optional(),
 });
 
 export const UsersSchema = z.array(UserSchema);
@@ -44,6 +45,7 @@ export const UserCreateSchema = UserSchema.omit({
   avatar: true,
   isVerified: true,
   blockedUsers: true,
+  status: true,
 });
 
 const UserUpdateSchema = UserSchema.omit({
