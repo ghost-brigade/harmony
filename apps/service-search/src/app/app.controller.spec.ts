@@ -14,11 +14,9 @@ describe("AppController", () => {
   });
 
   describe("getData", () => {
-    it('should return "Welcome to service-search-message!"', () => {
+    it('should return "Hello API"', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.getData()).toEqual({
-        message: "Welcome to service-search-message!",
-      });
+      expect(appController.getData()).toEqual({ message: "Hello API" });
     });
   });
 });

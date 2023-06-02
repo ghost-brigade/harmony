@@ -1,11 +1,11 @@
 /* eslint-disable */
 export default {
-  displayName: "service-search-message",
+  displayName: "service-search",
   preset: "../../jest.preset.js",
   testEnvironment: "node",
   transform: {
     "^.+\\.[tj]s$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.spec.json" }],
   },
   moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../coverage/apps/service-search-message",
+  coverageDirectory: "../../coverage/apps/service-search",
 };

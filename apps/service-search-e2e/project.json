@@ -1,21 +1,21 @@
 {
-  "name": "service-search-message-e2e",
+  "name": "service-search-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "implicitDependencies": ["service-search-message"],
+  "implicitDependencies": ["service-search"],
   "targets": {
     "e2e": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
       "options": {
-        "jestConfig": "apps/service-search-message-e2e/jest.config.ts",
+        "jestConfig": "apps/service-search-e2e/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/service-search-message-e2e/**/*.{js,ts}"]
+        "lintFilePatterns": ["apps/service-search-e2e/**/*.{js,ts}"]
       }
     }
   }
