@@ -14,7 +14,6 @@ import {
   Inject,
   Param,
   Post,
-  Req,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
@@ -81,22 +80,15 @@ export class FileController {
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @UseInterceptors(FileInterceptor("file"))
   @Post()
-  async create(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() payload: FileCreateDto,
-    @Req() req: any
-  ) {
-    console.log(file, payload);
-    return {};
-
-    // return this.serviceRequest.send({
-    //   client: this.client,
-    //   pattern: FILE_MESSAGE_PATTERN.CREATE,
-    //   data: {
-    //     file,
-    //     ...payload,
-    //   },
-    // });
+  async create(@UploadedFile() file: Express.Multer.File, @Body() FileCreateDto: FileCreateDto) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.CREATE,
+      data: {
+        ...FileCreateDto,
+        file,
+      },
+    });
   }
 
   @ApiOperation({ summary: "Delete file" })

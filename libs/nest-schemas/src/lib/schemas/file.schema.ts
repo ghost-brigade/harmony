@@ -30,13 +30,19 @@ export class File {
   @Prop({ type: Types.ObjectId, ref: "server", required: false })
   server: Server;
 
+  @Prop({ type: Types.ObjectId, ref: "User", required: true })
+  owner: User;
+
   @Prop({ type: String, required: true })
   originalName: string;
 
   @Prop({ type: String, required: true })
-  mimeType: string;
+  filename: string;
 
   @Prop({ type: String, required: true })
+  mimeType: string;
+
+  @Prop({ type: String, required: false })
   url: string;
 }
 
