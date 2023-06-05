@@ -3,19 +3,32 @@ import { Logger, VERSION_NEUTRAL, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { GatewayModule } from "./gateway.module";
 import helmet from "helmet";
-import { RpcExceptionFilter } from "./core/filters/rpcException.filter";
+import { RpcExceptionFilter } from "./core/filters/rpc-exception.filter";
+import { patchNestJsSwagger } from "nestjs-zod";
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
-  const port = process.env.PORT || 3000;
-  const config = new DocumentBuilder()
-    .setTitle("Harmony API")
-    .setDescription("Harmony API")
-    .setVersion("1")
-    .build();
+  patchNestJsSwagger();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("docs", app, document);
+  const port = process.env.PORT || 3000;
+
+  if (process.env.NODE_ENV === "development") {
+    const config = new DocumentBuilder()
+      .setTitle("Harmony API")
+      .setDescription("Harmony API")
+      .setVersion("1")
+      .addBearerAuth()
+      .addSecurity("bearer", {
+        type: "apiKey",
+        in: "header",
+        name: "Authorization",
+      })
+      .addSecurityRequirements("bearer")
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("docs", app, document);
+  }
 
   app.use(helmet());
   app.enableCors({ origin: [process.env?.CORS_ORIGIN || "*"] });

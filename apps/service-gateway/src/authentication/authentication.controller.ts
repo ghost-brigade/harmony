@@ -1,15 +1,21 @@
-import { loginType } from "@harmony/zod";
+import { LoginDto, LoginResponseDto } from "@harmony/zod";
 import { AuthenticationService } from "./authentication.service";
 import { Body, Controller, Post } from "@nestjs/common";
-import { ApiOkResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import {
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
 import { Public } from "../core/decorators/public.decorator";
 import { Throttle } from "@nestjs/throttler";
 @Controller()
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
+  @ApiTags('Authentication')
   @ApiOkResponse({
-    description: "User found",
+    description: 'JWT token',
+    type: LoginResponseDto,
   })
   @ApiUnauthorizedResponse({
     description: "Bad credentials",
@@ -17,7 +23,7 @@ export class AuthenticationController {
   @Post("login")
   @Throttle(5, 300)
   @Public()
-  login(@Body() loginType: loginType) {
-    return this.authenticationService.login(loginType);
+  login(@Body() LoginType: LoginDto) {
+    return this.authenticationService.login(LoginType);
   }
 }

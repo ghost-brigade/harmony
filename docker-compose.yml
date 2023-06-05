@@ -15,6 +15,12 @@ services:
       service: service-template
     command: npx nx serve service-authentication
 
+  service-authorization:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-authorization
+
   service-account:
     extends:
       file: docker-compose.template.yml
@@ -27,23 +33,29 @@ services:
       service: service-template
     command: npx nx serve service-server
 
-  service-message:
-    extends:
-      file: docker-compose.template.yml
-      service: service-template
-    command: npx nx serve service-message
+  # service-message:
+  #   extends:
+  #     file: docker-compose.template.yml
+  #     service: service-template
+  #   command: npx nx serve service-message
 
-  service-search-message:
-    extends:
-      file: docker-compose.template.yml
-      service: service-template
-    command: npx nx serve service-search-message
+  # service-search-message:
+  #   extends:
+  #     file: docker-compose.template.yml
+  #     service: service-template
+  #   command: npx nx serve service-search-message
 
   service-file:
     extends:
       file: docker-compose.template.yml
       service: service-template
     command: npx nx serve service-file
+
+  service-role:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-role
 
 volumes:
   mono-node-modules: null

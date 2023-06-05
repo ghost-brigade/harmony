@@ -1,13 +1,22 @@
-import { z } from 'zod';
+import { z } from "nestjs-zod/z";
+import { createZodDto } from "nestjs-zod";
+import { ApiProperty } from "@nestjs/swagger/dist/decorators";
 
-const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(8),
+const LoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
 });
 
-type loginType = z.infer<typeof loginSchema>;
-
-export {
-    loginSchema,
-    loginType,
+class LoginResponseDto {
+  @ApiProperty({
+    description: "JWT token",
+    type: String,
+  })
+  access_token = "test";
 }
+
+type LoginType = z.infer<typeof LoginSchema>;
+
+class LoginDto extends createZodDto(LoginSchema) { }
+
+export { LoginSchema, LoginType, LoginDto, LoginResponseDto };

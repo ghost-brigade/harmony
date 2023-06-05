@@ -1,6 +1,15 @@
 import { compare } from "bcryptjs";
-import { loginType, userType } from "@harmony/zod";
-import { Services, getServiceProperty } from "@harmony/service-config";
+import {
+  LoginType,
+  UserContextSchema,
+  UserJwtType,
+  UserType,
+} from "@harmony/zod";
+import {
+  ACCOUNT_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 import {
   Inject,
   Injectable,
@@ -20,9 +29,8 @@ export class AuthenticationService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(user: userType) {
+  async validateUser(user: UserType) {
     console.log(user);
-
 
     // if (
     //   user &&
@@ -35,7 +43,7 @@ export class AuthenticationService {
     return null;
   }
 
-  async login(loginType: loginType) {
+  async login(loginType: LoginType) {
     if (!loginType.email || !loginType.password) {
       throw new RpcException(
         new UnprocessableEntityException("Email and password are required")
@@ -43,8 +51,10 @@ export class AuthenticationService {
     }
 
     try {
-      const user: userType = await firstValueFrom(
-        this.accountService.send("account_find_one", { email: loginType.email })
+      const user: UserType = await firstValueFrom(
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          email: loginType.email,
+        })
       );
 
       if (!user) {
@@ -80,11 +90,26 @@ export class AuthenticationService {
 
   async JwtLogin(access_token: string) {
     try {
-      const payload = await this.jwtService.verifyAsync(access_token, {
-        secret: jwtConstants.secret,
-      });
+      const payload: UserJwtType = await this.jwtService.verifyAsync(
+        access_token,
+        {
+          secret: jwtConstants.secret,
+        }
+      );
 
-      return payload;
+      const user = await firstValueFrom(
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          email: payload.email,
+        })
+      );
+
+      const parse = UserContextSchema.safeParse(user);
+      if (parse.success === false) {
+        //TODO: Log error
+        console.log(parse.error);
+      }
+
+      return user;
     } catch {
       throw new RpcException(
         new UnauthorizedException("Token is invalid or expired")

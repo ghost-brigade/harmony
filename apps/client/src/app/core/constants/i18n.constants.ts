@@ -38,5 +38,6 @@ export const I18N_CONSTANTS = {
     SIGNUP_SUBMIT: "Create an account",
     SIGNUP_ALREADY_HAVE_ACCOUNT: "Already have an account?",
     SIGNUP_LOGIN: "Login here",
+    EMPTY: "",
   },
 };

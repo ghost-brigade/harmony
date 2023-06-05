@@ -1,8 +1,13 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { getServiceProperty, Services } from "@harmony/service-config";
-import { loginType, userType } from "@harmony/zod";
-import { Observable, catchError, throwError } from "rxjs";
+import { ClientProxy } from "@nestjs/microservices";
+import {
+  ACCOUNT_MESSAGE_PATTERN,
+  AUTHENTICATION_MESSAGE_PATTERN,
+  getServiceProperty,
+  Services,
+} from "@harmony/service-config";
+import { Observable } from "rxjs";
+import { LoginType } from "@harmony/zod";
 
 @Injectable()
 export class AuthenticationService {
@@ -11,23 +16,25 @@ export class AuthenticationService {
     private readonly client: ClientProxy
   ) {}
 
-  login(loginType: loginType): Observable<userType> {
-    return this.client
-      .send("login", loginType)
-      .pipe(
-        catchError((error) =>
-          throwError(() => new RpcException(error.response))
-        )
-      );
+  getLoggedInUser(email: string): Observable<any> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+      email,
+    });
   }
 
-  jwtLogin(access_token: string): Observable<boolean> {
-    return this.client
-      .send("jwt_login", access_token)
-      .pipe(
-        catchError((error) =>
-          throwError(() => new RpcException(error.response))
-        )
-      );
+  login(loginType: LoginType): Observable<{ access_token: string }> {
+    return this.client.send(
+      AUTHENTICATION_MESSAGE_PATTERN.LOGIN,
+      loginType
+    );
+  }
+
+  jwtLogin(
+    access_token: string
+  ): Observable<{ email: string; iat: number; exp: number }> {
+    return this.client.send(
+      AUTHENTICATION_MESSAGE_PATTERN.JWT_LOGIN,
+      access_token
+    );
   }
 }

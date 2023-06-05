@@ -14,7 +14,11 @@
         "main": "apps/client/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/client/tsconfig.app.json",
-        "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets"],
+        "assets": [
+          "apps/client/src/favicon.svg",
+          "apps/client/src/favicon.png",
+          "apps/client/src/assets"
+        ],
         "styles": ["apps/client/src/styles.css"],
         "scripts": []
       },
@@ -23,13 +27,13 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumWarning": "50kb",
+              "maximumError": "100kb"
             }
           ],
           "outputHashing": "all"

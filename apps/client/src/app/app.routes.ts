@@ -29,16 +29,22 @@ export const appRoutes: Route[] = [
   {
     path: "privacy",
     loadComponent: () =>
-      import("./views/privacy/privacy.component").then((m) => m.PrivacyComponent),
+      import("./views/privacy/privacy.component").then(
+        (m) => m.PrivacyComponent
+      ),
   },
   {
     path: "contact",
     loadComponent: () =>
-      import("./views/contact/contact.component").then((m) => m.ContactComponent),
+      import("./views/contact/contact.component").then(
+        (m) => m.ContactComponent
+      ),
   },
   {
-    path: "*",
+    path: "**",
     loadComponent: () =>
-      import("./views/home/home.component").then((m) => m.HomeComponent),
+      import("./views/not-found/not-found.component").then(
+        (m) => m.NotFoundComponent
+      ),
   },
 ];
