@@ -1,60 +1,107 @@
-import {ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnprocessableEntityResponse,} from "@nestjs/swagger";
-import {FriendshipService} from "./friendship.service";
-import {Body, Controller, Get, InternalServerErrorException, NotFoundException, Param, Post, Query, UseGuards} from "@nestjs/common";
-import {User} from "@harmony/nest-schemas";
-import {createUserType, publicUserSchema, publicUserType, userParamsSchema, userParamsType, userSchema, userType} from "@harmony/zod";
-import { map } from 'rxjs/operators';
-import { RpcException } from "@nestjs/microservices";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import {
+  FRIENDSHIP_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
+import { FileCreateDto, FileDto } from "@harmony/zod";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Inject,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
+// Due to a bug we need to import Multer without using it
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Multer } from "multer";
 
-@Controller("friendship")
-export class FriendshipController {
-  constructor(private readonly accountService: FriendshipService) {}
+@Controller("file")
+@ApiTags("File")
+export class FileController {
+  constructor(
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly client: ClientProxy,
+    private readonly serviceRequest: ServiceRequest
+  ) {}
 
-  @ApiOperation({ summary: "Get all friendships" })
-  @ApiOkResponse({
-    description: "Friendships found",
-    type: [User],
-  })
-  @ApiNotFoundResponse({ description: "Friendships not found" })
-  @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
-  @ApiInternalServerErrorResponse({ description: "Internal server error" })
+  @ApiOperation({ summary: "Get all files" })
+  @ApiOkResponse({ status: 200, description: "Return all files" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get()
-  findAll(@Query() params?: userParamsType|undefined) {
-    //return this.accountService.findAll(params);
+  async findAll() {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.FIND_ALL,
+    });
   }
 
-  @ApiOperation({ summary: "Get a user by id" })
+  @ApiOperation({ summary: "Get file by id" })
   @ApiOkResponse({
-    description: "User found",
-    type: User,
+    status: 200,
+    description: "Return file by id",
+    type: FileCreateDto,
   })
-  @ApiNotFoundResponse({ description: "User not found" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get(":id")
-  async findOne(@Param("id") id: string) {
-    try {
-      const user = await this.accountService.findOne(id);
-      return publicUserSchema.parse(user) as publicUserType;
-    } catch (error) {
-      throw new NotFoundException('User not found');
-    }
+  async findById(@Param("id") id: string) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+      data: { id },
+    });
   }
 
-  @ApiOperation({ summary: "Create a user" })
-  @ApiOkResponse({
-    description: "User created",
-    type: User,
+  @ApiOperation({ summary: "Create file" })
+  @ApiCreatedResponse({
+    status: 201,
+    description: "Return created file",
+    type: FileDto,
   })
-  @ApiNotFoundResponse({ description: "User not found" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @UseInterceptors(FileInterceptor("file"))
   @Post()
-  async create(@Body() createUser: createUserType) {
-    try {
-      console.log(createUser);
-      const user = await this.accountService.create(createUser);
-      return user;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('An error occurred while creating the user');
-    }
+  async create(@UploadedFile() file: Express.Multer.File, @Body() FileCreateDto: FileCreateDto) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.CREATE,
+      data: {
+        ...FileCreateDto,
+        file,
+      },
+    });
   }
 
+  @ApiOperation({ summary: "Delete file" })
+  @ApiNoContentResponse({ status: 204, description: "Return deleted file" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @HttpCode(204)
+  @Delete(":id")
+  async delete(@Param("id") id: string) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FILE_MESSAGE_PATTERN.DELETE,
+      data: { id },
+    });
+  }
 }
