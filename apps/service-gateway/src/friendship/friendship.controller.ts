@@ -4,7 +4,7 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import { FileCreateDto, FileDto } from "@harmony/zod";
+import { FriendshipCreateDto, FriendshipDto } from "@harmony/zod";
 import {
   Body,
   Controller,
@@ -14,8 +14,6 @@ import {
   Inject,
   Param,
   Post,
-  UploadedFile,
-  UseInterceptors,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
@@ -27,37 +25,37 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import { FileInterceptor } from "@nestjs/platform-express";
+
 // Due to a bug we need to import Multer without using it
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from "multer";
 
-@Controller("file")
-@ApiTags("File")
-export class FileController {
+@Controller("friendship")
+@ApiTags("Friendship")
+export class FriendshipController {
   constructor(
-    @Inject(getServiceProperty(Services.FILE, "name"))
+    @Inject(getServiceProperty(Services.FRIENDSHIP, "name"))
     private readonly client: ClientProxy,
     private readonly serviceRequest: ServiceRequest
   ) {}
 
-  @ApiOperation({ summary: "Get all files" })
-  @ApiOkResponse({ status: 200, description: "Return all files" })
+  @ApiOperation({ summary: "Get all friendships" })
+  @ApiOkResponse({ status: 200, description: "Return all friendships" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get()
   async findAll() {
     return this.serviceRequest.send({
       client: this.client,
-      pattern: FILE_MESSAGE_PATTERN.FIND_ALL,
+      pattern: FRIENDSHIP_MESSAGE_PATTERN.FIND_ALL,
     });
   }
 
-  @ApiOperation({ summary: "Get file by id" })
+  @ApiOperation({ summary: "Get friendship by id" })
   @ApiOkResponse({
     status: 200,
-    description: "Return file by id",
-    type: FileCreateDto,
+    description: "Return friendship by id",
+    type: FriendshipCreateDto,
   })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
@@ -65,34 +63,47 @@ export class FileController {
   async findById(@Param("id") id: string) {
     return this.serviceRequest.send({
       client: this.client,
-      pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+      pattern: FRIENDSHIP_MESSAGE_PATTERN.FIND_BY_ID,
       data: { id },
     });
   }
 
-  @ApiOperation({ summary: "Create file" })
-  @ApiCreatedResponse({
-    status: 201,
-    description: "Return created file",
-    type: FileDto,
-  })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @UseInterceptors(FileInterceptor("file"))
-  @Post()
-  async create(@UploadedFile() file: Express.Multer.File, @Body() FileCreateDto: FileCreateDto) {
+  @Post("/:userId")
+  async sendFriendRequest(
+    @Param("userId") userId: string,
+  ) {
     return this.serviceRequest.send({
       client: this.client,
-      pattern: FILE_MESSAGE_PATTERN.CREATE,
+      pattern: FRIENDSHIP_MESSAGE_PATTERN.CREATE,
       data: {
-        ...FileCreateDto,
-        file,
+        sender: /* ID de l'utilisateur actuel */,
+        receiver: userId,
+        status: FriendshipStatus.PENDING,
       },
     });
   }
 
-  @ApiOperation({ summary: "Delete file" })
-  @ApiNoContentResponse({ status: 204, description: "Return deleted file" })
+
+  @ApiOperation({ summary: "Get all friendships of a user" })
+  @ApiOkResponse({ status: 200, description: "Return all friendships" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @Get()
+  async findAllFriendships() {
+    const currentUserId = /* ID de l'utilisateur actuel */;
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FRIENDSHIP_MESSAGE_PATTERN.FIND_ALL,
+      data: {
+        userId: currentUserId,
+      },
+    });
+  }
+
+  @ApiOperation({ summary: "Delete friendship" })
+  @ApiNoContentResponse({ status: 204, description: "Return deleted friendship" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @HttpCode(204)
@@ -100,7 +111,7 @@ export class FileController {
   async delete(@Param("id") id: string) {
     return this.serviceRequest.send({
       client: this.client,
-      pattern: FILE_MESSAGE_PATTERN.DELETE,
+      pattern: FRIENDSHIP_MESSAGE_PATTERN.DELETE,
       data: { id },
     });
   }
