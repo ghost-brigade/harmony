@@ -1,6 +1,6 @@
 import { z } from "nestjs-zod/z";
 import { createZodDto } from "nestjs-zod";
-import { ApiProperty } from "@nestjs/swagger/dist/decorators";
+import { ApiProperty } from "@nestjs/swagger";
 
 const LoginSchema = z.object({
   email: z.string().email(),

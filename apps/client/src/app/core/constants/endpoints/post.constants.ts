@@ -1,8 +1,6 @@
 export const PostEndpoint = {
   Login: "/login",
   Register: "/register",
-  ServerMembers: "/server/:id/members",
-  ServerEmoji: "/server/:id/emoji",
 } as const;
 import { LoginType } from "@harmony/zod";
 
@@ -26,31 +24,6 @@ export type PostEndpointMap = {
       username: string;
       password: string;
       rememberMe: boolean;
-    };
-  };
-  "/server/:id/emoji": {
-    response: {
-      success: boolean;
-      members: string[];
-      w: string;
-    };
-    body: {
-      serverId: string;
-    };
-    params: {
-      emoji: string;
-    };
-  };
-  "/server/:id/members": {
-    response: {
-      success: boolean;
-      members: string[];
-    };
-    body: {
-      serverId: string;
-    };
-    params: {
-      id: string;
     };
   };
 };

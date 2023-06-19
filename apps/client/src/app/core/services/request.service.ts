@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { BASE_URL } from "../constants/api.constants";
+import { API_BASE_URL } from "../constants/api.constants";
 import {
   PostBody,
   PostEndpointValue,
@@ -78,7 +78,7 @@ export class RequestService {
       });
     }
     return this.http.post<PostResponse<Key>>(
-      `${BASE_URL}${config.endpoint}`,
+      `${API_BASE_URL}${config.endpoint}`,
       config.body,
       {
         observe: "response",
@@ -99,7 +99,7 @@ export class RequestService {
       });
     }
     return this.http.put<PutResponse<Key>>(
-      `${BASE_URL}${config.endpoint}`,
+      `${API_BASE_URL}${config.endpoint}`,
       config.body,
       {
         observe: "response",
@@ -125,11 +125,14 @@ export class RequestService {
         );
       });
     }
-    return this.http.get<GetResponse<Key>>(`${BASE_URL}${config.endpoint}`, {
-      observe: "response",
-      headers,
-      params: queryParams,
-    });
+    return this.http.get<GetResponse<Key>>(
+      `${API_BASE_URL}${config.endpoint}`,
+      {
+        observe: "response",
+        headers,
+        params: queryParams,
+      }
+    );
   }
 
   delete<Key extends DeleteEndpointValue>(config: DeleteConfig<Key>) {
@@ -144,7 +147,7 @@ export class RequestService {
       });
     }
     return this.http.delete<DeleteResponse<Key>>(
-      `${BASE_URL}${config.endpoint}`,
+      `${API_BASE_URL}${config.endpoint}`,
       {
         observe: "response",
         headers,

@@ -30,6 +30,8 @@ export const I18N_CONSTANTS = {
     SIGNUP_TITLE: "Create an account",
     SIGNUP_EMAIL_LABEL: "Your email",
     SIGNUP_EMAIL_PLACEHOLDER: "name@company.com",
+    SIGNUP_USERNAME_LABEL: "Your username",
+    SIGNUP_USERNAME_PLACEHOLDER: "John_Doe",
     SIGNUP_PASSWORD_LABEL: "Password",
     SIGNUP_PASSWORD_PLACEHOLDER: "••••••••",
     SIGNUP_CONFIRM_PASSWORD_LABEL: "Confirm password",

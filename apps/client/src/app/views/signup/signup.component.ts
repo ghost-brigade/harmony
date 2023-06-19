@@ -1,9 +1,10 @@
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
 import { LogoComponent } from "../../core/components/logo/logo.component";
 import { RouterModule } from "@angular/router";
+import { LoaderService } from "../../core/components/loader/loader.service";
 
 @Component({
   selector: "harmony-signup",
@@ -12,7 +13,9 @@ import { RouterModule } from "@angular/router";
   templateUrl: "./signup.component.html",
 })
 export class SignupComponent {
+  loaderService = inject(LoaderService);
   email = signal("");
+  username = signal("");
   password = signal("");
   confirmPassword = signal("");
   acceptTerms = signal(false);
@@ -22,4 +25,22 @@ export class SignupComponent {
     }
     return true;
   });
+
+  btnDisabled = computed(() => {
+    return (
+      !this.email() ||
+      !this.username() ||
+      !this.password() ||
+      !this.confirmPassword() ||
+      !this.acceptTerms() ||
+      !this.passwordMatch()
+    );
+  });
+
+  register() {
+    this.loaderService.show();
+    setTimeout(() => {
+      this.loaderService.hide();
+    }, 3000);
+  }
 }

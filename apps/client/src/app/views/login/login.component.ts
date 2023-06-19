@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { Component, computed, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
 import { LogoComponent } from "../../core/components/logo/logo.component";
@@ -17,6 +17,9 @@ export class LoginComponent {
   email = signal("");
   password = signal("");
   rememberMe = signal(false);
+  btnDisabled = computed(() => {
+    return !this.email() || !this.password();
+  });
   constructor(private requestService: RequestService) {}
 
   login() {

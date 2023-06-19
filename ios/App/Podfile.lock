@@ -1,17 +1,29 @@
 PODS:
-  - Capacitor (5.0.2):
+  - Capacitor (5.0.5):
     - CapacitorCordova
-  - CapacitorApp (5.0.2):
+  - CapacitorApp (5.0.3):
     - Capacitor
-  - CapacitorCordova (5.0.2)
+  - CapacitorCordova (5.0.5)
+  - CapacitorDialog (5.0.4):
+    - Capacitor
+  - CapacitorHaptics (5.0.4):
+    - Capacitor
   - CapacitorPluginIosWebviewConfigurator (0.0.1):
+    - Capacitor
+  - CapacitorToast (5.0.4):
+    - Capacitor
+  - CapawesomeCapacitorFilePicker (5.0.0):
     - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorDialog (from `../../node_modules/@capacitor/dialog`)"
+  - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - CapacitorPluginIosWebviewConfigurator (from `../../node_modules/capacitor-plugin-ios-webview-configurator`)
+  - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
+  - "CapawesomeCapacitorFilePicker (from `../../node_modules/@capawesome/capacitor-file-picker`)"
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -20,15 +32,27 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/app"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorDialog:
+    :path: "../../node_modules/@capacitor/dialog"
+  CapacitorHaptics:
+    :path: "../../node_modules/@capacitor/haptics"
   CapacitorPluginIosWebviewConfigurator:
     :path: "../../node_modules/capacitor-plugin-ios-webview-configurator"
+  CapacitorToast:
+    :path: "../../node_modules/@capacitor/toast"
+  CapawesomeCapacitorFilePicker:
+    :path: "../../node_modules/@capawesome/capacitor-file-picker"
 
 SPEC CHECKSUMS:
-  Capacitor: d703b5dde0a7d82df29aa4323845709df29c96a8
-  CapacitorApp: 28fef1fd75b2b3686e875216806fb8416d421097
-  CapacitorCordova: 9745ab233fe489f3315154b7969deea3ce1b4e85
+  Capacitor: b1248915663add1bd6567e2b67c1c1fa3abcf5e8
+  CapacitorApp: 7a5dec8b33573707164b293475d5c89ba684364a
+  CapacitorCordova: f8c06b897c74ee8f7701fe10e6443b40822bc83a
+  CapacitorDialog: fe8b913cdf8c73cabe556974565fc44f2a09c75f
+  CapacitorHaptics: e36653b37326d71bb35ae42b944124037dbc3d97
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
+  CapacitorToast: fcc4329f01d06cf02f190f8f5ce7f16509a2263c
+  CapawesomeCapacitorFilePicker: ec211560d209c2efa0e47dad3308bf497e6ce388
 
-PODFILE CHECKSUM: 76226d1cecb4d1f715614cba36e404994ce7a982
+PODFILE CHECKSUM: a71d1e08992ff8fe24202ad3433e5dacefbdae86
 
 COCOAPODS: 1.12.1
