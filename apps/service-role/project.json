@@ -69,7 +69,10 @@
           "NODE_ENV": "production"
         },
         "metadata": {
-          "images": ["ghcr.io/ghost-brigade/harmony-service-role"],
+          "images": [
+            "ghcr.io/ghost-brigade/harmony-service-role",
+            "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-role"
+          ],
           "load": true,
           "tags": [
             "type=raw,value=stable,enable={{is_default_branch}}",

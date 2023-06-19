@@ -96,7 +96,10 @@
         "platforms": ["linux/amd64", "linux/arm64"],
         "buildArgs": {},
         "metadata": {
-          "images": ["ghcr.io/ghost-brigade/harmony-client"],
+          "images": [
+            "ghcr.io/ghost-brigade/harmony-client",
+            "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-client"
+          ],
           "load": true,
           "tags": [
             "type=raw,value=stable,enable={{is_default_branch}}",
