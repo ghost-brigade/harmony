@@ -6,7 +6,7 @@ resource "cloudflare_record" "root" {
   zone_id = var.cloudflare_zone_id
   name    = "@"
   type    = "A"
-  value   = "8.8.8.8"
+  value   = google_compute_global_address.global_ip.address
   proxied = true
 }
 
