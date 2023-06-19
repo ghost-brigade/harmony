@@ -1,0 +1,27 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: client-cert
+spec:
+  domains:
+    - harmony.vg
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: client-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: harmony-client-ip
+    networking.gke.io/managed-certificates: client-cert
+spec:
+  rules:
+  - host: harmony.vg
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: client-svc
+            port:
+              number: 60080
