@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { I18nService } from "./core/services/i18n.service";
 import { LoaderComponent } from "./core/components/loader/loader.component";
@@ -19,7 +19,7 @@ import { ToastComponent } from "./core/components/toast/toast.component";
   imports: [RouterOutlet, LoaderComponent, AlertComponent, ToastComponent],
 })
 export class AppComponent implements OnInit {
-  constructor(private i18nService: I18nService) {}
+  i18nService = inject(I18nService);
 
   ngOnInit() {
     this.i18nService.getUserLanguage();

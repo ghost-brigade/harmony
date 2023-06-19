@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { API_BASE_URL } from "../constants/api.constants";
 import {
@@ -56,7 +56,7 @@ type DeleteConfig<Key extends DeleteEndpointValue> =
   providedIn: "root",
 })
 export class RequestService {
-  constructor(private http: HttpClient) {}
+  http = inject(HttpClient);
 
   private setAuthHeader(token?: string) {
     if (token) {

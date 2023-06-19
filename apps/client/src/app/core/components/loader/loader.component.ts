@@ -1,4 +1,4 @@
-import { Component, computed } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { LOADER_ANIMATION } from "./loader.animation";
 import { LoaderService } from "./loader.service";
@@ -11,7 +11,7 @@ import { LoaderService } from "./loader.service";
   templateUrl: "./loader.component.html",
 })
 export class LoaderComponent {
-  constructor(private loaderService: LoaderService) {}
+  loaderService = inject(LoaderService);
 
   $isOpen = computed(() => this.loaderService.$isOpen());
 }
