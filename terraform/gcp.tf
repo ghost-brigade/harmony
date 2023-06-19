@@ -25,3 +25,10 @@ module "google_container_cluster" {
   vpc_network_name = module.google_compute_network.vpc.name
   subnetwork_name  = module.google_compute_subnetwork.subnet.name
 }
+
+resource "google_artifact_registry_repository" "registry" {
+  location      = var.google_region
+  repository_id = var.app_name
+  description   = "Artifact Registry repository for ${var.app_name}"
+  format        = "DOCKER"
+}
