@@ -15,10 +15,7 @@ on:
 jobs:
   build-with-docker-engine:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
+    permissions: write-all
     steps:
       - name: Checkout
         uses: actions/checkout@v3
