@@ -14,8 +14,12 @@ resource "google_artifact_registry_repository" "registry" {
   format        = "DOCKER"
 }
 
-resource "google_compute_global_address" "global_ip" {
-  name = "${var.app_name}-global-ip"
+resource "google_compute_global_address" "client_ip" {
+  name = "${var.app_name}-client-ip"
+}
+
+resource "google_compute_global_address" "gateway_ip" {
+  name = "${var.app_name}-gateway-ip"
 }
 
 module "google_compute_network" {
