@@ -50,7 +50,7 @@ services:
     extends:
       file: docker-compose.template.yml
       service: service-template
-    command: npx nx serve service-search-message
+    command: npx nx serve service-search
 
   # service-file:
   #   extends:
