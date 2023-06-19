@@ -3,18 +3,21 @@ name: Build and push Docker images
 on:
   workflow_dispatch: {}
   push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/docker.yml"
-      - "apps/**"
-      - "libs/**"
-      - "tools/**"
-      - "package.json"
+    # branches:
+    #   - main
+    # paths:
+    #   - ".github/workflows/docker.yml"
+    #   - "apps/**"
+    #   - "libs/**"
+    #   - "tools/**"
+    #   - "package.json"
 
 jobs:
   build-with-docker-engine:
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,6 +33,18 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_TOKEN }}
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Configure Docker for Artifact Registry'
+        run: 'gcloud auth configure-docker --quiet europe-west9-docker.pkg.dev'
 
       - uses: actions/setup-node@v3
         with:
