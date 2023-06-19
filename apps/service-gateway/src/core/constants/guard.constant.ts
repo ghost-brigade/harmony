@@ -1,1 +1,1 @@
-export const IS_PUBLIC_ROUTE_KEY = 'isPublicRoute';
+export const IS_PUBLIC_ROUTE_KEY = "isPublicRoute";

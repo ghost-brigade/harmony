@@ -12,9 +12,9 @@ import { Throttle } from "@nestjs/throttler";
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  @ApiTags('Authentication')
+  @ApiTags("Authentication")
   @ApiOkResponse({
-    description: 'JWT token',
+    description: "JWT token",
     type: LoginResponseDto,
   })
   @ApiUnauthorizedResponse({

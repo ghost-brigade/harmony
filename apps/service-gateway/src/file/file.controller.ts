@@ -80,7 +80,10 @@ export class FileController {
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @UseInterceptors(FileInterceptor("file"))
   @Post()
-  async create(@UploadedFile() file: Express.Multer.File, @Body() FileCreateDto: FileCreateDto) {
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() FileCreateDto: FileCreateDto
+  ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FILE_MESSAGE_PATTERN.CREATE,

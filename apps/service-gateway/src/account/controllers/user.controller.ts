@@ -33,7 +33,7 @@ import { Observable } from "rxjs";
 import { Public } from "../../core/decorators/public.decorator";
 
 @Controller("user")
-@ApiTags('User')
+@ApiTags("User")
 export class UserController {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
@@ -85,7 +85,9 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: "User not found" })
   @Post(":id")
-  public update(@Body() updateUser: UserUpdateType): Observable<UserPublicType> {
+  public update(
+    @Body() updateUser: UserUpdateType
+  ): Observable<UserPublicType> {
     return this.client.send(ACCOUNT_MESSAGE_PATTERN.UPDATE, updateUser);
   }
 }

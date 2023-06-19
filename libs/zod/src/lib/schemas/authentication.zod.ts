@@ -17,6 +17,6 @@ class LoginResponseDto {
 
 type LoginType = z.infer<typeof LoginSchema>;
 
-class LoginDto extends createZodDto(LoginSchema) { }
+class LoginDto extends createZodDto(LoginSchema) {}
 
 export { LoginSchema, LoginType, LoginDto, LoginResponseDto };

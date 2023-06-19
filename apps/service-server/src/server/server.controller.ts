@@ -90,6 +90,4 @@ export class ServerController {
   async getServersOfMember(memberId: IdType) {
     return await this.serverService.getServersOfMember(memberId);
   }
-
-
 }

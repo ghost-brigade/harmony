@@ -5,10 +5,7 @@ import { AuthService } from "../services/auth.service";
 
 @Injectable()
 export class NeedAuthGuard {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.authService.token()) {
