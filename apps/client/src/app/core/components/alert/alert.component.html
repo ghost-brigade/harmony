@@ -1,5 +1,5 @@
 <div
-  class="fixed px-5 md:px-0 top-0 mt-[calc(env(safe-area-inset-top)+1.25rem)] flex w-screen items-center justify-center"
+  class="fixed top-0 mt-[calc(env(safe-area-inset-top)+1.25rem)] flex w-screen items-center justify-center px-5 md:px-0"
   *ngIf="visible()"
   @alert>
   <div
@@ -7,7 +7,7 @@
     role="alert">
     <svg
       aria-hidden="true"
-      class="flex-shrink-0 w-5 h-5"
+      class="h-5 w-5 shrink-0"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +30,7 @@
       <span class="sr-only">Close</span>
       <svg
         aria-hidden="true"
-        class="w-5 h-5"
+        class="h-5 w-5"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg">

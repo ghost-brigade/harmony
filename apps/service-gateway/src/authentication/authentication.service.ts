@@ -23,10 +23,7 @@ export class AuthenticationService {
   }
 
   login(loginType: LoginType): Observable<{ access_token: string }> {
-    return this.client.send(
-      AUTHENTICATION_MESSAGE_PATTERN.LOGIN,
-      loginType
-    );
+    return this.client.send(AUTHENTICATION_MESSAGE_PATTERN.LOGIN, loginType);
   }
 
   jwtLogin(

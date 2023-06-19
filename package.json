@@ -7,7 +7,8 @@
     "build:ios": "nx build client && cap sync ios && cap open ios",
     "build:android": "nx build client && cap sync android && cap open android",
     "build:tauri": "tauri build",
-    "format": "nx run-many -t format && nx run-many -t lint"
+    "format": "eslint --fix .",
+    "format:client": "eslint --fix apps/client"
   },
   "private": true,
   "devDependencies": {
@@ -57,6 +58,8 @@
     "eslint": "~8.40.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-cypress": "^2.13.3",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-tailwindcss": "^3.12.1",
     "flowbite-typography": "^1.0.3",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",

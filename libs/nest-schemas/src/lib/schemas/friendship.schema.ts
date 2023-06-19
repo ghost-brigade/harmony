@@ -21,4 +21,7 @@ export class Friendship {
 }
 
 export const FriendshipSchema = SchemaFactory.createForClass(Friendship);
-export const FriendshipModel = model<Friendship>("Friendship", FriendshipSchema);
+export const FriendshipModel = model<Friendship>(
+  "Friendship",
+  FriendshipSchema
+);

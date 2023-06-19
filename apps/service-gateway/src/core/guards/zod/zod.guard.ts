@@ -19,7 +19,7 @@ export class ZodGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const data = context.switchToHttp().getRequest()[this.source];
     const result = this.schema.safeParse(data);
-    
+
     if (result.success === false) {
       throw new HttpException(
         {
@@ -29,7 +29,7 @@ export class ZodGuard implements CanActivate {
         HttpStatus.BAD_REQUEST
       );
     }
-  
+
     return true;
   }
 }
