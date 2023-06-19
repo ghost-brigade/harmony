@@ -76,6 +76,7 @@ kind: Ingress
 metadata:
   name: client-ingress
   annotations:
+    kubernetes.io/ingress.global-static-ip-name: harmony-global-ip
     networking.gke.io/managed-certificates: "client-cert"
 spec:
   rules:
