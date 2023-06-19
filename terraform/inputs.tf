@@ -33,7 +33,7 @@ variable "mongodbatlas_database_password" {
 variable "mongodbatlas_cluster_names" {
   type        = list(string)
   description = "The name of the cluster."
-  default     = ["account", "server", "message"]
+  default     = ["account"]
 }
 variable "cloudflare_api_token" {
   type        = string
