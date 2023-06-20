@@ -12,19 +12,19 @@ import { TOAST_ANIMATION } from "./toast.animation";
   templateUrl: "./toast.component.html",
 })
 export class ToastComponent {
-  message = computed(() => this.toastService.message());
-  visible = computed(() => this.toastService.visible());
-  type = computed(() => this.toastService.type());
-  delay = computed(() => this.toastService.delay());
+  $message = computed(() => this.toastService.$message());
+  $visible = computed(() => this.toastService.$visible());
+  $type = computed(() => this.toastService.$type());
+  $delay = computed(() => this.toastService.$delay());
   timeout = -1;
 
   constructor(private toastService: ToastService) {
     effect(() => {
-      if (this.toastService.visible()) {
+      if (this.toastService.$visible()) {
         clearTimeout(this.timeout);
         this.timeout = window.setTimeout(() => {
           this.dismiss();
-        }, this.delay());
+        }, this.$delay());
       }
     });
   }

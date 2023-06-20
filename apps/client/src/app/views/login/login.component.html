@@ -79,6 +79,7 @@
           <button
             type="submit"
             [disabled]="btnDisabled()"
+            (click)="login()"
             class="c-button">
             {{ "LOGIN_SUBMIT" | i18n }}
           </button>

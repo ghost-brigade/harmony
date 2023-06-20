@@ -4,12 +4,12 @@ import { Injectable, effect, signal } from "@angular/core";
   providedIn: "root",
 })
 export class AuthService {
-  token = signal("");
+  $token = signal("");
 
   constructor() {
     effect(() => {
-      if (this.token()) {
-        localStorage.setItem("harmony-token", this.token());
+      if (this.$token()) {
+        localStorage.setItem("harmony-token", this.$token());
       } else {
         localStorage.removeItem("harmony-token");
       }
@@ -17,10 +17,10 @@ export class AuthService {
   }
 
   saveToken(token: string) {
-    this.token.set(token);
+    this.$token.set(token);
   }
 
   removeToken() {
-    this.token.set("");
+    this.$token.set("");
   }
 }

@@ -1,13 +1,13 @@
 <div
   @toast
   class="fixed bottom-0 right-0 mb-[calc(env(safe-area-inset-bottom)+1.25rem)] px-5"
-  *ngIf="visible()">
+  *ngIf="$visible()">
   <div
     id="toast-default"
     class="flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400"
     role="alert">
     <div
-      *ngIf="type() === 'info'"
+      *ngIf="$type() === 'info'"
       class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-500 dark:bg-blue-800 dark:text-blue-200">
       <svg
         aria-hidden="true"
@@ -23,7 +23,7 @@
       <span class="sr-only">Fire icon</span>
     </div>
     <div
-      *ngIf="type() === 'success'"
+      *ngIf="$type() === 'success'"
       class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
       <svg
         aria-hidden="true"
@@ -39,7 +39,7 @@
       <span class="sr-only">Check icon</span>
     </div>
     <div
-      *ngIf="type() === 'error'"
+      *ngIf="$type() === 'error'"
       class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
       <svg
         aria-hidden="true"
@@ -55,7 +55,7 @@
       <span class="sr-only">Error icon</span>
     </div>
     <div
-      *ngIf="type() === 'warning'"
+      *ngIf="$type() === 'warning'"
       class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-500 dark:bg-orange-700 dark:text-orange-200">
       <svg
         aria-hidden="true"
@@ -70,7 +70,7 @@
       </svg>
       <span class="sr-only">Warning icon</span>
     </div>
-    <div class="ml-3 text-sm font-normal">{{ message() | i18n }}</div>
+    <div class="ml-3 text-sm font-normal">{{ $message() | i18n }}</div>
     <button
       type="button"
       (click)="dismiss()"

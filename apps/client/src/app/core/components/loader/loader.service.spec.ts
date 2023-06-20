@@ -13,4 +13,14 @@ describe("LoaderService", () => {
   it("should be created", () => {
     expect(service).toBeTruthy();
   });
+
+  it("should be able to show the loader", () => {
+    service.show();
+    expect(service.$isOpen()).toBeTruthy();
+  });
+
+  it("should be able to hide the loader", () => {
+    service.hide();
+    expect(service.$isOpen()).toBeFalsy();
+  });
 });

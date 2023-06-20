@@ -14,7 +14,6 @@ import { ToastComponent } from "./core/components/toast/toast.component";
 @Component({
   selector: "harmony-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
   standalone: true,
   imports: [RouterOutlet, LoaderComponent, AlertComponent, ToastComponent],
 })

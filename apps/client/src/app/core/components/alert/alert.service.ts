@@ -6,17 +6,17 @@ import { AlertKind } from "./alert.model";
   providedIn: "root",
 })
 export class AlertService {
-  visible = signal(false);
-  message: WritableSignal<I18nKey> = signal("EMPTY");
-  type: WritableSignal<AlertKind> = signal("info");
+  $visible = signal(false);
+  $message: WritableSignal<I18nKey> = signal("EMPTY");
+  $type: WritableSignal<AlertKind> = signal("info");
 
   show(config: { message: I18nKey; type: AlertKind }) {
-    this.message.set(config.message);
-    this.type.set(config.type);
-    this.visible.set(true);
+    this.$message.set(config.message);
+    this.$type.set(config.type);
+    this.$visible.set(true);
   }
 
   dismiss() {
-    this.visible.set(false);
+    this.$visible.set(false);
   }
 }
