@@ -4,7 +4,7 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import { FriendshipCreateDto, FriendshipDto } from "@harmony/zod";
+import { FriendshipCreateDto, FriendshipDto, IdType } from "@harmony/zod";
 import {
   Body,
   Controller,
@@ -70,17 +70,15 @@ export class FriendshipController {
 
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @Post("/:userId")
+  @Post("/request")
   async sendFriendRequest(
-    @Param("userId") userId: string,
+    @Body() userId: IdType
   ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDSHIP_MESSAGE_PATTERN.CREATE,
       data: {
-        sender: /* ID de l'utilisateur actuel */,
         receiver: userId,
-        status: FriendshipStatus.PENDING,
       },
     });
   }
@@ -92,7 +90,6 @@ export class FriendshipController {
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get()
   async findAllFriendships() {
-    const currentUserId = /* ID de l'utilisateur actuel */;
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDSHIP_MESSAGE_PATTERN.FIND_ALL,
