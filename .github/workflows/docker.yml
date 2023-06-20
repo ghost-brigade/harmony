@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - feature/kubernetes
     paths:
       - ".github/workflows/docker.yml"
       - "apps/**"

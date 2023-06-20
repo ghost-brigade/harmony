@@ -8,5 +8,5 @@ spec:
     app: gateway
   ports:
     - protocol: TCP
-      port: 60001
+      port: 60000
       targetPort: 3000
