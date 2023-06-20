@@ -8,6 +8,7 @@ import { JwtAuthGuard } from "./core/guards/passport/jwt-auth.guard";
 import { GatewayErrorHandlerInterceptor } from "./core/interceptors/gateway-error-handler.interceptor";
 import { RoleModule } from "./role/role.module";
 import { FileModule } from "./file/file.module";
+import { DefaultModule } from "./default/default.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FileModule } from "./file/file.module";
       ttl: parseInt(process.env?.RATE_LIMIT_TTL || "1"),
       limit: parseInt(process.env?.RATE_LIMIT_COUNT || "10"),
     }),
+    DefaultModule,
     AuthenticationModule,
     RoleModule,
     ServerModule,

@@ -1,0 +1,27 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: gateway-cert
+spec:
+  domains:
+    - api.harmony.vg
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: harmony-gateway-ip
+    networking.gke.io/managed-certificates: gateway-cert
+spec:
+  rules:
+  - host: api.harmony.vg
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: gateway-svc
+            port:
+              number: 60000
