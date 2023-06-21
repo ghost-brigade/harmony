@@ -1,120 +1,5 @@
 [
   {
-    "_id": "d3d0fb86-b644-4f06-8986-e200bf80d2b7",
-    "colId": "history",
-    "containerId": "",
-    "name": "localhost:3000/login",
-    "url": "localhost:3001/login",
-    "method": "POST",
-    "sortNum": 0,
-    "created": "2023-04-15T16:14:51.077Z",
-    "modified": "2023-04-23T17:37:55.497Z",
-    "headers": [],
-    "params": [],
-    "body": {
-      "type": "json",
-      "raw": "{\n  \"email\": \"test@antho.com\",\n  \"password\": \"arrrrrnthony\"\n}",
-      "form": []
-    },
-    "tests": []
-  },
-  {
-    "_id": "dba65ed5-9d9d-4376-a3bd-5b1b351927c3",
-    "colId": "history",
-    "containerId": "",
-    "name": "http://localhost:3001/account",
-    "url": "http://localhost:3001/account",
-    "method": "POST",
-    "sortNum": 0,
-    "created": "2023-04-23T17:12:21.639Z",
-    "modified": "2023-04-23T18:46:39.085Z",
-    "headers": [
-      {
-        "name": "Authorization",
-        "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU",
-        "isDisabled": true
-      }
-    ],
-    "params": [],
-    "body": {
-      "type": "json",
-      "raw": "{\n  \"email\": \"test@antho.com\",\n\"password\": \"arrrrrnthony\",\n\"username\": \"anthony\"\n}",
-      "form": []
-    },
-    "tests": []
-  },
-  {
-    "_id": "78a0861e-8e57-4ddb-aa62-b2d8ac4a17b9",
-    "colId": "history",
-    "containerId": "",
-    "name": "http://localhost:3001/account",
-    "url": "http://localhost:3001/account",
-    "method": "GET",
-    "sortNum": 0,
-    "created": "2023-04-23T17:39:41.154Z",
-    "modified": "2023-04-23T18:53:52.282Z",
-    "headers": [
-      {
-        "name": "Authorization",
-        "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU",
-        "isDisabled": true
-      }
-    ],
-    "params": [],
-    "body": {
-      "type": "json",
-      "raw": "{\n  \"email\": \"test@antho.com\",\n\"password\": \"arrrrrnthony\",\n\"username\": \"anthony\"\n}",
-      "form": []
-    },
-    "auth": {
-      "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU"
-    },
-    "tests": []
-  },
-  {
-    "_id": "e8c71887-8257-4c6e-84de-4062efe8b7ea",
-    "colId": "history",
-    "containerId": "",
-    "name": "http://localhost:3000/role",
-    "url": "http://localhost:3000/role",
-    "method": "GET",
-    "sortNum": 0,
-    "created": "2023-06-16T14:50:58.572Z",
-    "modified": "2023-06-16T14:50:58.572Z",
-    "headers": [],
-    "params": [],
-    "tests": []
-  },
-  {
-    "_id": "aa2e5342-9c19-4b4d-86b0-f423e9974cd2",
-    "colId": "history",
-    "containerId": "",
-    "name": "http://localhost:3000/",
-    "url": "http://localhost:3000/",
-    "method": "POST",
-    "sortNum": 0,
-    "created": "2023-06-16T14:51:45.023Z",
-    "modified": "2023-06-16T14:51:45.023Z",
-    "headers": [],
-    "params": [],
-    "tests": []
-  },
-  {
-    "_id": "3f894cc5-fc91-434c-92b5-08e3168734d8",
-    "colId": "history",
-    "containerId": "",
-    "name": "http://localhost:3000/auth",
-    "url": "http://localhost:3000/auth",
-    "method": "POST",
-    "sortNum": 0,
-    "created": "2023-06-16T14:51:58.490Z",
-    "modified": "2023-06-16T14:51:58.490Z",
-    "headers": [],
-    "params": [],
-    "tests": []
-  },
-  {
     "_id": "7b3befc6-2b59-49d0-81d5-981789b140b5",
     "colId": "history",
     "containerId": "",
@@ -138,39 +23,20 @@
     "tests": []
   },
   {
-    "_id": "46571a41-9dbe-43ce-83be-b8af169f8b40",
-    "colId": "history",
-    "containerId": "",
-    "name": "http://localhost:3000/register",
-    "url": "http://localhost:3000/user",
-    "method": "GET",
-    "sortNum": 0,
-    "created": "2023-06-16T15:15:02.653Z",
-    "modified": "2023-06-21T16:22:05.215Z",
-    "headers": [],
-    "params": [],
-    "body": {
-      "type": "json",
-      "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
-      "form": []
-    },
-    "tests": []
-  },
-  {
     "_id": "7b3bf50b-0280-48ab-a6ae-4d51e336c323",
     "colId": "history",
     "containerId": "",
     "name": "http://localhost:3000/api/user",
-    "url": "http://localhost:3000/user",
-    "method": "POST",
+    "url": "http://localhost:3000/friendship",
+    "method": "GET",
     "sortNum": 0,
     "created": "2023-06-16T15:59:59.436Z",
-    "modified": "2023-06-21T16:24:57.212Z",
+    "modified": "2023-06-21T17:21:42.607Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+      "raw": "{\n \"email\":\"julien@test.fr\",\n \"username\": \"julien\",\n \"password\": \"password\"\n}",
       "form": []
     },
     "auth": {
@@ -195,6 +61,94 @@
       "type": "json",
       "raw": "{\n  \"receiver\": \"645d0f04103fa0c3c13f5aae\"\n}",
       "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "bcc42151-f34a-41e0-b74b-f54c140b0607",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/login",
+    "url": "http://localhost:3000/login",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-06-21T17:18:40.637Z",
+    "modified": "2023-06-21T17:18:40.637Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "92dcb315-faa9-4cbc-8819-2f13ca3f8aa2",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship",
+    "url": "http://localhost:3000/friendship",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-06-21T17:19:19.879Z",
+    "modified": "2023-06-21T17:19:19.879Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3MzY3OTIwLCJleHAiOjE2ODc0NTQzMjB9.4d8FDVYhV-9huqBPYdFRlTohj2rbbdt8aya1qSGw0Hk"
+    },
+    "tests": []
+  },
+  {
+    "_id": "5b753485-74d3-4e02-a828-4945ef6dcfc6",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship/request",
+    "url": "http://localhost:3000/friendship/request",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-06-21T17:20:03.860Z",
+    "modified": "2023-06-21T17:20:03.860Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"receiver\": \"64933094aa642927bb6095ec\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3MzY3OTIwLCJleHAiOjE2ODc0NTQzMjB9.4d8FDVYhV-9huqBPYdFRlTohj2rbbdt8aya1qSGw0Hk"
+    },
+    "tests": []
+  },
+  {
+    "_id": "5dc70e67-6cf3-48e5-a7ee-c696e30fec2f",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship/request",
+    "url": "http://localhost:3000/friendship/request",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-06-21T17:20:31.159Z",
+    "modified": "2023-06-21T17:30:45.864Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"receiver\": \"64456ca89684a2566d8686ee\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3MzY3OTIwLCJleHAiOjE2ODc0NTQzMjB9.4d8FDVYhV-9huqBPYdFRlTohj2rbbdt8aya1qSGw0Hk"
     },
     "tests": []
   }

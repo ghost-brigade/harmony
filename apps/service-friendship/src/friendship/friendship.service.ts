@@ -35,7 +35,27 @@ export class FriendshipService {
       );
     }
 
+    
+
     const receiver = parse.data;
+
+    if (receiver === user.id) {
+      throw new RpcException(
+        new BadRequestException("You cannot send a friend request to yourself.")
+      );
+    }
+
+    const existingFriendship = await this.friendshipModel.findOne({
+      sender: user.id,
+      receiver: receiver,
+    });
+
+    if (existingFriendship) {
+      throw new RpcException(
+        new BadRequestException("You cannot send a friend request because it already exists. ")
+      );
+    }
+
     try {
       const newRole = new this.friendshipModel({
         sender: user.id,
@@ -55,10 +75,16 @@ export class FriendshipService {
     user: UserContextType
   ): Promise<FriendshipType[]> {
     try {
-      const friendship = (await this.friendshipModel
-        .find(payload.params)
-        .exec()) as FriendshipType[];
-      return friendship;
+      const friendships = await this.friendshipModel
+        .find({
+          $or: [
+            { sender: user.id },
+            { receiver: user.id }
+          ]
+        })
+        .exec();
+  
+      return friendships as FriendshipType[];
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
