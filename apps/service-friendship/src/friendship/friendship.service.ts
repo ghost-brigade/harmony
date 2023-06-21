@@ -89,4 +89,69 @@ export class FriendshipService {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
+
+  async acceptFriendRequest(
+    payload: { friendshipId: IdType },
+    user: UserContextType
+  ): Promise<FriendshipType> {
+    const { friendshipId } = payload;
+
+    try {
+      const friendship = await this.friendshipModel.findById(friendshipId);
+
+      if (!friendship) {
+        throw new RpcException(
+          new BadRequestException("Friendship request not found.")
+        );
+      }
+
+      if (friendship.receiver !== user.id) {
+        throw new RpcException(
+          new BadRequestException("You are not authorized to accept this friendship request.")
+        );
+      }
+
+      friendship.status = "ACCEPTED";
+      return await friendship.save();
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new BadRequestException("Error accepting friendship request.")
+      );
+    }
+  }
+
+  async rejectFriendRequest(
+    payload: { friendshipId: IdType },
+    user: UserContextType
+  ): Promise<FriendshipType> {
+    const { friendshipId } = payload;
+
+    try {
+      const friendship = await this.friendshipModel.findById(friendshipId);
+
+      if (!friendship) {
+        throw new RpcException(
+          new BadRequestException("Friendship request not found.")
+        );
+      }
+
+      if (friendship.receiver !== user.id) {
+        throw new RpcException(
+          new BadRequestException("You are not authorized to reject this friendship request.")
+        );
+      }
+
+      friendship.status = "REJECTED";
+      return await friendship.save();
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new BadRequestException("Error rejecting friendship request.")
+      );
+    }
+  }
+
 }
+
+

@@ -25,4 +25,20 @@ export class FriendshipController {
     return this.friendshipService.createFriendship(payload, userContext);
   }
 
+  @MessagePattern(FRIENDSHIP_MESSAGE_PATTERN.ACCEPT)
+  async acceptFriendRequest(
+    @Payload() payload: { friendshipId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.friendshipService.acceptFriendRequest(payload, user);
+  }  
+
+  @MessagePattern(FRIENDSHIP_MESSAGE_PATTERN.REJECT)
+  async rejectFriendRequest(
+    @Payload() payload: { friendshipId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.friendshipService.rejectFriendRequest(payload, user);
+  }  
+
 }
