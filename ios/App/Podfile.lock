@@ -8,6 +8,8 @@ PODS:
     - Capacitor
   - CapacitorHaptics (5.0.4):
     - Capacitor
+  - CapacitorKeyboard (5.0.4):
+    - Capacitor
   - CapacitorPluginIosWebviewConfigurator (0.0.1):
     - Capacitor
   - CapacitorToast (5.0.4):
@@ -21,6 +23,7 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../node_modules/@capacitor/dialog`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
+  - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - CapacitorPluginIosWebviewConfigurator (from `../../node_modules/capacitor-plugin-ios-webview-configurator`)
   - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
   - "CapawesomeCapacitorFilePicker (from `../../node_modules/@capawesome/capacitor-file-picker`)"
@@ -36,6 +39,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/dialog"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
+  CapacitorKeyboard:
+    :path: "../../node_modules/@capacitor/keyboard"
   CapacitorPluginIosWebviewConfigurator:
     :path: "../../node_modules/capacitor-plugin-ios-webview-configurator"
   CapacitorToast:
@@ -49,10 +54,11 @@ SPEC CHECKSUMS:
   CapacitorCordova: f8c06b897c74ee8f7701fe10e6443b40822bc83a
   CapacitorDialog: fe8b913cdf8c73cabe556974565fc44f2a09c75f
   CapacitorHaptics: e36653b37326d71bb35ae42b944124037dbc3d97
+  CapacitorKeyboard: d1b25fde6f19744ad09c890862aefc6e2a7ded3d
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
   CapacitorToast: fcc4329f01d06cf02f190f8f5ce7f16509a2263c
   CapawesomeCapacitorFilePicker: ec211560d209c2efa0e47dad3308bf497e6ce388
 
-PODFILE CHECKSUM: a71d1e08992ff8fe24202ad3433e5dacefbdae86
+PODFILE CHECKSUM: 91ed81da5557a8f92b66f5ebca452fa6315df712
 
 COCOAPODS: 1.12.1

@@ -10,12 +10,19 @@ import {
   setWebviewBounce,
 } from "capacitor-plugin-ios-webview-configurator";
 import { ToastComponent } from "./core/components/toast/toast.component";
+import { BottomNavComponent } from "./shared/components/application/bottom-nav/bottom-nav.component";
 
 @Component({
   selector: "harmony-root",
   templateUrl: "./app.component.html",
   standalone: true,
-  imports: [RouterOutlet, LoaderComponent, AlertComponent, ToastComponent],
+  imports: [
+    RouterOutlet,
+    LoaderComponent,
+    AlertComponent,
+    ToastComponent,
+    BottomNavComponent,
+  ],
 })
 export class AppComponent implements OnInit {
   i18nService = inject(I18nService);

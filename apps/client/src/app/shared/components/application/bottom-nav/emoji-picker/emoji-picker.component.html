@@ -1,0 +1,30 @@
+<div
+  class="fixed bottom-[calc(env(safe-area-inset-bottom)+4rem)] right-4 z-10 mx-auto mb-4 flex max-h-[24rem] max-w-[18rem] flex-col gap-2 rounded-lg bg-white p-2 shadow-lg dark:bg-gray-700"
+  *ngIf="open">
+  <input
+    type="search"
+    placeholder="Search an emoji..."
+    [ngModel]="$searchValue()"
+    (ngModelChange)="$searchValue.set($event)"
+    class="c-input" />
+  <div
+    class="flex h-full flex-row gap-2 overflow-x-auto whitespace-nowrap p-2 text-sm">
+    <span
+      *ngFor="let cat of categories"
+      class="cursor-pointer {{
+        category() === cat ? 'border-b-2 border-blue-500' : ''
+      }}"
+      (click)="setCategory(cat)"
+      >{{ cat | i18n }}</span
+    >
+  </div>
+  <div
+    class="flex max-h-[13.875rem] min-h-[13.875rem] flex-row flex-wrap content-start justify-start overflow-scroll rounded bg-slate-100 py-2 pl-[8px] dark:bg-gray-800">
+    <span
+      (click)="emitEmoji(emoji.emoji)"
+      class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-center text-2xl hover:bg-blue-600"
+      *ngFor="let emoji of emojis()"
+      >{{ emoji.emoji }}</span
+    >
+  </div>
+</div>
