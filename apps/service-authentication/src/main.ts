@@ -5,7 +5,7 @@ import { AuthenticationModule } from "./authentication/authentication.module";
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(
     AuthenticationModule,
-    getService(Services.AUTHENTICATION)
+    getService(Services.AUTHENTICATION),
   );
   await app.listen();
 }
