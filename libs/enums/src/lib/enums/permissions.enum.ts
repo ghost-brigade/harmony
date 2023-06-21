@@ -7,6 +7,8 @@ enum Permissions {
   "SERVER_MANAGE" = "SERVER_MANAGE", // Update server
   "BAN_MANAGE" = "BAN_MANAGE", // Ban users
 
+  "FRIENDSHIP_MANAGE" = "FRIENDSHIP_MANAGE", // Manage friendships
+
   "MESSAGE_CREATE" = "MESSAGE_CREATE", // Create messages
   "MESSAGE_DELETE" = "MESSAGE_DELETE", // Delete messages (Others)
   "MESSAGE_FILE_UPLOAD" = "MESSAGE_FILE_UPLOAD", // Upload files

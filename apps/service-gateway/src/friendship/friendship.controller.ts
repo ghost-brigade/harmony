@@ -71,33 +71,27 @@ export class FriendshipController {
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Post("/request")
-  async sendFriendRequest(
-    @Body() userId: IdType
-  ) {
+  async sendFriendRequest( @Body() data: IdType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDSHIP_MESSAGE_PATTERN.CREATE,
-      data: {
-        receiver: userId,
-      },
+      data,
     });
   }
 
 
-  @ApiOperation({ summary: "Get all friendships of a user" })
-  @ApiOkResponse({ status: 200, description: "Return all friendships" })
-  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
-  @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @Get()
-  async findAllFriendships() {
-    return this.serviceRequest.send({
-      client: this.client,
-      pattern: FRIENDSHIP_MESSAGE_PATTERN.FIND_ALL,
-      data: {
-        userId: currentUserId,
-      },
-    });
-  }
+  // @ApiOperation({ summary: "Get all friendships of a user" })
+  // @ApiOkResponse({ status: 200, description: "Return all friendships" })
+  // @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  // @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  // @Get()
+  // async findAllFriendships(@Param() data?: FriendshipParamsType) {
+  //   return this.serviceRequest.send({
+  //     client: this.client,
+  //     pattern: FRIENDSHIP_MESSAGE_PATTERN.FIND_ALL,
+  //     data,
+  //   });
+  // }
 
   @ApiOperation({ summary: "Delete friendship" })
   @ApiNoContentResponse({ status: 204, description: "Return deleted friendship" })

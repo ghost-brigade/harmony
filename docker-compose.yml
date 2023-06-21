@@ -57,5 +57,11 @@ services:
       service: service-template
     command: npx nx serve service-role
 
+  service-friendship:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-friendship
+
 volumes:
   mono-node-modules: null

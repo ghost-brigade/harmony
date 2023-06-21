@@ -1,10 +1,10 @@
 import { getService, Services } from "@harmony/service-config";
 import { NestFactory } from "@nestjs/core";
-//import { RoleModule } from "./role/role.module";
+import { FriendshipModule } from "./friendship/friendship.module";
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(
-    //RoleModule,
+    FriendshipModule,
     getService(Services.FRIENDSHIP)
   );
   await app.listen();
