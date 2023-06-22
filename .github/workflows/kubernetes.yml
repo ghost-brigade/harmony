@@ -1,20 +1,19 @@
-name: Kubernetes Rolling Update
+name: Apply Kubernetes configuration
 
 on:
-  push:
   workflow_dispatch: {}
-  workflow_run:
-    workflows: ["Build and push Docker images"]
-    branches: ["main"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+    paths:
+      - "kubernetes/**"
 
 env:
   GKE_CLUSTER: harmony-gke
   GKE_ZONE: europe-west9
 
 jobs:
-  deploy:
+  apply-kubernetes-configuration:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -27,9 +26,6 @@ jobs:
         with:
           cache: "npm"
           node-version-file: ".nvmrc"
-
-      - name: "Install NX Dependencies"
-        run: npm install nx
 
       - id: "auth"
         name: Authenticate to Google Cloud
@@ -46,22 +42,7 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
 
-      - name: Determine affected application
-        id: affected-services
+      - name: Apply Kubernetes configuration
         run: |
-          output=$(npx nx print-affected --type=app --base=HEAD~1)
-          projects=$(echo "$output" | jq -r '.projects[]')
-          echo "::set-output name=projects::$projects"
-
-      - name: Deploy affected application
-        run: |
-          for project in ${{ steps.affected-services.outputs.projects }}; do
-            kubectl set image deployment/$project $project=europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-$project:stable
-          done
-
-      - name: Rolling update status
-        run: |
-          for project in ${{ steps.affected-services.outputs.projects }}; do
-            kubectl rollout status deployment/$project
-          done
+          kubectl apply -f kubernetes/
 
