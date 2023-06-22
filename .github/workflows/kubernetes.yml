@@ -53,10 +53,15 @@ jobs:
           projects=$(echo "$output" | jq -r '.projects[]')
           echo "::set-output name=projects::$projects"
 
-      - name: Deploy
+      - name: Deploy affected application
         run: |
           for project in ${{ steps.affected-services.outputs.projects }}; do
             kubectl set image deployment/$project $project=europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-$project:stable
+          done
+
+      - name: Rolling update status
+        run: |
+          for project in ${{ steps.affected-services.outputs.projects }}; do
             kubectl rollout status deployment/$project
           done
 
