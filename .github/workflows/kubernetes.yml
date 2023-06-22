@@ -28,6 +28,9 @@ jobs:
           cache: "npm"
           node-version-file: ".nvmrc"
 
+      - name: "Install NX Dependencies"
+        run: npm install nx
+
       - id: "auth"
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
