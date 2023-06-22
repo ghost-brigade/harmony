@@ -41,6 +41,10 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: "app",
+    loadChildren: () => import("./views/application/application.routes"),
+  },
+  {
     path: "**",
     loadComponent: () =>
       import("./views/not-found/not-found.component").then(

@@ -10,6 +10,7 @@ import {
   setWebviewBounce,
 } from "capacitor-plugin-ios-webview-configurator";
 import { ToastComponent } from "./core/components/toast/toast.component";
+import { SplashScreen } from "@capacitor/splash-screen";
 import { BottomNavComponent } from "./shared/components/application/bottom-nav/bottom-nav.component";
 
 @Component({
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
     setBackForwardNavigationGestures(true);
     setWebviewBounce(true);
     if (Capacitor.getPlatform() === "android") this.registerAndroidListener();
+    SplashScreen.hide();
   }
 
   registerAndroidListener() {

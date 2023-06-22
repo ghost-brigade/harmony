@@ -12,11 +12,12 @@ import { BottomNavService } from "./bottom-nav.service";
 import { EmojiPickerComponent } from "./emoji-picker/emoji-picker.component";
 import { FormsModule } from "@angular/forms";
 import { FilePicker } from "@capawesome/capacitor-file-picker";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "harmony-bottom-nav",
   standalone: true,
-  imports: [NgIf, EmojiPickerComponent, FormsModule],
+  imports: [NgIf, EmojiPickerComponent, FormsModule, RouterLink],
   templateUrl: "./bottom-nav.component.html",
   styleUrls: ["./bottom-nav.component.css"],
   animations: BOTTOM_NAV_ANIMATION,
@@ -26,6 +27,7 @@ export class BottomNavComponent {
   bottomNavService = inject(BottomNavService);
   $isEmojiPickerOpen = signal(false);
   $isInTextChannel = computed(() => this.bottomNavService.$isTextChannel());
+  $isBottomNavOpen = computed(() => this.bottomNavService.$showBottomNav());
   $message = signal("");
   $inputFocused = signal(false);
 
