@@ -4,7 +4,17 @@ import { User } from "./user.schema";
 
 export type FriendshipDocument = HydratedDocument<Friendship>;
 
-@Schema({ timestamps: true })
+@Schema({ 
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
+})
+
 export class Friendship {
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   sender: User;

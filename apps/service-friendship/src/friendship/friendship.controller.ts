@@ -18,6 +18,14 @@ export class FriendshipController {
     return await this.friendshipService.findAll(payload, user) ?? [];
   }
 
+  @MessagePattern(FRIENDSHIP_MESSAGE_PATTERN.FIND_BY_ID)
+  async findOneRequestFriend(
+    @Payload() payload: { id: IdType } ,
+    @UserContext() user: UserContextType
+    ) {
+    return await this.friendshipService.findOneRequestFriend(payload.id, user);
+  }
+
 
   @MessagePattern( FRIENDSHIP_MESSAGE_PATTERN.CREATE )
   request(@Payload() payload: {receiver: IdType}, @UserContext() userContext: UserContextType)
@@ -40,5 +48,13 @@ export class FriendshipController {
   ) {
     return await this.friendshipService.rejectFriendRequest(payload, user);
   }  
+
+  @MessagePattern(FRIENDSHIP_MESSAGE_PATTERN.DELETE)
+  async deleteFriendRequest(
+    @Payload() payload: { friendshipId: IdType, userId: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<boolean> {
+    return await this.friendshipService.deleteFriendRequest(payload, user);
+  }
 
 }

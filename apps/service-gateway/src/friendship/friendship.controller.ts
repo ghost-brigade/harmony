@@ -51,7 +51,7 @@ export class FriendshipController {
     });
   }
 
-  @ApiOperation({ summary: "Get friendship by id" })
+  @ApiOperation({ summary: "Find friendship by id" })
   @ApiOkResponse({
     status: 200,
     description: "Return friendship by id",

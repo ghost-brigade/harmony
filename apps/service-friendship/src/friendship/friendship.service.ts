@@ -11,6 +11,8 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
@@ -90,6 +92,32 @@ export class FriendshipService {
     }
   }
 
+  async findOneRequestFriend(
+    friendshipId: IdType, 
+    user: UserContextType
+    ): Promise<FriendshipType> {
+    try {
+      const friendship = await this.friendshipModel.findOne({
+        _id: friendshipId,
+        $or: [{ sender: user.id }, { receiver: user.id }]
+      });
+  
+      if (!friendship) {
+        throw new RpcException(
+          new NotFoundException("Friendship request not found.")
+        );
+      }
+  
+      return friendship;
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new BadRequestException("Error finding friendship request.")
+      );
+    }
+  }
+  
+
   async acceptFriendRequest(
     payload: { friendshipId: IdType },
     user: UserContextType
@@ -151,6 +179,39 @@ export class FriendshipService {
       );
     }
   }
+
+  async deleteFriendRequest(
+    payload: { friendshipId: IdType, userId: IdType },
+    user: UserContextType
+  ): Promise<boolean> {
+    const { friendshipId, userId } = payload;
+  
+    try {
+      const friendship = await this.friendshipModel.findById(friendshipId);
+  
+      if (!friendship) {
+        throw new RpcException(
+          new NotFoundException("Friendship request not found.")
+        );
+      }
+  
+      if (friendship.sender !== userId) {
+        throw new RpcException(
+          new UnauthorizedException("You are not authorized to delete this friendship request.")
+        );
+      }
+  
+      await this.friendshipModel.deleteFriendRequest();
+  
+      return true;
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error deleting friendship request.")
+      );
+    }
+  }
+  
 
 }
 
