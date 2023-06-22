@@ -1,0 +1,59 @@
+name: Kubernetes Rolling Update
+
+on:
+  push:
+  workflow_dispatch: {}
+  workflow_run:
+    workflows: ["Build and push Docker images"]
+    branches: ["main"]
+    types:
+      - completed
+
+env:
+  GKE_CLUSTER: harmony-gke
+  GKE_ZONE: europe-west9
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version-file: ".nvmrc"
+
+      - id: "auth"
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Set up Kubernetes credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      - name: Determine affected application
+        id: affected-services
+        run: |
+          output=$(npx nx print-affected --type=app --base=HEAD~1)
+          projects=$(echo "$output" | jq -r '.projects[]')
+          echo "::set-output name=projects::$projects"
+
+      - name: Deploy
+        run: |
+          for project in ${{ steps.affected-services.outputs.projects }}; do
+            kubectl set image deployment/$project $project=europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-$project:stable
+            kubectl rollout status deployment/$project
+          done
+
