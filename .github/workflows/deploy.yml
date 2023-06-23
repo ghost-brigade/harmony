@@ -35,17 +35,12 @@ jobs:
       - name: Determine affected application
         id: affected-services
         run: |
-          output=$(npx nx print-affected --type=app --base=HEAD~4)
-          filtered=$(echo "$output" | jq '{ "projects": .projects }')
+          output=$(npx nx print-affected --type=app --base=HEAD~1)
+          services=$(echo "$output" | jq '.projects')
+          echo "matrix=$(jq -r -c . <<< "$services")" >> $GITHUB_OUTPUT
 
-          if [[ $(echo "$filtered" | jq '.projects | length') -eq 0 ]]; then
-            echo "[]"
-          else
-            projects=$(echo "$filtered" | jq -r '.projects')
-            services=$(echo "$projects" | jq -r '.[]')
-            json=$(echo "$services" | jq -nR '[inputs | { name: ., tag: "stable", image: "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-\(.)" }]')
-            echo "::set-output name=matrix::$json"
-          fi
+      - name: Check matrix
+        run: jq . <<< '${{ steps.affected-services.outputs.matrix }}'
 
   deploy:
     name: Redeploy service
@@ -53,7 +48,8 @@ jobs:
     permissions: write-all
     needs: generate-matrix
     strategy:
-      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+      matrix:
+        service: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - id: "auth"
         name: Authenticate to Google Cloud
@@ -72,5 +68,5 @@ jobs:
 
       - name: "Deploy to Kubernetes"
         run: |
-          kubectl set image deployment/${{ matrix.name }} ${{ matrix.name }}=${{ matrix.image }}:${{ matrix.tag }}
-          kubectl rollout status deployment/${{ matrix.name }}
+          kubectl set image deployment/${{ matrix.service }} ${{ matrix.service }}=europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-${{ matrix.service }}:stable
+          kubectl rollout status deployment/${{ matrix.service }}
