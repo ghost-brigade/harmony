@@ -12,6 +12,7 @@ import {
 import { ToastComponent } from "./core/components/toast/toast.component";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { BottomNavComponent } from "./shared/components/application/bottom-nav/bottom-nav.component";
+import { ROUTE_TRANSITIONS } from "./route-transitions.animation";
 
 @Component({
   selector: "harmony-root",
@@ -24,6 +25,7 @@ import { BottomNavComponent } from "./shared/components/application/bottom-nav/b
     ToastComponent,
     BottomNavComponent,
   ],
+  animations: ROUTE_TRANSITIONS,
 })
 export class AppComponent implements OnInit {
   i18nService = inject(I18nService);
@@ -41,5 +43,9 @@ export class AppComponent implements OnInit {
       if (data.canGoBack) window.history.back();
       else App.exitApp();
     });
+  }
+
+  getAnimationState(outlet: RouterOutlet) {
+    return outlet.activatedRouteData["animation"];
   }
 }

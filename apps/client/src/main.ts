@@ -8,6 +8,7 @@ import {
 import { BrowserModule, bootstrapApplication } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
+import { defineCustomElements } from "@ionic/pwa-elements/loader";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -17,3 +18,4 @@ bootstrapApplication(AppComponent, {
     provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
   ],
 }).catch((err) => console.error(err));
+defineCustomElements(window);

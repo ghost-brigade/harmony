@@ -1,0 +1,15 @@
+<div
+  class="fixed bottom-[calc(env(safe-area-inset-bottom)+4rem)] right-5 z-10 mx-auto mb-4 flex max-h-[24rem] max-w-[18rem] flex-col gap-2 rounded-lg border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-600 dark:bg-gray-700 md:right-[calc((100vw-672px)/2)]"
+  *ngIf="open">
+  <p
+    (click)="openCamera()"
+    class="cursor-pointer rounded-lg px-4 py-2 text-center hover:bg-gray-100 dark:hover:bg-slate-600">
+    Open camera
+  </p>
+  <hr class="my-1 h-px border-0 bg-gray-200 dark:bg-gray-900" />
+  <p
+    (click)="addFiles()"
+    class="cursor-pointer rounded-lg px-4 py-2 text-center hover:bg-gray-100 dark:hover:bg-slate-600">
+    Add files
+  </p>
+</div>

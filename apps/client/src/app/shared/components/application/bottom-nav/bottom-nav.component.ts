@@ -13,11 +13,18 @@ import { EmojiPickerComponent } from "./emoji-picker/emoji-picker.component";
 import { FormsModule } from "@angular/forms";
 import { FilePicker } from "@capawesome/capacitor-file-picker";
 import { RouterLink } from "@angular/router";
+import { ImagePickerComponent } from "./image-picker/image-picker.component";
 
 @Component({
   selector: "harmony-bottom-nav",
   standalone: true,
-  imports: [NgIf, EmojiPickerComponent, FormsModule, RouterLink],
+  imports: [
+    NgIf,
+    EmojiPickerComponent,
+    ImagePickerComponent,
+    FormsModule,
+    RouterLink,
+  ],
   templateUrl: "./bottom-nav.component.html",
   styleUrls: ["./bottom-nav.component.css"],
   animations: BOTTOM_NAV_ANIMATION,
@@ -26,13 +33,21 @@ export class BottomNavComponent {
   @ViewChild("messageBox") messageBox: ElementRef<HTMLInputElement> | undefined;
   bottomNavService = inject(BottomNavService);
   $isEmojiPickerOpen = signal(false);
+  $isAddFilesOpen = signal(false);
   $isInTextChannel = computed(() => this.bottomNavService.$isTextChannel());
   $isBottomNavOpen = computed(() => this.bottomNavService.$showBottomNav());
+  $currentRoute = computed(() => this.bottomNavService.$currentRoute());
   $message = signal("");
   $inputFocused = signal(false);
 
   toggleEmojiPicker() {
+    this.$isAddFilesOpen.set(false);
     this.$isEmojiPickerOpen.set(!this.$isEmojiPickerOpen());
+  }
+
+  toggleAddFiles() {
+    this.$isEmojiPickerOpen.set(false);
+    this.$isAddFilesOpen.set(!this.$isAddFilesOpen());
   }
 
   addEmoji(emoji: string) {
@@ -41,13 +56,6 @@ export class BottomNavComponent {
     if (this.messageBox) {
       this.messageBox.nativeElement.focus();
     }
-  }
-
-  async addFiles() {
-    const result = await FilePicker.pickMedia({
-      multiple: true,
-    });
-    console.log(result);
   }
 
   setInputFocused(isFocused: boolean) {

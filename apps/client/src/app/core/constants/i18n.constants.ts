@@ -51,5 +51,6 @@ export const I18N_CONSTANTS = {
     SYMBOLS: "Symbols",
     FLAGS: "Flags",
     EMOJI_ALL: "All",
+    CAMERA_PERMISSION_DENIED: "Camera permission denied",
   },
 };

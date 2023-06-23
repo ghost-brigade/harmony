@@ -1,4 +1,5 @@
 <div
+  id="settings"
   class="mt-[calc(env(safe-area-inset-top)+5rem)] flex flex-col items-center">
   <harmony-settings-navbar />
   <div class="w-full max-w-xl px-2">
@@ -6,6 +7,7 @@
       class="w-full rounded-lg border border-gray-200 bg-gray-50 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
       <button
         type="button"
+        [routerLink]="['/app/settings/profile']"
         class="relative inline-flex w-full items-center rounded-t-lg border-b border-gray-200 px-4 py-2 text-lg transition-all duration-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:text-white dark:focus:ring-gray-500">
         <svg
           aria-hidden="true"
@@ -34,6 +36,7 @@
       </button>
       <button
         type="button"
+        [routerLink]="['/app/settings/appearance']"
         class="relative inline-flex w-full items-center border-b border-gray-200 px-4 py-2 text-lg transition-all duration-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:text-white dark:focus:ring-gray-500">
         <svg
           class="mr-2 h-8 w-8 fill-yellow-400"

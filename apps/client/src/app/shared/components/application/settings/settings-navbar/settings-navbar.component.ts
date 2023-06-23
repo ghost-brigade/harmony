@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SETTINGS_NAV_ANIMATION } from "./settings-navbar.animation";
 import { RouterLink } from "@angular/router";
@@ -11,4 +11,7 @@ import { RouterLink } from "@angular/router";
   styleUrls: ["./settings-navbar.component.css"],
   animations: SETTINGS_NAV_ANIMATION,
 })
-export class SettingsNavbarComponent {}
+export class SettingsNavbarComponent {
+  @Input() backUrl = "/app";
+  @Input() title = "Settings";
+}

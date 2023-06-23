@@ -7,6 +7,7 @@ import { filter } from "rxjs";
 })
 export class BottomNavService {
   $showBottomNav = signal(false);
+  $currentRoute = signal("");
   $isTextChannel = signal(false);
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
@@ -14,6 +15,9 @@ export class BottomNavService {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         const route = this.getLeafRoute(this.activatedRoute);
+        route.url.subscribe((url) => {
+          this.$currentRoute.set(url[0]?.path || "");
+        });
         route.data.subscribe((data) => {
           this.$isTextChannel.set(data["isText"] || false);
           this.$showBottomNav.set(data["showBottomNav"] || false);

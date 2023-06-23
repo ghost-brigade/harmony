@@ -3,6 +3,8 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (5.0.3):
     - Capacitor
+  - CapacitorCamera (5.0.4):
+    - Capacitor
   - CapacitorCordova (5.0.5)
   - CapacitorDialog (5.0.4):
     - Capacitor
@@ -22,6 +24,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
+  - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../node_modules/@capacitor/dialog`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
@@ -36,6 +39,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorApp:
     :path: "../../node_modules/@capacitor/app"
+  CapacitorCamera:
+    :path: "../../node_modules/@capacitor/camera"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorDialog:
@@ -56,6 +61,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Capacitor: b1248915663add1bd6567e2b67c1c1fa3abcf5e8
   CapacitorApp: 7a5dec8b33573707164b293475d5c89ba684364a
+  CapacitorCamera: 9b5c8e809c1042f263994f97ba846aa37e974f12
   CapacitorCordova: f8c06b897c74ee8f7701fe10e6443b40822bc83a
   CapacitorDialog: fe8b913cdf8c73cabe556974565fc44f2a09c75f
   CapacitorHaptics: e36653b37326d71bb35ae42b944124037dbc3d97
@@ -65,6 +71,6 @@ SPEC CHECKSUMS:
   CapacitorToast: fcc4329f01d06cf02f190f8f5ce7f16509a2263c
   CapawesomeCapacitorFilePicker: ec211560d209c2efa0e47dad3308bf497e6ce388
 
-PODFILE CHECKSUM: 68484b7982901847fa1c2472be057485f48ff4cd
+PODFILE CHECKSUM: f3fe91f3687d63346f5fbb7b12f4948eeb482818
 
 COCOAPODS: 1.12.1
