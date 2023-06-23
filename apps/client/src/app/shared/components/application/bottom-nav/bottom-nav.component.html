@@ -13,18 +13,19 @@
     <div
       class="my-2 flex w-full max-w-2xl items-center justify-center gap-2 rounded-lg px-3"
       role="group">
-      <input
+      <textarea
         #messageBox
         type="text"
+        (keyup.enter)="sendMessage()"
         (focus)="setInputFocused(true)"
         (blur)="setInputFocused(false)"
         placeholder="Your message..."
         [ngModel]="$message()"
         (ngModelChange)="$message.set($event)"
-        class="c-input h-12 flex-1 rounded-full px-5" />
+        class="c-input h-12 flex-1 resize-none rounded-full px-5 leading-[24px]"></textarea>
       <button
         type="button"
-        (click)="toggleEmojiPicker()"
+        (click)="toggleEmojiPicker(); vibrate()"
         class="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-blue-500 dark:focus:ring-gray-700">
         <svg
           fill="currentColor"
@@ -41,7 +42,7 @@
       <button
         type="button"
         *ngIf="!$inputFocused()"
-        (click)="toggleAddFiles()"
+        (click)="toggleAddFiles(); vibrate()"
         class="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-blue-500 dark:focus:ring-gray-700">
         <svg
           fill="currentColor"
@@ -57,7 +58,8 @@
       </button>
       <button
         type="button"
-        *ngIf="$inputFocused()"
+        *ngIf="$inputFocused() || $message().length > 0"
+        (click)="sendMessage()"
         class="flex h-12 w-12 items-center transition-colors duration-300 justify-center rounded-full border py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4  {{
           $message().length > 0
             ? 'border-blue-700 bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
@@ -82,6 +84,7 @@
     <button
       type="button"
       [routerLink]="['/app']"
+      (click)="vibrate()"
       class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300 {{
         $currentRoute() === ''
           ? 'rounded-lg bg-gray-100/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-500'
@@ -101,6 +104,7 @@
     <button
       [routerLink]="['/app/dms']"
       type="button"
+      (click)="vibrate()"
       class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300 {{
         $currentRoute() === 'dms'
           ? 'rounded-lg bg-gray-100/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-500'
@@ -121,6 +125,7 @@
     </button>
     <button
       [routerLink]="['/app/new']"
+      (click)="vibrate()"
       type="button"
       class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300  {{
         $currentRoute() === 'new'
@@ -142,6 +147,7 @@
     </button>
     <button
       [routerLink]="['/app/search']"
+      (click)="vibrate()"
       type="button"
       class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300 {{
         $currentRoute() === 'search'
@@ -163,6 +169,7 @@
     </button>
     <button
       [routerLink]="['/app/settings']"
+      (click)="vibrate()"
       type="button"
       class="group m-1 inline-flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 hover:rounded-lg hover:bg-gray-100/90 dark:hover:bg-gray-800/90">
       <svg

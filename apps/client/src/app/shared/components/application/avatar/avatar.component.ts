@@ -9,5 +9,5 @@ import { NgIf } from "@angular/common";
 })
 export class AvatarComponent {
   @Input() image = "";
-  @Input() status = "";
+  @Input() status: "" | "green" | "red" | "orange" = "";
 }
