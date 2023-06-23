@@ -1,7 +1,6 @@
 name: Kubernetes Rolling Update
 
 on:
-  push:
   workflow_dispatch: {}
   workflow_run:
     workflows: ["Build and push Docker images"]
@@ -50,6 +49,8 @@ jobs:
     strategy:
       matrix:
         service: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+      fail-fast: true
+      max-parallel: 3
     steps:
       - id: "auth"
         name: Authenticate to Google Cloud
