@@ -1,21 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-gateway
-  labels:
-    app: service-gateway
+  name: service-authorization
 spec:
   selector:
     matchLabels:
-      app: service-gateway
+      app: service-authorization
   template:
     metadata:
       labels:
-        app: service-gateway
+        app: service-authorization
     spec:
+      hostAliases:
+      - ip: "0.0.0.0"
+        hostnames:
+          - "service-authorization"
       containers:
-        - name: service-gateway
-          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-gateway:stable
+        - name: service-authorization
+          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-authorization:stable
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -42,12 +44,12 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: service-gateway-hpa
+  name: service-authorization-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: service-gateway
+    name: service-authorization
   minReplicas: 1
   maxReplicas: 5
   metrics:

@@ -1,21 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-gateway
-  labels:
-    app: service-gateway
+  name: service-message
 spec:
   selector:
     matchLabels:
-      app: service-gateway
+      app: service-message
   template:
     metadata:
       labels:
-        app: service-gateway
+        app: service-message
     spec:
+      hostAliases:
+      - ip: "0.0.0.0"
+        hostnames:
+          - "service-message"
       containers:
-        - name: service-gateway
-          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-gateway:stable
+        - name: service-message
+          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-message:stable
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -30,6 +32,8 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: PORT
+            - name: MONGODB_URI
+              value: "mongodb+srv://boss:boss@account.rkyvao3.mongodb.net/?retryWrites=true&w=majority"
           resources:
             requests:
               cpu: 100m
@@ -42,12 +46,12 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: service-gateway-hpa
+  name: service-message-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: service-gateway
+    name: service-message
   minReplicas: 1
   maxReplicas: 5
   metrics:
