@@ -5,3 +5,4 @@ export * from './role.enum';
 export * from './authorization.enum';
 export * from './file.enum';
 export * from './friendship.enum';
+export * from './friend.enum';

@@ -129,21 +129,21 @@
     "colId": "history",
     "containerId": "",
     "name": "http://localhost:3000/friendship/request",
-    "url": "http://localhost:3000/friendship/649331dbe4ee65e5d13b678e",
-    "method": "GET",
+    "url": "localhost:3000/friendship/reject/64962d41c0e727d0ada0300e",
+    "method": "POST",
     "sortNum": 0,
     "created": "2023-06-21T17:20:31.159Z",
-    "modified": "2023-06-21T20:38:12.411Z",
+    "modified": "2023-06-23T23:40:18.778Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"receiver\": \"64456ca89684a2566d8686ee\"\n}",
+      "raw": "{\n  \"sender\": \"64456ca89684a2566d8686ee\",\n  \"receiver\": \"646633f9e0d2720f7e75f603\"\n}",
       "form": []
     },
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3MzY3OTIwLCJleHAiOjE2ODc0NTQzMjB9.4d8FDVYhV-9huqBPYdFRlTohj2rbbdt8aya1qSGw0Hk"
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3NTU1MzA3LCJleHAiOjE2ODc2NDE3MDd9.fusk9_-6EIuJR8bHMhPZFP-wuMvkr-9L56ouajsXSqk"
     },
     "tests": []
   }

@@ -1,11 +1,8 @@
-export {
-  Category,
-  CategorySchema,
-  CategoryModel,
-} from "./category.schema";
+export { Category, CategorySchema, CategoryModel } from "./category.schema";
 export { Channel, ChannelSchema, ChannelModel } from "./channel.schema";
 export { Emoji, EmojiSchema, EmojiModel } from "./emoji.schema";
 export { File, FileSchema, FileModel } from "./file.schema";
+export { Friend, FriendSchema, FriendModel } from "./friend.schema";
 export {
   Friendship,
   FriendshipSchema,

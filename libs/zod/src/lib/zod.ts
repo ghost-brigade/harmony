@@ -8,3 +8,4 @@ export * from "./schemas/user/user-context.zod";
 export * from "./format/error";
 export * from "./schemas/file/file.zod";
 export * from "./schemas/friendship/friendship.zod";
+export * from "./schemas/friendship/friend.zod";

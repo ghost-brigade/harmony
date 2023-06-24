@@ -4,6 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { FriendshipController } from "./friendship.controller";
 import { FriendshipService } from "./friendship.service";
 import { FriendshipSchema } from "@harmony/nest-schemas";
+import { FriendSchema } from "@harmony/nest-schemas";
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { FriendshipSchema } from "@harmony/nest-schemas";
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
-    MongooseModule.forFeature([{ name: "Friendship", schema: FriendshipSchema }]),
+    MongooseModule.forFeature([{ name: "Friendship", schema: FriendshipSchema }, { name: "Friend", schema: FriendSchema }]),
   ],
 
   controllers: [FriendshipController],
