@@ -22,6 +22,7 @@ import {
   UserPublicType,
   UserParamsType,
   UserUpdateType,
+  UsernameStatusDto,
 } from "@harmony/zod";
 import {
   ACCOUNT_MESSAGE_PATTERN,
@@ -39,6 +40,22 @@ export class UserController {
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly client: ClientProxy
   ) {}
+
+  @ApiOperation({ summary: "Check if username is available" })
+  @ApiOkResponse({
+    description: "Username status",
+    type: UsernameStatusDto,
+  })
+  @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
+  @ApiInternalServerErrorResponse({ description: "Internal server error" })
+  @Get("username/:username/status")
+  isUsernameAvailable(
+    @Param("username") username: string
+  ): Observable<UserPublicType> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.USERNAME_AVAILABLE, {
+      username,
+    });
+  }
 
   @ApiOperation({ summary: "Get all users" })
   @ApiOkResponse({

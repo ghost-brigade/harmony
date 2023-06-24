@@ -18,6 +18,7 @@ import {
   IdType,
   UsersPublicSchema,
   UserContextType,
+  UsernameStatusType,
 } from "@harmony/zod";
 import { RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -26,6 +27,26 @@ import { ObjectId } from "mongodb";
 @Injectable()
 export class UserService {
   constructor(@InjectModel("User") private readonly userModel) {}
+
+  async isUsernameAvailable(
+    payload: {
+      username: string;
+    },
+    user: UserContextType
+  ): Promise<UsernameStatusType> {
+    if (!payload.username) {
+      throw new RpcException(
+        new BadRequestException("Username is required to check availability")
+      );
+    }
+
+    const status = await this.usernameAlreadyExist(payload.username);
+
+    return {
+      username: payload.username,
+      status: status ? "unavailable" : "available",
+    };
+  }
 
   async create(createUser: UserCreateType): Promise<UserPublicType> {
     const result = UserCreateSchema.safeParse(createUser);
@@ -121,6 +142,7 @@ export class UserService {
    */
   async usernameAlreadyExist(username: string): Promise<boolean> {
     const user = await this.findOneBy({ username });
+    console.log(user);
     return user !== null;
   }
 
