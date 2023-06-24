@@ -3,9 +3,10 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { TypesenseService } from "./typesense.service";
-import { IdType, UserContextType } from "@harmony/zod";
+import { IdType, SearchResponseType, UserContextType } from "@harmony/zod";
 import { CollectionFieldSchema } from "typesense/lib/Typesense/Collection";
 import { RpcException } from "@nestjs/microservices";
 
@@ -88,7 +89,18 @@ export class SearchService {
       );
     }
 
-    const document = await this.typesenseService.getDocumentById(payload.id);
+    let document: SearchResponseType;
+
+    try {
+      document = await this.typesenseService.getDocumentById(payload.id);
+    } catch (error) {
+      throw new RpcException(
+        new NotFoundException(
+          "Message with this id does not exist in search index"
+        )
+      );
+    }
+
     if (document.author_id !== user.id) {
       throw new RpcException(
         new BadRequestException("Cannot delete message you did not create")
