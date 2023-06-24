@@ -9,6 +9,8 @@ import { GatewayErrorHandlerInterceptor } from "./core/interceptors/gateway-erro
 import { RoleModule } from "./role/role.module";
 import { FileModule } from "./file/file.module";
 import { FriendshipModule } from "./friendship/friendship.module";
+import { DefaultModule } from "./default/default.module";
+import { SearchModule } from "./search/search.module";
 
 @Module({
   imports: [
@@ -19,12 +21,14 @@ import { FriendshipModule } from "./friendship/friendship.module";
       ttl: parseInt(process.env?.RATE_LIMIT_TTL || "1"),
       limit: parseInt(process.env?.RATE_LIMIT_COUNT || "10"),
     }),
+    DefaultModule,
     AuthenticationModule,
     RoleModule,
     ServerModule,
     UserModule,
     FileModule,
     FriendshipModule,
+    SearchModule,
   ],
   providers: [
     {

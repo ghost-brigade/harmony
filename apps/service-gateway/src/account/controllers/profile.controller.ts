@@ -17,7 +17,7 @@ import { Observable } from "rxjs";
 import { UserType } from "@harmony/zod";
 
 @Controller()
-@ApiTags('User')
+@ApiTags("User")
 export class ProfileController {
   constructor(
     private readonly serviceRequest: ServiceRequest,

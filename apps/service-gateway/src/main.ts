@@ -35,7 +35,7 @@ async function bootstrap() {
   app.enableVersioning({
     defaultVersion: [VERSION_NEUTRAL, "1"],
     type: VersioningType.HEADER,
-    header: "Accept-Version",
+    header: "Accept-Version"
   });
   app.useGlobalFilters(new RpcExceptionFilter());
 

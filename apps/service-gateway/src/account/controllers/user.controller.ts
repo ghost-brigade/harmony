@@ -22,6 +22,7 @@ import {
   UserPublicType,
   UserParamsType,
   UserUpdateType,
+  UsernameStatusDto,
 } from "@harmony/zod";
 import {
   ACCOUNT_MESSAGE_PATTERN,
@@ -33,12 +34,28 @@ import { Observable } from "rxjs";
 import { Public } from "../../core/decorators/public.decorator";
 
 @Controller("user")
-@ApiTags('User')
+@ApiTags("User")
 export class UserController {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly client: ClientProxy
   ) {}
+
+  @ApiOperation({ summary: "Check if username is available" })
+  @ApiOkResponse({
+    description: "Username status",
+    type: UsernameStatusDto,
+  })
+  @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
+  @ApiInternalServerErrorResponse({ description: "Internal server error" })
+  @Get("username/:username/status")
+  isUsernameAvailable(
+    @Param("username") username: string
+  ): Observable<UserPublicType> {
+    return this.client.send(ACCOUNT_MESSAGE_PATTERN.USERNAME_AVAILABLE, {
+      username,
+    });
+  }
 
   @ApiOperation({ summary: "Get all users" })
   @ApiOkResponse({
@@ -85,7 +102,9 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: "User not found" })
   @Post(":id")
-  public update(@Body() updateUser: UserUpdateType): Observable<UserPublicType> {
+  public update(
+    @Body() updateUser: UserUpdateType
+  ): Observable<UserPublicType> {
     return this.client.send(ACCOUNT_MESSAGE_PATTERN.UPDATE, updateUser);
   }
 }

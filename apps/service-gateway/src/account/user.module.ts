@@ -8,7 +8,7 @@ import { NestMicroserviceModule } from "@harmony/nest-microservice";
 @Module({
   imports: [
     NestMicroserviceModule,
-    ClientsModule.register([getService(Services.ACCOUNT)])
+    ClientsModule.register([getService(Services.ACCOUNT)]),
   ],
   controllers: [UserController, ProfileController],
 })

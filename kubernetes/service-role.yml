@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-role
+spec:
+  selector:
+    matchLabels:
+      app: service-role
+  template:
+    metadata:
+      labels:
+        app: service-role
+    spec:
+      hostAliases:
+      - ip: "0.0.0.0"
+        hostnames:
+          - "service-role"
+      containers:
+        - name: service-role
+          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-role:stable
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: NODE_ENV
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: PORT
+            - name: MONGODB_URI
+              value: "mongodb+srv://boss:boss@account.rkyvao3.mongodb.net/?retryWrites=true&w=majority"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: service-role-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: service-role
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+

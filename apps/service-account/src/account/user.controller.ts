@@ -8,13 +8,23 @@ import {
   UserParamsType,
   UserPublicType,
   UserType,
+  UsernameStatusType,
 } from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 import { UserContext } from "@harmony/nest-microservice";
+import { User } from "@harmony/nest-schemas";
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.USERNAME_AVAILABLE)
+  async isUsernameAvailable(
+    @Payload() payload: { username: string },
+    @UserContext() user: UserContextType
+  ): Promise<UsernameStatusType> {
+    return await this.userService.isUsernameAvailable(payload, user);
+  }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL)
   async findAll(params: UserParamsType) {
