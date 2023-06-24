@@ -1,7 +1,8 @@
-import { IdType } from "@harmony/zod";
+import { IdType, SearchResponseType } from "@harmony/zod";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 import { Client } from "typesense";
+import { CollectionFieldSchema } from "typesense/lib/Typesense/Collection";
 
 @Injectable()
 export class TypesenseService {
@@ -22,18 +23,12 @@ export class TypesenseService {
     });
   }
 
-  async createOrCheckIfCollectionExists(): Promise<boolean> {
+  async createOrCheckIfCollectionExists(fields: CollectionFieldSchema[]) {
     try {
       await this.client.collections().create({
         name: this.collectionName,
-        fields: [
-          { name: "id", type: "string" } /* equivalent to message_id */,
-          { name: "author_id", type: "string", facet: true },
-          { name: "text", type: "string" },
-          { name: "created_at", type: "int64", facet: true },
-          { name: "updated_at", type: "int64", facet: true },
-        ],
         default_sorting_field: "created_at",
+        fields,
       });
 
       return true;
@@ -48,14 +43,12 @@ export class TypesenseService {
     }
   }
 
-  async getDocumentById(id: IdType) {
+  async getDocumentById(id: IdType): Promise<SearchResponseType> {
     try {
       const document = await this.client
         .collections(this.collectionName)
         .documents(id)
         .retrieve();
-
-      console.log("document", document);
 
       if (document === undefined) {
         throw new RpcException(
@@ -63,7 +56,7 @@ export class TypesenseService {
         );
       }
 
-      return document;
+      return document as SearchResponseType;
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(`Error getting message ${id}`)
@@ -71,9 +64,20 @@ export class TypesenseService {
     }
   }
 
-  async createDocument(data: { id: IdType; author_id: IdType; text: string }) {
+  async createDocument({
+    data,
+    fields,
+  }: {
+    data: {
+      id: IdType;
+      author_id: IdType;
+      content: string;
+      channel_id: IdType;
+    };
+    fields: CollectionFieldSchema[];
+  }) {
     try {
-      await this.createOrCheckIfCollectionExists();
+      await this.createOrCheckIfCollectionExists(fields);
 
       return await this.client
         .collections(this.collectionName)
@@ -109,28 +113,35 @@ export class TypesenseService {
   async updateDocument(
     id: IdType,
     data: {
-      text: string;
+      content: string;
     }
   ) {
     try {
-      await this.client
+      return await this.client
         .collections(this.collectionName)
         .documents(id)
-        .update(Object.assign({ updated_at: Date.now() }, data));
+        .update(Object.assign({ updated_at: Date.now() }, { ...data }));
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error updating document")
       );
     }
   }
 
-  async find(data: { text?: string; id?: IdType }) {
-    if (data.text === undefined && data.id === undefined) {
+  async find({
+    data,
+    fields,
+  }: {
+    data: { content?: string; id?: IdType; channelId?: IdType };
+    fields: CollectionFieldSchema[];
+  }) {
+    if (data.content === undefined && data.id === undefined) {
       throw new RpcException(new InternalServerErrorException("Missing query"));
     }
 
     try {
-      await this.createOrCheckIfCollectionExists();
+      await this.createOrCheckIfCollectionExists(fields);
 
       if (data.id !== undefined) {
         return await this.getDocumentById(data.id);
@@ -139,8 +150,10 @@ export class TypesenseService {
           .collections(this.collectionName)
           .documents()
           .search({
-            q: data.text,
-            query_by: "text",
+            q: data.content,
+            query_by: "content",
+            filter_by: `channel_id:=${data.channelId}`,
+            sort_by: "created_at:desc",
           });
       }
     } catch (error) {
