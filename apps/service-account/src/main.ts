@@ -5,7 +5,7 @@ import { NestFactory } from "@nestjs/core";
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(
     UserModule,
-    getService(Services.ACCOUNT)
+    getService(Services.ACCOUNT),
   );
   await app.listen();
 }

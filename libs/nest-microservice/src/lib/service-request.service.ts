@@ -20,7 +20,7 @@ export class ServiceRequest {
   }: {
     client: ClientProxy;
     pattern: string;
-    data?: any,
+    data?: any;
     promise?: boolean;
   }) {
     if (data._user) {

@@ -1,4 +1,4 @@
-import { UserJwtType } from '@harmony/zod';
+import { UserJwtType } from "@harmony/zod";
 import { Observable, firstValueFrom } from "rxjs";
 
 export type RequestWithUser = Request & { user: Observable<UserJwtType> };

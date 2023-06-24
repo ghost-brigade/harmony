@@ -22,7 +22,13 @@ import {
   ServerUpdateDto,
   UserPublicDto,
 } from "@harmony/zod";
-import { ApiBody, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
 import {
   RequestWithUser,
@@ -189,7 +195,7 @@ export class ServerController {
     description: "User",
     type: UserPublicDto,
     isArray: true,
-  })  
+  })
   @ApiResponse({ status: 404, description: "Member not found" })
   @Get("member/:id/servers")
   async getMemberServers(@Param("id") memberId: string) {

@@ -17,4 +17,7 @@ export class PrivateGroup {
 }
 
 export const PrivateGroupSchema = SchemaFactory.createForClass(PrivateGroup);
-export const PrivateGroupModel = model<PrivateGroup>("PrivateGroup", PrivateGroupSchema);
+export const PrivateGroupModel = model<PrivateGroup>(
+  "PrivateGroup",
+  PrivateGroupSchema
+);

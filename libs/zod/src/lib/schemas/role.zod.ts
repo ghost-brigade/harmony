@@ -3,9 +3,7 @@ import { IdSchema } from "./id.zod";
 import { createZodDto } from "nestjs-zod";
 import { Permissions } from "@harmony/enums";
 
-export const RoleUserSchema = z.array(
-  IdSchema || z.object({})
-);
+export const RoleUserSchema = z.array(IdSchema || z.object({}));
 
 export const RolePermissionSchema = z.nativeEnum(Permissions);
 export const RolesPermissionSchema = z.array(RolePermissionSchema);

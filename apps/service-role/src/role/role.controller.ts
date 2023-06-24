@@ -33,7 +33,7 @@ export class RoleController {
     @Payload() payload: { params: RoleParamsType },
     @UserContext() user: UserContextType
   ) {
-    return await this.roleService.findAll(payload, user) ?? [];
+    return (await this.roleService.findAll(payload, user)) ?? [];
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.FIND_ONE)
