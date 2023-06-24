@@ -9,6 +9,7 @@ import { GatewayErrorHandlerInterceptor } from "./core/interceptors/gateway-erro
 import { RoleModule } from "./role/role.module";
 import { FileModule } from "./file/file.module";
 import { DefaultModule } from "./default/default.module";
+import { SearchModule } from "./search/search.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DefaultModule } from "./default/default.module";
     ServerModule,
     UserModule,
     FileModule,
+    SearchModule,
   ],
   providers: [
     {
