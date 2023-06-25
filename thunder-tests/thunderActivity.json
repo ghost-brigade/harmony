@@ -1,14 +1,14 @@
 [
   {
-    "_id": "d3d0fb86-b644-4f06-8986-e200bf80d2b7",
+    "_id": "7b3befc6-2b59-49d0-81d5-981789b140b5",
     "colId": "history",
     "containerId": "",
-    "name": "localhost:3000/login",
-    "url": "localhost:3001/login",
-    "method": "POST",
+    "name": "http://localhost:3000/login",
+    "url": "http://localhost:3000/login",
+    "method": "GET",
     "sortNum": 0,
-    "created": "2023-04-15T16:14:51.077Z",
-    "modified": "2023-04-23T17:37:55.497Z",
+    "created": "2023-06-16T15:04:45.353Z",
+    "modified": "2023-06-20T20:39:57.928Z",
     "headers": [],
     "params": [],
     "body": {
@@ -16,59 +16,134 @@
       "raw": "{\n  \"email\": \"test@antho.com\",\n  \"password\": \"arrrrrnthony\"\n}",
       "form": []
     },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwic3ViIjoiNjQ0NTZjYTg5Njg0YTI1NjZkODY4NmVlIiwiaWF0IjoxNjg3MjkzNTc1LCJleHAiOjE2ODczNzk5NzV9.b85A1Lc0gLEZq2AHJbUsW2Q1eF7HjbTZXwb9KtEEOJo"
+    },
     "tests": []
   },
   {
-    "_id": "dba65ed5-9d9d-4376-a3bd-5b1b351927c3",
+    "_id": "7b3bf50b-0280-48ab-a6ae-4d51e336c323",
     "colId": "history",
     "containerId": "",
-    "name": "http://localhost:3001/account",
-    "url": "http://localhost:3001/account",
-    "method": "POST",
+    "name": "http://localhost:3000/api/user",
+    "url": "http://localhost:3000/friendship/",
+    "method": "GET",
     "sortNum": 0,
-    "created": "2023-04-23T17:12:21.639Z",
-    "modified": "2023-04-23T18:46:39.085Z",
-    "headers": [
-      {
-        "name": "Authorization",
-        "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU",
-        "isDisabled": true
-      }
-    ],
+    "created": "2023-06-16T15:59:59.436Z",
+    "modified": "2023-06-21T20:32:18.006Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwic3ViIjoiNjQ0NTZjYTg5Njg0YTI1NjZkODY4NmVlIiwiaWF0IjoxNjg3MjkzNTc1LCJleHAiOjE2ODczNzk5NzV9.b85A1Lc0gLEZq2AHJbUsW2Q1eF7HjbTZXwb9KtEEOJo"
+    },
+    "tests": []
+  },
+  {
+    "_id": "06d13482-e8ee-40f5-8f9e-abb265ed2a48",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship",
+    "url": "http://localhost:3000/friendship/request",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-06-20T20:46:08.727Z",
+    "modified": "2023-06-21T13:24:56.431Z",
+    "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"test@antho.com\",\n\"password\": \"arrrrrnthony\",\n\"username\": \"anthony\"\n}",
+      "raw": "{\n  \"receiver\": \"645d0f04103fa0c3c13f5aae\"\n}",
       "form": []
     },
     "tests": []
   },
   {
-    "_id": "78a0861e-8e57-4ddb-aa62-b2d8ac4a17b9",
+    "_id": "bcc42151-f34a-41e0-b74b-f54c140b0607",
     "colId": "history",
     "containerId": "",
-    "name": "http://localhost:3001/account",
-    "url": "http://localhost:3001/account",
-    "method": "GET",
+    "name": "http://localhost:3000/login",
+    "url": "http://localhost:3000/login",
+    "method": "POST",
     "sortNum": 0,
-    "created": "2023-04-23T17:39:41.154Z",
-    "modified": "2023-04-23T18:53:52.282Z",
-    "headers": [
-      {
-        "name": "Authorization",
-        "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU",
-        "isDisabled": true
-      }
-    ],
+    "created": "2023-06-21T17:18:40.637Z",
+    "modified": "2023-06-21T17:18:40.637Z",
+    "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"test@antho.com\",\n\"password\": \"arrrrrnthony\",\n\"username\": \"anthony\"\n}",
+      "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "92dcb315-faa9-4cbc-8819-2f13ca3f8aa2",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship",
+    "url": "http://localhost:3000/friendship",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-06-21T17:19:19.879Z",
+    "modified": "2023-06-21T17:19:19.879Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
       "form": []
     },
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAYW50aG8uY29tIiwiaWF0IjoxNjgyMjcxNjA3LCJleHAiOjE2ODIzNTgwMDd9.Z8AOd28Be4kC53EKUSgl46KAimY52vDKjK1ehIThBrU"
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3MzY3OTIwLCJleHAiOjE2ODc0NTQzMjB9.4d8FDVYhV-9huqBPYdFRlTohj2rbbdt8aya1qSGw0Hk"
+    },
+    "tests": []
+  },
+  {
+    "_id": "5b753485-74d3-4e02-a828-4945ef6dcfc6",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship/request",
+    "url": "http://localhost:3000/friendship/request",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-06-21T17:20:03.860Z",
+    "modified": "2023-06-21T17:20:03.860Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"receiver\": \"64933094aa642927bb6095ec\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3MzY3OTIwLCJleHAiOjE2ODc0NTQzMjB9.4d8FDVYhV-9huqBPYdFRlTohj2rbbdt8aya1qSGw0Hk"
+    },
+    "tests": []
+  },
+  {
+    "_id": "5dc70e67-6cf3-48e5-a7ee-c696e30fec2f",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/friendship/request",
+    "url": "localhost:3000/friendship/reject/64962d41c0e727d0ada0300e",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-06-21T17:20:31.159Z",
+    "modified": "2023-06-23T23:40:18.778Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"sender\": \"64456ca89684a2566d8686ee\",\n  \"receiver\": \"646633f9e0d2720f7e75f603\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3NTU1MzA3LCJleHAiOjE2ODc2NDE3MDd9.fusk9_-6EIuJR8bHMhPZFP-wuMvkr-9L56ouajsXSqk"
     },
     "tests": []
   }

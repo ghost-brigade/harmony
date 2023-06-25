@@ -12,7 +12,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
 
-  if (process.env.NODE_ENV === "development") {
+  if (["dev", "developement"].includes(process.env.NODE_ENV)) {
     const config = new DocumentBuilder()
       .setTitle("Harmony API")
       .setDescription("Harmony API")
