@@ -120,6 +120,7 @@ export class FriendshipController {
   @ApiNoContentResponse({ status: 204, description: "Return deleted friendrequest" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @ApiParam({ name: "id", type: String })
   @HttpCode(204)
   @Delete("/friend-request/cancel/:id")
   async deleteFriendRequest(@Param("id") id: IdType, ) {
@@ -160,7 +161,7 @@ export class FriendshipController {
   @ApiOkResponse({ status: 200, description: "Return one friend", type: FriendCreateDto })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @ApiParam({ name: "id", type: String }) // Add this line
+  @ApiParam({ name: "id", type: String })
   @Get("/friend/:id")
   async findFriend(@Param("id") id: IdType) {
     return this.serviceRequest.send({
@@ -175,6 +176,7 @@ export class FriendshipController {
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @HttpCode(204)
+  @ApiParam({ name: "id", type: String })
   @Delete("/friend/delete/:id")
   async deleteFriend(@Param("id") id: IdType, ) {
     return this.serviceRequest.send({
