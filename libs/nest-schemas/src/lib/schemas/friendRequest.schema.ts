@@ -21,13 +21,6 @@ export class FriendRequest {
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   receiver: User;
-
-  @Prop({
-    type: String,
-    enum: ["PENDING", "ACCEPTED", "REJECTED"],
-    default: "PENDING",
-  })
-  status: string;
 }
 
 export const FriendRequestSchema = SchemaFactory.createForClass(FriendRequest);

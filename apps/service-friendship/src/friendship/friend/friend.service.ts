@@ -10,6 +10,8 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
@@ -28,10 +30,8 @@ export class FriendService {
     },
     user: UserContextType
   ): Promise<FriendType> {
-    console.log(payload);
     const parse = IdSchema.safeParse(payload.user1);
     if (parse.success === false) {
-      console.log(parse.error);
       throw new RpcException(
         new BadRequestException(FormatZodResponse(parse.error.issues))
       );
@@ -39,12 +39,13 @@ export class FriendService {
 
     const { user1, user2 } = payload;
 
-    const sortedUsers = [user1, user2].sort();
 
-    const friendrequest_Id = sortedUsers.join("-");
 
-    const existingFriendRequest = await this.findFriend({id: payload.user2}, user);
-    console.log(existingFriendRequest);
+    const existingFriendRequest = await this.findFriend(
+      { id: payload.user2 },
+      user
+    );
+
 
     if (existingFriendRequest) {
       throw new RpcException(
@@ -54,7 +55,6 @@ export class FriendService {
 
     try {
       const newFriend = new this.friendModel({
-        friendshipId: friendrequest_Id,
         user1: user.id,
         user2: payload.user2,
       });
@@ -73,27 +73,29 @@ export class FriendService {
     user: UserContextType
   ): Promise<boolean> {
     try {
-      // const friendrequest = await this.friendrequestModel.findById(friendrequestId);
+      const friendrequest = await this.friendrequestModel.findFriend({
+        id: payload.id,
+      });
 
-      // if (!friendrequest) {
-      //   throw new RpcException(
-      //     new NotFoundException("FriendRequest request not found.")
-      //   );
-      // }
+      if (!friendrequest) {
+        throw new RpcException(
+          new NotFoundException("FriendRequest request not found.")
+        );
+      }
 
-      // if (friendrequest.sender !== userId) {
-      //   throw new RpcException(
-      //     new UnauthorizedException("You are not authorized to delete this friendrequest request.")
-      //   );
-      // }
+      if (friendrequest.sender !== user.id) {
+        throw new RpcException(
+          new UnauthorizedException(
+            "You are not authorized to delete this friendrequest request."
+          )
+        );
+      }
 
       await this.friendModel.deleteOne({
         _id: payload.id,
       });
-      console.log("deleted");
       return true;
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error deleting friend.")
       );
@@ -134,7 +136,6 @@ export class FriendService {
 
       return friend as FriendType;
     } catch (error) {
-      console.log(error);
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }

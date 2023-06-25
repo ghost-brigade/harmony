@@ -17,9 +17,6 @@ export type FriendDocument = HydratedDocument<Friend>;
 
 export class Friend {
 
-  @Prop({ type: String, required: true, unique: true })
-  friendshipId: string;
-
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   user1: User;
 

@@ -77,13 +77,13 @@ export class FriendshipController {
   @ApiOperation({ summary: "Send friend request" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @ApiBody({ type: FriendRequestCreateDto })
-  @Post("/friend-request/send")
-  async sendFriendRequest( @Body() data: IdType) {
+  @ApiParam({ name: "id", type: String })
+  @Post("/friend-request/send/:id")
+  async sendFriendRequest( @Param("id") id: string) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.CREATE,
-      data,
+      data: { receiver: id },
     });
   }
 
@@ -98,7 +98,7 @@ export class FriendshipController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.ACCEPT,
-      data: { friendrequestId: id },
+      data: { id: id },
     });
   }
   
@@ -112,7 +112,7 @@ export class FriendshipController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.REJECT,
-      data: { friendrequestId: id },
+      data: { id: id },
     });
   }
 

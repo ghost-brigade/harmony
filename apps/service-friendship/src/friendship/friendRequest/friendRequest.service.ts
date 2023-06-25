@@ -16,6 +16,7 @@ import {
 import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { FriendService } from "../friend/friend.service";
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class FriendRequestService {
@@ -30,10 +31,8 @@ export class FriendRequestService {
     },
     user: UserContextType
   ): Promise<FriendRequestType> {
-    console.log(payload);
     const parse = IdSchema.safeParse(payload.receiver);
     if (parse.success === false) {
-      console.log(parse.error);
       throw new RpcException(
         new BadRequestException(FormatZodResponse(parse.error.issues))
       );
@@ -61,15 +60,14 @@ export class FriendRequestService {
     }
 
     try {
-      const newRole = new this.friendrequestModel({
+      const newRequest = new this.friendrequestModel({
         sender: user.id,
         receiver: receiver,
-        status: "PENDING",
       });
-      return await newRole.save();
+      return await newRequest.save();
     } catch (error) {
       throw new RpcException(
-        new InternalServerErrorException("Error creating role")
+        new InternalServerErrorException("Error creating friend request")
       );
     }
   }
@@ -97,8 +95,11 @@ export class FriendRequestService {
   ): Promise<FriendRequestType> {
     try {
       const friendrequest = await this.friendrequestModel.findOne({
-        _id: friendrequestId,
-        $or: [{ sender: user.id }, { receiver: user.id }],
+        $or: [
+          { sender: friendrequestId },
+          { receiver: friendrequestId },
+          { _id: friendrequestId }
+        ],
       });
 
       if (!friendrequest) {
@@ -109,7 +110,6 @@ export class FriendRequestService {
 
       return friendrequest;
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new BadRequestException("Error finding friendrequest.")
       );
@@ -117,13 +117,12 @@ export class FriendRequestService {
   }
 
   async acceptFriendRequest(
-    payload: { friendrequestId: IdType },
+    payload: { id: IdType },
     user: UserContextType
-  ): Promise<FriendRequestType> {
-    const { friendrequestId } = payload;
+  ): Promise<Boolean> {
 
     try {
-      const friendrequest = await this.friendrequestModel.findById(friendrequestId);
+      const friendrequest = await this.findOneRequestFriend(payload.id, user);
 
       if (!friendrequest) {
         throw new RpcException(
@@ -140,9 +139,8 @@ export class FriendRequestService {
       }
 
       await this.friendService.newFriend({ user1: friendrequest.sender, user2: friendrequest.receiver }, user);
-      return this.friendModel.deleteFriend({id: user.id}, user);
+      return this.deleteFriendRequest({id: user.id}, user);
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new BadRequestException("Error accepting friendrequest request.")
       );
@@ -150,17 +148,14 @@ export class FriendRequestService {
   }
 
   async rejectFriendRequest(
-    payload: { friendrequestId: IdType },
+    payload: { id: IdType },
     user: UserContextType
-  ): Promise<FriendRequestType> {
+  ): Promise<Boolean> {
 
-    const { friendrequestId } = payload;
+    // const { id } = payload;
 
     try {
-
-      const friendrequest = await this.friendrequestModel.findOne({
-        _id: friendrequestId,
-      });
+      const friendrequest = await this.findOneRequestFriend(payload.id, user);
       if (!friendrequest) {
         throw new RpcException(
           new BadRequestException("FriendRequest request not found.")
@@ -174,12 +169,12 @@ export class FriendRequestService {
           )
         );
       }
-      await friendrequest.save();
-      return this.friendModel.deleteFriend({id: user.id}, user);
+      
+
+      return this.deleteFriendRequest({id: user.id}, user);
     } catch (error) {
-      console.log(error);
       throw new RpcException(
-        new BadRequestException("Error rejecting friendrequest request.")
+        new BadRequestException("Error rejecting friendrequest.")
       );
     }
   }
@@ -198,29 +193,27 @@ export class FriendRequestService {
       }
 
       //check if friendrequest exists
-      const friendrequest = await this.friendrequestModel.findOne({
-        _id: payload.id,
-        $or: [{ sender: user.id }, { receiver: user.id }],
-      });
-
+      const friendrequest = await this.findOneRequestFriend(payload.id, user);
       if (!friendrequest) {
         throw new RpcException(
           new NotFoundException("FriendRequest request not found.")
         );
       }
 
-      if (friendrequest.sender !== user.id) {
-        throw new RpcException(
-          new UnauthorizedException("You are not authorized to delete this friendrequest request.")
-        );
-      }
+      // if (friendrequest.sender !== user.id) {
+      //   throw new RpcException(
+      //     new UnauthorizedException("You are not authorized to delete this friendrequest request.")
+      //   );
+      // }
     
 
     try {
-      this.friendModel.deleteFriend({id: user.id}, user);
+      await this.friendrequestModel.deleteOne({
+        _id: friendrequest.id,
+      });
       return true;
     } catch (error) {
-      console.log(error);
+
       throw new RpcException(
         new InternalServerErrorException("Error deleting friendrequest request.")
       );

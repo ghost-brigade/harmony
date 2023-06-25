@@ -5,7 +5,7 @@ import { Permissions } from "@harmony/enums";
 const IdSchema = z.string();
 
 const FriendSchema = z.object({
-  frienshipId: z.string().min(8).max(128),
+  id: IdSchema.optional(),
   user1: IdSchema,
   user2: IdSchema,
 });

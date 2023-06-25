@@ -5,14 +5,12 @@ import { Permissions } from "@harmony/enums";
 const IdSchema = z.string();
 
 const FriendRequestSchema = z.object({
+  id: IdSchema.optional(),
   sender: IdSchema,
   receiver: IdSchema,
-  status: z.enum(["PENDING", "ACCEPTED", "REJECTED"]).default("PENDING"),
 });
 
-const FriendRequestCreateSchema = FriendRequestSchema.omit({
-  status: true,
-});
+const FriendRequestCreateSchema = FriendRequestSchema;
 
 export const FriendRequestPermissionSchema = z.nativeEnum(Permissions);
 
