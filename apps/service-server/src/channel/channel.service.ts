@@ -206,24 +206,73 @@ export class ChannelService {
   }
 
   async delete(payload: { id: IdType }, user: UserContextType) {
-    throw new Error("Method not implemented.");
+    if (payload.id === undefined) {
+      throw new RpcException(
+        new BadRequestException("You must provide a channel id.")
+      );
+    }
+
+    const channel = (await this.channelModel
+      .findById({
+        _id: payload.id,
+      })
+      .exec()) as ChannelType;
+
+    if (channel === null) {
+      throw new RpcException(new BadRequestException("Channel not found."));
+    }
+
+    const canManage = await this.channelAuthorizationService.canManageChannel({
+      serverId: channel.server,
+      user,
+    });
+
+    if (canManage === false) {
+      throw new RpcException(
+        new BadRequestException(
+          "You do not have permission to create channels for this server."
+        )
+      );
+    }
+
+    try {
+      await this.channelModel.deleteOne({
+        _id: payload.id,
+      });
+
+      await this.updateChannelOrder({
+        serverId: channel.server,
+        channel,
+        direction: "lt",
+      });
+
+      return true;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occurred while deleting the channel."
+        )
+      );
+    }
   }
 
   private async updateChannelOrder({
     serverId,
     channel,
+    direction = "gt",
   }: {
     serverId: IdType;
     channel: ChannelType;
+    direction?: "gt" | "lt";
   }): Promise<void> {
     try {
       await this.channelModel.updateMany(
         {
-          _id: { $ne: channel.id },
+          //_id: { $ne: channel.id },
           server: { $eq: serverId },
           order: { $gte: channel.order },
         },
-        { $inc: { order: 1 } }
+        { $inc: { order: direction === "gt" ? 1 : -1 } }
       );
     } catch (error) {
       throw new RpcException(
