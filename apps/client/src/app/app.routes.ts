@@ -1,4 +1,5 @@
 import { Route } from "@angular/router";
+import { authGuard } from "./core/guards/auth.guard";
 
 export const appRoutes: Route[] = [
   {
@@ -39,6 +40,11 @@ export const appRoutes: Route[] = [
       import("./views/contact/contact.component").then(
         (m) => m.ContactComponent
       ),
+  },
+  {
+    path: "app",
+    canActivate: [authGuard],
+    loadChildren: () => import("./views/application/application.routes"),
   },
   {
     path: "**",

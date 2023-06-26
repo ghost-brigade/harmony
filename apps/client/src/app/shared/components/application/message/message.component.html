@@ -1,0 +1,20 @@
+<div class="flex min-h-[40px] w-full min-w-max max-w-full flex-row gap-2">
+  <harmony-avatar
+    status="red"
+    class="mt-1" />
+  <div class="flex w-full flex-col">
+    <div class="flex w-full justify-between">
+      <span class="">
+        {{ message.author }}
+      </span>
+      <span>
+        {{ message.date | date : "short" }}
+      </span>
+    </div>
+    <markdown
+      class="format dark:format-invert text-black dark:text-white"
+      ngPreserveWhitespaces
+      [data]="message.content">
+    </markdown>
+  </div>
+</div>

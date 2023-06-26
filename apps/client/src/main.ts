@@ -8,6 +8,8 @@ import {
 import { BrowserModule, bootstrapApplication } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
+import { defineCustomElements } from "@ionic/pwa-elements/loader";
+import { MarkdownModule, MarkedOptions } from "ngx-markdown";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,5 +17,20 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(HttpClientModule),
     provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
+    importProvidersFrom(
+      MarkdownModule.forRoot({
+        markedOptions: {
+          provide: MarkedOptions,
+          useValue: {
+            gfm: true,
+            breaks: false,
+            pedantic: false,
+            smartLists: true,
+            smartypants: false,
+          },
+        },
+      })
+    ),
   ],
 }).catch((err) => console.error(err));
+defineCustomElements(window);

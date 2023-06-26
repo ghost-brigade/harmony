@@ -4,4 +4,6 @@
         "source.fixAll.eslint": true
     },
     "eslint.validate": ["javascript", "typescript"],
+    "css.lint.unknownAtRules": "ignore",
+    "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
 }

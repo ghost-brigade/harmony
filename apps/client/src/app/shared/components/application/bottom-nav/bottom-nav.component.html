@@ -1,0 +1,187 @@
+<harmony-emoji-picker
+  [open]="$isEmojiPickerOpen()"
+  (emojiEvent)="addEmoji($event)" />
+<harmony-image-picker [open]="$isAddFilesOpen()" />
+<div
+  *ngIf="$isBottomNavOpen()"
+  @bottomNav
+  class="fixed bottom-0 left-1/2 z-50 w-full -translate-x-1/2 select-none border-t border-gray-100 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-gray-600 dark:bg-gray-700/90">
+  <div
+    class="flex w-full flex-col items-center justify-center"
+    @swap
+    *ngIf="$isInTextChannel()">
+    <div
+      class="my-2 flex w-full max-w-2xl items-center justify-center gap-2 rounded-lg px-3"
+      role="group">
+      <textarea
+        #messageBox
+        type="text"
+        (keyup.enter)="sendMessage()"
+        (focus)="setInputFocused(true)"
+        (blur)="setInputFocused(false)"
+        placeholder="Your message..."
+        [ngModel]="$message()"
+        (ngModelChange)="$message.set($event)"
+        class="c-input h-12 flex-1 resize-none rounded-full px-5 leading-[24px]"></textarea>
+      <button
+        type="button"
+        (click)="toggleEmojiPicker(); vibrate()"
+        class="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-blue-500 dark:focus:ring-gray-700">
+        <svg
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          class="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <path
+            clip-rule="evenodd"
+            fill-rule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm2.023 6.828a.75.75 0 10-1.06-1.06 3.75 3.75 0 01-5.304 0 .75.75 0 00-1.06 1.06 5.25 5.25 0 007.424 0z"></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        *ngIf="!$inputFocused()"
+        (click)="toggleAddFiles(); vibrate()"
+        class="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-blue-500 dark:focus:ring-gray-700">
+        <svg
+          fill="currentColor"
+          class="h-6 w-6"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <path
+            clip-rule="evenodd"
+            fill-rule="evenodd"
+            d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        *ngIf="$inputFocused() || $message().length > 0"
+        (click)="sendMessage()"
+        class="flex h-12 w-12 items-center transition-colors duration-300 justify-center rounded-full border py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4  {{
+          $message().length > 0
+            ? 'border-blue-700 bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
+            : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-100'
+        }}">
+        <svg
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          class="ml-1 h-6 w-6 group-hover:text-blue-600 dark:group-hover:text-blue-500"
+          aria-hidden="true">
+          <path
+            d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div
+    class="mx-auto grid h-full max-w-lg grid-cols-5 p-1"
+    @swap
+    *ngIf="!$isInTextChannel()">
+    <button
+      type="button"
+      [routerLink]="['/app']"
+      (click)="vibrate()"
+      class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300 {{
+        $currentRoute() === ''
+          ? 'rounded-lg bg-gray-100/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-500'
+          : 'hover:scale-110 hover:rounded-lg hover:bg-gray-100/90 dark:hover:bg-gray-800/90 hover:text-blue-600 dark:hover:text-blue-500 text-gray-500 dark:text-gray-100'
+      }}">
+      <svg
+        class="mb-1 h-6 w-6"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+      </svg>
+      <span class="sr-only">Home</span>
+    </button>
+    <button
+      [routerLink]="['/app/dms']"
+      type="button"
+      (click)="vibrate()"
+      class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300 {{
+        $currentRoute() === 'dms'
+          ? 'rounded-lg bg-gray-100/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-500'
+          : 'hover:scale-110 hover:rounded-lg hover:bg-gray-100/90 dark:hover:bg-gray-800/90 hover:text-blue-600 dark:hover:text-blue-500 text-gray-500 dark:text-gray-100'
+      }}">
+      <svg
+        fill="currentColor"
+        class="mb-1 h-6 w-6"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z"></path>
+        <path
+          d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z"></path>
+      </svg>
+      <span class="sr-only">Messages</span>
+    </button>
+    <button
+      [routerLink]="['/app/new']"
+      (click)="vibrate()"
+      type="button"
+      class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300  {{
+        $currentRoute() === 'new'
+          ? 'rounded-lg bg-gray-100/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-500'
+          : 'hover:scale-110 hover:rounded-lg hover:bg-gray-100/90 dark:hover:bg-gray-800/90 hover:text-blue-600 dark:hover:text-blue-500 text-gray-500 dark:text-gray-100'
+      }}">
+      <svg
+        class="mb-1 h-6 w-6"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          clip-rule="evenodd"
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"></path>
+      </svg>
+      <span class="sr-only">New</span>
+    </button>
+    <button
+      [routerLink]="['/app/search']"
+      (click)="vibrate()"
+      type="button"
+      class="group m-1 inline-flex flex-col items-center justify-center p-4 transition-all duration-300 {{
+        $currentRoute() === 'search'
+          ? 'rounded-lg bg-gray-100/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-500'
+          : 'hover:scale-110 hover:rounded-lg hover:bg-gray-100/90 dark:hover:bg-gray-800/90 hover:text-blue-600 dark:hover:text-blue-500 text-gray-500 dark:text-gray-100'
+      }}">
+      <svg
+        class="mb-1 h-6 w-6"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          clip-rule="evenodd"
+          fill-rule="evenodd"
+          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
+      </svg>
+      <span class="sr-only">Search</span>
+    </button>
+    <button
+      [routerLink]="['/app/settings']"
+      (click)="vibrate()"
+      type="button"
+      class="group m-1 inline-flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 hover:rounded-lg hover:bg-gray-100/90 dark:hover:bg-gray-800/90">
+      <svg
+        class="mb-1 h-6 w-6 text-gray-500 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-500"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path>
+      </svg>
+      <span class="sr-only">Settings</span>
+    </button>
+  </div>
+</div>

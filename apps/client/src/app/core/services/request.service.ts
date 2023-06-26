@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { BASE_URL } from "../constants/api.constants";
+import { API_BASE_URL } from "../constants/api.constants";
 import {
   PostBody,
   PostEndpointValue,
@@ -23,6 +23,7 @@ import {
   DeleteResponse,
   DeleteEndpointMap,
 } from "../constants/endpoints/delete.constants";
+import { map } from "rxjs";
 
 type PostConfig<Key extends PostEndpointValue> = PostEndpointMap[Key] extends {
   params: infer P;
@@ -56,7 +57,7 @@ type DeleteConfig<Key extends DeleteEndpointValue> =
   providedIn: "root",
 })
 export class RequestService {
-  constructor(private http: HttpClient) {}
+  http = inject(HttpClient);
 
   private setAuthHeader(token?: string) {
     if (token) {
@@ -77,14 +78,16 @@ export class RequestService {
         );
       });
     }
-    return this.http.post<PostResponse<Key>>(
-      `${BASE_URL}${config.endpoint}`,
-      config.body,
-      {
-        observe: "response",
-        headers,
-      }
-    );
+    return this.http
+      .post<PostResponse<Key>>(
+        `${API_BASE_URL}${config.endpoint}`,
+        config.body,
+        {
+          observe: "response",
+          headers,
+        }
+      )
+      .pipe(map((response) => response.body as PostResponse<Key>));
   }
 
   put<Key extends PutEndpointValue>(config: PutConfig<Key>) {
@@ -98,14 +101,12 @@ export class RequestService {
         );
       });
     }
-    return this.http.put<PutResponse<Key>>(
-      `${BASE_URL}${config.endpoint}`,
-      config.body,
-      {
+    return this.http
+      .put<PutResponse<Key>>(`${API_BASE_URL}${config.endpoint}`, config.body, {
         observe: "response",
         headers,
-      }
-    );
+      })
+      .pipe(map((response) => response.body as PutResponse<Key>));
   }
 
   get<Key extends GetEndpointValue>(config: GetConfig<Key>) {
@@ -125,11 +126,13 @@ export class RequestService {
         );
       });
     }
-    return this.http.get<GetResponse<Key>>(`${BASE_URL}${config.endpoint}`, {
-      observe: "response",
-      headers,
-      params: queryParams,
-    });
+    return this.http
+      .get<GetResponse<Key>>(`${API_BASE_URL}${config.endpoint}`, {
+        observe: "response",
+        headers,
+        params: queryParams,
+      })
+      .pipe(map((response) => response.body as GetResponse<Key>));
   }
 
   delete<Key extends DeleteEndpointValue>(config: DeleteConfig<Key>) {
@@ -143,12 +146,11 @@ export class RequestService {
         );
       });
     }
-    return this.http.delete<DeleteResponse<Key>>(
-      `${BASE_URL}${config.endpoint}`,
-      {
+    return this.http
+      .delete<DeleteResponse<Key>>(`${API_BASE_URL}${config.endpoint}`, {
         observe: "response",
         headers,
-      }
-    );
+      })
+      .pipe(map((response) => response.body as DeleteResponse<Key>));
   }
 }

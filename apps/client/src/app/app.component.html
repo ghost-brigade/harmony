@@ -1,4 +1,9 @@
-<router-outlet />
+<div
+  [@routeTransition]="getAnimationState(o)"
+  class="overflow-x-clip">
+  <router-outlet #o="outlet" />
+</div>
 <harmony-core-loader />
 <harmony-core-alert />
 <harmony-core-toast />
+<harmony-bottom-nav />
