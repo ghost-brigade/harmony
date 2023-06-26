@@ -47,9 +47,8 @@ export class UserAvatarService {
 
       return object ? avatarObject : avatarObject.url;
     } catch (error) {
-      throw new RpcException(
-        new InternalServerErrorException("Error getting avatar")
-      );
+      console.log(error);
+      return null;
     }
   }
 
