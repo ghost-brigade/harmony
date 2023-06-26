@@ -54,5 +54,7 @@ export const I18N_CONSTANTS = {
     CAMERA_PERMISSION_DENIED: "Camera permission denied",
     ERROR_REGISTERING: "Error registering",
     ERROR_USERNAME_ALREADY_EXISTS: "Username already exists",
+    PROFILE_UPDATE_SUCCESS: "Profile updated successfully",
+    PASSWORD_UPDATE_SUCCESS: "Password updated successfully",
   },
 };

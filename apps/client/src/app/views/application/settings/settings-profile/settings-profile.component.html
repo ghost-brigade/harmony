@@ -4,5 +4,64 @@
   <harmony-settings-navbar
     title="Profile"
     backUrl="/app/settings" />
-  <p>Profile settings</p>
+
+  <div
+    class="flex w-full max-w-screen-md flex-col items-center gap-4 p-5"
+    *ngIf="profile">
+    <div
+      class="flex w-full min-w-full flex-col gap-2 rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800">
+      <h5
+        class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        Profile
+      </h5>
+      <div
+        class="flex w-full flex-col items-center gap-4 font-normal text-gray-700 dark:text-gray-400">
+        <harmony-avatar size="h-16 w-16" />
+        <button
+          (click)="selectAvatar()"
+          class="c-button flex w-min flex-col justify-center gap-2 whitespace-nowrap transition-all duration-300">
+          <div class="h-2.5 w-full rounded-full bg-gray-400 dark:bg-gray-700">
+            <div
+              class="h-2.5 rounded-full bg-white transition-all duration-200"
+              style="width: 45%"></div>
+          </div>
+          Update avatar
+        </button>
+      </div>
+
+      <div
+        class="flex w-full flex-col items-start gap-2 font-normal text-gray-700 dark:text-gray-400">
+        <p class="font-normal text-gray-700 dark:text-gray-400">Username</p>
+        <input
+          type="text"
+          [(ngModel)]="profile.username"
+          class="c-input" />
+      </div>
+      <div
+        class="flex w-full flex-col items-start gap-2 font-normal text-gray-700 dark:text-gray-400">
+        <p class="font-normal text-gray-700 dark:text-gray-400">Email</p>
+        <input
+          type="text"
+          [(ngModel)]="profile.email"
+          class="c-input" />
+      </div>
+
+      <button
+        class="c-button max-w-min self-center whitespace-nowrap"
+        (click)="updateUser()">
+        Update account
+      </button>
+      <div
+        class="flex w-full flex-col items-start gap-2 font-normal text-gray-700 dark:text-gray-400">
+        <p class="font-normal text-gray-700 dark:text-gray-400">Password</p>
+        <button
+          (click)="openPasswordUpdate()"
+          class="c-button w-min whitespace-nowrap bg-red-500 hover:bg-red-600">
+          Update password
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<harmony-update-password />

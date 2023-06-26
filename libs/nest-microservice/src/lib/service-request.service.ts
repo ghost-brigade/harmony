@@ -9,7 +9,10 @@ export class ServiceRequest {
   constructor(
     @Optional()
     @Inject(REQUEST)
-    private request: Request & { user: Promise<UserContextType> }
+    private request: Request & {
+      user: Promise<UserContextType>;
+      data: { _user: UserContextType };
+    }
   ) {}
 
   public send({
@@ -29,7 +32,7 @@ export class ServiceRequest {
 
     const request = client.send(pattern, {
       ...data,
-      _user: this.request.user || undefined,
+      _user: this.request.user ?? this.request?.data?._user,
     });
 
     return promise ? firstValueFrom(request) : request;

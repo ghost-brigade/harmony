@@ -1,7 +1,10 @@
 <harmony-emoji-picker
   [open]="$isEmojiPickerOpen()"
-  (emojiEvent)="addEmoji($event)" />
-<harmony-image-picker [open]="$isAddFilesOpen()" />
+  (emojiEvent)="addEmoji($event)"
+  auto-animate />
+<harmony-image-picker
+  [open]="$isAddFilesOpen()"
+  auto-animate />
 <div
   *ngIf="$isBottomNavOpen()"
   @bottomNav

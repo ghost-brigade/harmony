@@ -15,7 +15,7 @@ export const UserSchema = z.object({
   password: z.string().min(8).max(128),
   username: z.string().min(4).max(18),
   status: z.string().optional(),
-  avatar: z.array(IdSchema.optional()),
+  avatar: z.string().optional(),
   isVerified: z.boolean().optional(),
   role: UserRoleSchema.optional(),
   blockedUsers: z.array(IdSchema).optional(),

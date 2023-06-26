@@ -37,7 +37,7 @@ export const ROUTE_TRANSITIONS = [
         ]),
       ]
     ),
-    transition("SettingsPage => HomePage", [
+    transition("SettingsPage => HomePage, SettingsPage => LoginPage", [
       query(
         ":leave",
         style({

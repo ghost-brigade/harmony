@@ -27,8 +27,8 @@
               type="email"
               name="email"
               id="email"
-              [ngModel]="email()"
-              (ngModelChange)="email.set($event)"
+              [ngModel]="$email()"
+              (ngModelChange)="$email.set($event)"
               class="c-input"
               placeholder="{{ 'SIGNUP_EMAIL_PLACEHOLDER' | i18n }}"
               required="" />
@@ -43,8 +43,8 @@
               type="text"
               name="username"
               id="username"
-              [ngModel]="username()"
-              (ngModelChange)="username.set($event)"
+              [ngModel]="$username()"
+              (ngModelChange)="$username.set($event)"
               class="c-input"
               placeholder="{{ 'SIGNUP_USERNAME_PLACEHOLDER' | i18n }}"
               required="" />
@@ -59,8 +59,8 @@
               type="password"
               name="password"
               id="password"
-              [ngModel]="password()"
-              (ngModelChange)="password.set($event)"
+              [ngModel]="$password()"
+              (ngModelChange)="$password.set($event)"
               placeholder="{{ 'SIGNUP_PASSWORD_PLACEHOLDER' | i18n }}"
               class="c-input"
               required="" />
@@ -75,10 +75,10 @@
               type="password"
               name="confirm-password"
               id="confirm-password"
-              [ngModel]="confirmPassword()"
-              (ngModelChange)="confirmPassword.set($event)"
+              [ngModel]="$confirmPassword()"
+              (ngModelChange)="$confirmPassword.set($event)"
               placeholder="{{ 'SIGNUP_PASSWORD_PLACEHOLDER' | i18n }}"
-              class="{{ passwordMatch() ? 'c-input' : 'c-input-error' }}"
+              class="{{ $passwordMatch() ? 'c-input' : 'c-input-error' }}"
               required="" />
           </div>
           <div class="flex items-start">
@@ -86,8 +86,8 @@
               <input
                 id="terms"
                 aria-describedby="terms"
-                [ngModel]="acceptTerms()"
-                (ngModelChange)="acceptTerms.set($event)"
+                [ngModel]="$acceptTerms()"
+                (ngModelChange)="$acceptTerms.set($event)"
                 name="terms"
                 type="checkbox"
                 class="c-checkbox"
