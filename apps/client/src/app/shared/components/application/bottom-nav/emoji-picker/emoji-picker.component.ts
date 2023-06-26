@@ -13,11 +13,12 @@ import {
 import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 import { FormsModule } from "@angular/forms";
 import { Output, EventEmitter } from "@angular/core";
+import { NgAutoAnimateDirective } from "ng-auto-animate";
 
 @Component({
   selector: "harmony-emoji-picker",
   standalone: true,
-  imports: [NgFor, NgIf, I18nPipe, FormsModule],
+  imports: [NgFor, NgIf, I18nPipe, FormsModule, NgAutoAnimateDirective],
   templateUrl: "./emoji-picker.component.html",
   styleUrls: ["./emoji-picker.component.css"],
 })
@@ -26,19 +27,18 @@ export class EmojiPickerComponent {
   @Output() emojiEvent = new EventEmitter<string>();
 
   $searchValue = signal("");
-  category: WritableSignal<(typeof EMOJI_CATEGORIES)[number] | "EMOJI_ALL"> =
-    signal(EMOJI_CATEGORIES[0]);
-  categories = [...EMOJI_CATEGORIES, "EMOJI_ALL"] as const;
+  category: WritableSignal<(typeof EMOJI_CATEGORIES)[number]> = signal(
+    EMOJI_CATEGORIES[0]
+  );
+  categories = [...EMOJI_CATEGORIES] as const;
   emojis = computed(() => {
     return EMOJIS.filter((emoji) => {
       if (this.$searchValue().length > 0) {
         const emojiIncludesSearchValue = emoji.names.some((name) =>
           name.includes(this.$searchValue().toLowerCase())
         );
-        if (this.category() === "EMOJI_ALL") return emojiIncludesSearchValue;
         return emoji.category === this.category() && emojiIncludesSearchValue;
       }
-      if (this.category() === "EMOJI_ALL") return true;
       return emoji.category === this.category();
     });
   });

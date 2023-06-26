@@ -15,6 +15,7 @@ import { RouterLink } from "@angular/router";
 import { ImagePickerComponent } from "./image-picker/image-picker.component";
 import { HapticsService } from "../../../services/haptics.service";
 import { ChatService } from "apps/client/src/app/views/application/direct-messages/chat/chat.service";
+import { NgAutoAnimateDirective } from "ng-auto-animate";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -25,6 +26,7 @@ import { ChatService } from "apps/client/src/app/views/application/direct-messag
     ImagePickerComponent,
     FormsModule,
     RouterLink,
+    NgAutoAnimateDirective,
   ],
   templateUrl: "./bottom-nav.component.html",
   styleUrls: ["./bottom-nav.component.css"],

@@ -26,7 +26,11 @@ export class AuthService {
   }
 
   login() {
-    this.router.navigate(["/app"]);
+    setTimeout(() => {
+      if (!this.router.routerState.snapshot.url.startsWith("/app")) {
+        this.router.navigate(["/app"]);
+      }
+    });
   }
 
   logout() {

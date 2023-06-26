@@ -11,6 +11,7 @@ export const appRoutes: Route[] = [
     path: "login",
     loadComponent: () =>
       import("./views/login/login.component").then((m) => m.LoginComponent),
+    data: { animation: "LoginPage" },
   },
   {
     path: "signup",

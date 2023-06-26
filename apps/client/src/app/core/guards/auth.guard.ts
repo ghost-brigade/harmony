@@ -16,13 +16,6 @@ export const authGuard: CanActivateFn = (_, state) => {
         return true;
       }
     }
-    // no token in localStorage
-    if (!state.url.startsWith("/app")) {
-      authService.removeToken();
-      return true;
-    }
-    authService.logout();
-    return false;
   }
 
   authService.logout();

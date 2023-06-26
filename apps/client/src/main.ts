@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
 import { defineCustomElements } from "@ionic/pwa-elements/loader";
 import { MarkdownModule, MarkedOptions } from "ngx-markdown";
+import { GLOBAL_AUTO_ANIMATE_OPTIONS } from "ng-auto-animate";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -17,6 +18,13 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(HttpClientModule),
     provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
+    {
+      provide: GLOBAL_AUTO_ANIMATE_OPTIONS,
+      useValue: {
+        duration: 300,
+        easing: "ease-in-out",
+      },
+    },
     importProvidersFrom(
       MarkdownModule.forRoot({
         markedOptions: {
