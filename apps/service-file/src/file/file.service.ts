@@ -14,6 +14,7 @@ import {
   IdSchema,
   FileSchema,
   FilesSchema,
+  IdType,
 } from "@harmony/zod";
 import { InjectModel } from "@nestjs/mongoose";
 import { RpcException } from "@nestjs/microservices";
@@ -141,13 +142,15 @@ export class FileService {
 
       const newFile = new this.fileModel(fileObject);
 
+      const destinationFolder = this.getDestinationFolder(payload);
+      const path =
+        `${destinationFolder}/` +
+        (destinationFolder !== Folders.USER ? `${newFile._id}/` : "") +
+        `${filename}.${extension}`;
+
       await this.storage
         .bucket(this.bucketName)
-        .file(
-          `${this.getDestinationFolder(payload)}/${
-            newFile._id
-          }/${filename}.${extension}`
-        )
+        .file(path)
         .save(Buffer.from(payload.file.buffer));
 
       return await newFile.save();

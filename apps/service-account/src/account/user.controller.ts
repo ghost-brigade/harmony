@@ -1,5 +1,5 @@
-import { Controller } from "@nestjs/common";
-import { MessagePattern, Payload } from "@nestjs/microservices";
+import { Controller, InternalServerErrorException, UseInterceptors } from "@nestjs/common";
+import { MessagePattern, Payload, RpcException } from "@nestjs/microservices";
 import { UserService } from "./user.service";
 import {
   IdType,
@@ -12,7 +12,6 @@ import {
 } from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 import { UserContext } from "@harmony/nest-microservice";
-import { User } from "@harmony/nest-schemas";
 
 @Controller()
 export class UserController {
@@ -49,7 +48,9 @@ export class UserController {
 
       return user;
     } catch (error) {
-      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
     }
   }
 

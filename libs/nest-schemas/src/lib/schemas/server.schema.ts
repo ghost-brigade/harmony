@@ -32,7 +32,7 @@ export class Server {
   @Prop({ type: [{ type: Types.ObjectId, ref: "Emoji" }] })
   emojis: Emoji[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: "File" }] })
+  @Prop({ type: { type: Types.ObjectId, ref: "File" } })
   cover: File;
 }
 
