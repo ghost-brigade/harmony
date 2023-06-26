@@ -146,5 +146,28 @@
       "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3NTU1MzA3LCJleHAiOjE2ODc2NDE3MDd9.fusk9_-6EIuJR8bHMhPZFP-wuMvkr-9L56ouajsXSqk"
     },
     "tests": []
+  },
+  {
+    "_id": "ffa60f7b-1ecd-4e23-9d22-aa92375b38af",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:3000/user",
+    "url": "localhost:3000/user/6499a80ac15e8c1d6172c512",
+    "method": "PUT",
+    "sortNum": 0,
+    "created": "2023-06-26T15:00:17.583Z",
+    "modified": "2023-06-26T16:59:01.194Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"username\": \"julien\",\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3NzkyMTM4LCJleHAiOjE2ODc4Nzg1Mzh9.8YQXRrY8HDXXX3keS6WWJtmhjsZInYYAlJiKRQx40eg"
+    },
+    "tests": []
   }
 ]

@@ -5,6 +5,8 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  NotFoundException,
+  UnauthorizedException,
   InternalServerErrorException,
   UnprocessableEntityException,
 } from "@nestjs/common";
@@ -97,22 +99,49 @@ export class UserService {
     return await createdUser.save();
   }
 
-  async update(updateUser: UserUpdateType): Promise<UserPublicType> {
-    const parse = UserCreateSchema.safeParse(updateUser);
+  async update(
+    payload : {
+      id: IdType,
+      updateUser: UserUpdateType
+    },
+    user: UserContextType
+ 
+    ): Promise<UserPublicType> {
+    const parse = UserCreateSchema.safeParse(payload.updateUser);
 
+    
     if (parse.success === false) {
       throw new RpcException(
         new UnprocessableEntityException(FormatZodResponse(parse.error.issues))
+        );
+      }
+      
+      if (payload.updateUser.password) {
+        payload.updateUser.password = await this.hashPassword(payload.updateUser.password);
+      }
+      
+      const userId = payload.id;
+      if ( userId !== user.id) {
+        throw new RpcException(
+          new UnauthorizedException("You are not authorized to perform this action.")
+          );
+        }
+
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: { username: payload.updateUser.username, password: payload.updateUser.password, email: payload.updateUser.email } },
+      { new: true }
+    );
+  
+    if (!updatedUser) {
+      throw new RpcException(
+        new NotFoundException('User not found.')
       );
     }
-
-    if (updateUser.password) {
-      updateUser.password = await this.hashPassword(updateUser.password);
-    }
-
-    const updatedUser = new this.userModel(updateUser);
-    return await updatedUser.save();
+  
+    return updatedUser;
   }
+  
 
   async delete(id: string): Promise<null> {
     const deletedUser = await this.userModel.findByIdAndRemove(id).exec();

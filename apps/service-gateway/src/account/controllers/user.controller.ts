@@ -1,4 +1,5 @@
 import {
+  ApiBody,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -13,6 +14,7 @@ import {
   Inject,
   Param,
   Post,
+  Put,
   Query,
 } from "@nestjs/common";
 import { User } from "@harmony/nest-schemas";
@@ -23,6 +25,7 @@ import {
   UserParamsType,
   UserUpdateType,
   UsernameStatusDto,
+  UserContextType,
 } from "@harmony/zod";
 import {
   ACCOUNT_MESSAGE_PATTERN,
@@ -32,13 +35,15 @@ import {
 import { ClientProxy } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Public } from "../../core/decorators/public.decorator";
+import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
 
 @Controller("user")
 @ApiTags("User")
 export class UserController {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
-    private readonly client: ClientProxy
+    private readonly client: ClientProxy,
+    private readonly serviceRequest: ServiceRequest
   ) {}
 
   @ApiOperation({ summary: "Check if username is available" })
@@ -96,15 +101,17 @@ export class UserController {
   }
 
   @ApiOperation({ summary: "Update a user" })
-  @ApiOkResponse({
-    description: "User updated",
-    type: User,
-  })
+  @ApiOkResponse({ description: "User updated", type: User })
   @ApiNotFoundResponse({ description: "User not found" })
-  @Post(":id")
+  @Put(":id")
   public update(
-    @Body() updateUser: UserUpdateType
-  ): Observable<UserPublicType> {
-    return this.client.send(ACCOUNT_MESSAGE_PATTERN.UPDATE, updateUser);
+    @Param("id") id: string,
+    @Body() updateUser: UserUpdateType,
+  ) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ACCOUNT_MESSAGE_PATTERN.UPDATE,
+      data: { id, updateUser },
+    });
   }
 }
