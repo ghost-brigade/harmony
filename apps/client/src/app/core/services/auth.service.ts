@@ -6,13 +6,11 @@ import { Router } from "@angular/router";
 })
 export class AuthService {
   router = inject(Router);
-  $token = signal("");
+  $token = signal(localStorage.getItem("harmony-token") || "");
 
   constructor() {
     effect(() => {
-      if (this.$token()) {
-        localStorage.setItem("harmony-token", this.$token());
-      } else {
+      if (!this.$token()) {
         localStorage.removeItem("harmony-token");
       }
     });
@@ -20,6 +18,7 @@ export class AuthService {
 
   saveToken(token: string) {
     this.$token.set(token);
+    localStorage.setItem("harmony-token", token);
   }
 
   removeToken() {

@@ -1,6 +1,6 @@
 export const PostEndpoint = {
   Login: "/login",
-  Register: "/register",
+  Register: "/user",
 } as const;
 import { LoginType, UserCreateType } from "@harmony/zod";
 
@@ -10,12 +10,11 @@ export type PostEndpointValue =
 export type PostEndpointMap = {
   "/login": {
     response: {
-      success: boolean;
-      token: string;
+      access_token: string;
     };
     body: LoginType;
   };
-  "/register": {
+  "/user": {
     response: {
       success: boolean;
       token: string;

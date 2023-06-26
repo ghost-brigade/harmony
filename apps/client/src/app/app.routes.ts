@@ -43,7 +43,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: "app",
-    //canActivate: [authGuard],
+    canActivate: [authGuard],
     loadChildren: () => import("./views/application/application.routes"),
   },
   {

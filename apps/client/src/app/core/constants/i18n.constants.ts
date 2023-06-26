@@ -52,5 +52,7 @@ export const I18N_CONSTANTS = {
     FLAGS: "Flags",
     EMOJI_ALL: "All",
     CAMERA_PERMISSION_DENIED: "Camera permission denied",
+    ERROR_REGISTERING: "Error registering",
+    ERROR_USERNAME_ALREADY_EXISTS: "Username already exists",
   },
 };

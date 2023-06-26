@@ -2,11 +2,12 @@ import { Component, computed, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
 import { LogoComponent } from "../../core/components/logo/logo.component";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { LoaderService } from "../../core/components/loader/loader.service";
 import { RequestService } from "../../core/services/request.service";
 import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
 import { finalize } from "rxjs";
+import { AlertService } from "../../core/components/alert/alert.service";
 
 @Component({
   selector: "harmony-signup",
@@ -16,7 +17,9 @@ import { finalize } from "rxjs";
 })
 export class SignupComponent {
   loaderService = inject(LoaderService);
+  alertService = inject(AlertService);
   requestService = inject(RequestService);
+  router = inject(Router);
   email = signal("");
   username = signal("");
   password = signal("");
@@ -41,6 +44,7 @@ export class SignupComponent {
   });
 
   register() {
+    this.alertService.dismiss();
     this.loaderService.show();
     this.requestService
       .post({
@@ -52,8 +56,17 @@ export class SignupComponent {
         },
       })
       .pipe(finalize(() => this.loaderService.hide()))
-      .subscribe((res) => {
-        console.log(res);
+      .subscribe({
+        next: () => {
+          this.router.navigate(["/login"]);
+        },
+        error: (err) => {
+          console.log(err);
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 }
