@@ -4,11 +4,7 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import {
-  IdType,
-  ChannelCreateType,
-  ChannelUpdateType,
-} from "@harmony/zod";
+import { IdType, ChannelCreateType, ChannelUpdateType } from "@harmony/zod";
 import {
   Body,
   Controller,
@@ -111,7 +107,10 @@ export class ChannelController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: CHANNEL_MESSAGE_PATTERN.UPDATE,
-      data: Object.assign(channel, { id }),
+      data: {
+        id,
+        channel,
+      },
     });
   }
 }

@@ -40,7 +40,7 @@ export class ChannelController {
 
   @MessagePattern(CHANNEL_MESSAGE_PATTERN.UPDATE)
   async update(
-    @Payload() payload: ChannelUpdateType,
+    @Payload() payload: { id: IdType; channel: ChannelUpdateType },
     @UserContext() user: UserContextType
   ) {
     return this.channelService.update(payload, user);
@@ -52,5 +52,12 @@ export class ChannelController {
     @UserContext() user: UserContextType
   ) {
     return this.channelService.delete(payload, user);
+  }
+
+  async deleteByServerId(
+    @Payload() payload: { serverId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return this.channelService.deleteByServerId(payload, user);
   }
 }
