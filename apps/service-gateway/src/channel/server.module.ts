@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { ServerController } from "./server.controller";
 import { ClientsModule } from "@nestjs/microservices";
 import { getService, Services } from "@harmony/service-config";
+import { ChannelController } from "../channel/channel.controller";
 import { NestMicroserviceModule } from "@harmony/nest-microservice";
 
 @Module({
@@ -9,6 +9,6 @@ import { NestMicroserviceModule } from "@harmony/nest-microservice";
     NestMicroserviceModule,
     ClientsModule.register([getService(Services.SERVER)])
   ],
-  controllers: [ServerController],
+  controllers: [ChannelController],
 })
-export class ServerModule {}
+export class ChannelModule {}

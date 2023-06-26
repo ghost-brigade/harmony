@@ -10,6 +10,7 @@ import { RoleModule } from "./role/role.module";
 import { FileModule } from "./file/file.module";
 import { DefaultModule } from "./default/default.module";
 import { SearchModule } from "./search/search.module";
+import { ChannelModule } from "./channel/server.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SearchModule } from "./search/search.module";
     UserModule,
     FileModule,
     SearchModule,
+    ChannelModule,
   ],
   providers: [
     {

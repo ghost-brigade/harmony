@@ -9,3 +9,4 @@ export * from "./schemas/user/user-context.zod";
 export * from "./format/error";
 export * from "./schemas/file/file.zod";
 export * from "./schemas/search/search.zod";
+export * from "./schemas/channel/channel.zod";
