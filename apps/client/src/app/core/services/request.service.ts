@@ -24,6 +24,7 @@ import {
   DeleteEndpointMap,
 } from "../constants/endpoints/delete.constants";
 import { map } from "rxjs";
+import { AuthService } from "./auth.service";
 
 type PostConfig<Key extends PostEndpointValue> = PostEndpointMap[Key] extends {
   params: infer P;
@@ -58,17 +59,21 @@ type DeleteConfig<Key extends DeleteEndpointValue> =
 })
 export class RequestService {
   http = inject(HttpClient);
+  authService = inject(AuthService);
 
-  private setAuthHeader(token?: string) {
-    if (token) {
-      return new HttpHeaders().append("Authorization", `Basic ${token}`);
+  private setAuthHeader() {
+    if (this.authService.$token()) {
+      return new HttpHeaders().append(
+        "Authorization",
+        `Bearer ${this.authService.$token()}`
+      );
     } else {
       return new HttpHeaders();
     }
   }
 
   post<Key extends PostEndpointValue>(config: PostConfig<Key>) {
-    const headers = this.setAuthHeader("");
+    const headers = this.setAuthHeader();
     if ("params" in config) {
       const params = config.params as Record<string, string>;
       Object.keys(params).forEach((key) => {
@@ -91,7 +96,7 @@ export class RequestService {
   }
 
   put<Key extends PutEndpointValue>(config: PutConfig<Key>) {
-    const headers = this.setAuthHeader("");
+    const headers = this.setAuthHeader();
     if ("params" in config) {
       const params = config.params as Record<string, string>;
       Object.keys(params).forEach((key) => {
@@ -110,7 +115,7 @@ export class RequestService {
   }
 
   get<Key extends GetEndpointValue>(config: GetConfig<Key>) {
-    const headers = this.setAuthHeader("");
+    const headers = this.setAuthHeader();
     let queryParams = new HttpParams();
     if ("queryParams" in config) {
       queryParams = new HttpParams({
@@ -136,7 +141,7 @@ export class RequestService {
   }
 
   delete<Key extends DeleteEndpointValue>(config: DeleteConfig<Key>) {
-    const headers = this.setAuthHeader("");
+    const headers = this.setAuthHeader();
     if ("params" in config) {
       const params = config.params as Record<string, string>;
       Object.keys(params).forEach((key) => {

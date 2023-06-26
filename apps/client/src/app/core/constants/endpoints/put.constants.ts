@@ -1,58 +1,15 @@
+import { UserUpdateType } from "@harmony/zod";
+
 export const PutEndpoint = {
-  Login: "/login",
-  Register: "/register",
-  ServerMembers: "/server/:id/members",
-  ServerEmoji: "/server/:id/emoji",
+  UpdateUser: "/user",
 } as const;
 
 export type PutEndpointValue = (typeof PutEndpoint)[keyof typeof PutEndpoint];
 
 export type PutEndpointMap = {
-  "/login": {
-    response: {
-      success: boolean;
-      token: string;
-    };
-    body: {
-      username: string;
-      password: string;
-    };
-  };
-  "/register": {
-    response: {
-      success: boolean;
-      token: string;
-    };
-    body: {
-      username: string;
-      password: string;
-      rememberMe: boolean;
-    };
-  };
-  "/server/:id/emoji": {
-    response: {
-      success: boolean;
-      members: string[];
-      w: string;
-    };
-    body: {
-      serverId: string;
-    };
-    params: {
-      emoji: string;
-    };
-  };
-  "/server/:id/members": {
-    response: {
-      success: boolean;
-      members: string[];
-    };
-    body: {
-      serverId: string;
-    };
-    params: {
-      id: string;
-    };
+  "/user": {
+    response: object;
+    body: UserUpdateType;
   };
 };
 

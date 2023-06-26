@@ -1,4 +1,6 @@
-<div class="flex w-full flex-col gap-4 p-4">
+<div
+  class="mb-64px flex w-full flex-col gap-4 overflow-x-auto px-4"
+  auto-animate>
   <p>chat works!</p>
   <ng-container *ngFor="let message of $messages()">
     <harmony-message [message]="message"></harmony-message>

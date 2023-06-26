@@ -15,10 +15,7 @@ export type PostEndpointMap = {
     body: LoginType;
   };
   "/user": {
-    response: {
-      success: boolean;
-      token: string;
-    };
+    response: object;
     body: UserCreateType;
   };
 };

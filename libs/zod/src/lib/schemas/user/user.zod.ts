@@ -49,7 +49,6 @@ export const UserCreateSchema = UserSchema.omit({
 });
 
 const UserUpdateSchema = UserSchema.omit({
-  username: true,
   blockedUsers: true,
   isVerified: true,
 }).partial();

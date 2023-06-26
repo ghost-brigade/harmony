@@ -20,26 +20,26 @@ export class SignupComponent {
   alertService = inject(AlertService);
   requestService = inject(RequestService);
   router = inject(Router);
-  email = signal("");
-  username = signal("");
-  password = signal("");
-  confirmPassword = signal("");
-  acceptTerms = signal(false);
-  passwordMatch = computed(() => {
-    if (this.confirmPassword() && this.password()) {
-      return this.password() === this.confirmPassword();
+  $email = signal("");
+  $username = signal("");
+  $password = signal("");
+  $confirmPassword = signal("");
+  $acceptTerms = signal(false);
+  $passwordMatch = computed(() => {
+    if (this.$confirmPassword() && this.$password()) {
+      return this.$password() === this.$confirmPassword();
     }
     return true;
   });
 
   btnDisabled = computed(() => {
     return (
-      !this.email() ||
-      !this.username() ||
-      !this.password() ||
-      !this.confirmPassword() ||
-      !this.acceptTerms() ||
-      !this.passwordMatch()
+      !this.$email() ||
+      !this.$username() ||
+      !this.$password() ||
+      !this.$confirmPassword() ||
+      !this.$acceptTerms() ||
+      !this.$passwordMatch()
     );
   });
 
@@ -50,9 +50,9 @@ export class SignupComponent {
       .post({
         endpoint: PostEndpoint.Register,
         body: {
-          email: this.email(),
-          username: this.username(),
-          password: this.password(),
+          email: this.$email(),
+          username: this.$username(),
+          password: this.$password(),
         },
       })
       .pipe(finalize(() => this.loaderService.hide()))
