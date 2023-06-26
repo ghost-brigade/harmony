@@ -31,7 +31,7 @@ async function bootstrap() {
   }
 
   app.use(helmet());
-  app.enableCors({ origin: [process.env?.CORS_ORIGIN || "*"] });
+  app.enableCors({ origin: process.env?.CORS_ORIGIN || "*" });
   app.enableVersioning({
     defaultVersion: [VERSION_NEUTRAL, "1"],
     type: VersioningType.HEADER,
