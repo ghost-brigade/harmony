@@ -100,48 +100,53 @@ export class UserService {
   }
 
   async update(
-    payload : {
-      id: IdType,
-      updateUser: UserUpdateType
+    payload: {
+      id: IdType;
+      updateUser: UserUpdateType;
     },
     user: UserContextType
- 
-    ): Promise<UserPublicType> {
+  ): Promise<UserPublicType> {
     const parse = UserCreateSchema.safeParse(payload.updateUser);
 
-    
     if (parse.success === false) {
       throw new RpcException(
         new UnprocessableEntityException(FormatZodResponse(parse.error.issues))
-        );
-      }
-      
-      if (payload.updateUser.password) {
-        payload.updateUser.password = await this.hashPassword(payload.updateUser.password);
-      }
-      
-      const userId = payload.id;
-      if ( userId !== user.id) {
-        throw new RpcException(
-          new UnauthorizedException("You are not authorized to perform this action.")
-          );
-        }
+      );
+    }
+
+    if (payload.updateUser.password) {
+      payload.updateUser.password = await this.hashPassword(
+        payload.updateUser.password
+      );
+    }
+
+    const userId = payload.id;
+    if (userId !== user.id) {
+      throw new RpcException(
+        new UnauthorizedException(
+          "You are not authorized to perform this action."
+        )
+      );
+    }
 
     const updatedUser = await this.userModel.findByIdAndUpdate(
       userId,
-      { $set: { username: payload.updateUser.username, password: payload.updateUser.password, email: payload.updateUser.email } },
+      {
+        $set: {
+          username: payload.updateUser.username,
+          password: payload.updateUser.password,
+          email: payload.updateUser.email,
+        },
+      },
       { new: true }
     );
-  
+
     if (!updatedUser) {
-      throw new RpcException(
-        new NotFoundException('User not found.')
-      );
+      throw new RpcException(new NotFoundException("User not found."));
     }
-  
+
     return updatedUser;
   }
-  
 
   async delete(id: string): Promise<null> {
     const deletedUser = await this.userModel.findByIdAndRemove(id).exec();
@@ -173,24 +178,27 @@ export class UserService {
     try {
       const users = await this.userModel.find(params).exec();
 
-      return users.map((user) => {
-        const uObj = user.toObject();
+      return await Promise.all(
+        users.map(async (user) => {
+          const uObj = user.toObject();
+          uObj.id = uObj._id.toString();
 
-        // todo async avatar
-        // if (typeof uObj.avatar === "string" && uObj.avatar.length > 0) {
-        //   try {
-        //     uObj.avatar =
-        //       (await this.userAvatarService.getAvatar({
-        //         id: uObj.avatar,
-        //         object: false,
-        //       })) ?? undefined;
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // }
+          if (uObj.avatar) {
+            const avatar = await this.userAvatarService.getAvatar({
+              id: uObj.avatar,
+              object: false,
+            });
 
-        return UserPublicSchema.parse(uObj);
-      });
+            if (avatar) {
+              uObj.avatar = avatar;
+            } else {
+              delete uObj.avatar;
+            }
+          }
+
+          return UserPublicSchema.parse(uObj);
+        })
+      );
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
@@ -212,7 +220,7 @@ export class UserService {
 
   async findOneBy(params: UserType): Promise<UserType | null> {
     try {
-      return await this.userModel.findOne(params).exec();
+      return (await this.userModel.findOne(params).exec()).toObject();
     } catch (error) {
       return null;
     }
@@ -307,9 +315,8 @@ export class UserService {
 
   async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
-      const result = UserProfileSchema.safeParse(
-        await this.findOneBy({ email: user.email })
-      );
+      const profile = await this.findOneBy({ email: user.email });
+      const result = UserProfileSchema.safeParse(profile);
 
       if (result.success === false) {
         throw new RpcException(
@@ -319,10 +326,23 @@ export class UserService {
         );
       }
 
-      return result.data;
-    } catch (error) {
-      console.error(error);
+      if (result.data.avatar) {
+        const avatar = await this.userAvatarService.getAvatar({
+          id: result.data.avatar,
+          object: false,
+        });
 
+        if (typeof avatar === "string") {
+          result.data.avatar = avatar;
+        }
+      }
+
+      return {
+        ...result.data,
+        // @ts-ignore
+        id: result.data._id,
+      };
+    } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
           "An error occured while fetching your profile"
