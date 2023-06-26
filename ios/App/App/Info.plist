@@ -53,5 +53,7 @@
 	<string>To pick a picture from your library</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 </dict>
 </plist>

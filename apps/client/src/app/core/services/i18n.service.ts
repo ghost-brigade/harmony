@@ -1,15 +1,17 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, inject, signal } from "@angular/core";
 import { I18N_CONSTANTS, I18nConstants } from "../constants/i18n.constants";
+import { PreferenceService } from "../../shared/services/preference.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class I18nService {
   language = signal("en-US");
+  preferenceService = inject(PreferenceService);
 
   getUserLanguage() {
     const userLanguage =
-      localStorage.getItem("harmony-language") ||
+      this.preferenceService.$preferences().language ||
       window.navigator.language ||
       "en-US";
 
