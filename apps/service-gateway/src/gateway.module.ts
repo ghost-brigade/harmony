@@ -19,7 +19,7 @@ import { SearchModule } from "./search/search.module";
     }),
     ThrottlerModule.forRoot({
       ttl: parseInt(process.env?.RATE_LIMIT_TTL || "1"),
-      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "10"),
+      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "20"),
     }),
     DefaultModule,
     AuthenticationModule,

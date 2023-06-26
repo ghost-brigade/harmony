@@ -8,6 +8,7 @@ import {
   UserParamsType,
   UserPublicType,
   UserType,
+  UserUpdateType,
   UsernameStatusType,
 } from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
@@ -59,8 +60,11 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.UPDATE)
-  async update(data: UserType): Promise<UserPublicType> {
-    return await this.userService.update(data);
+  async update(
+    @Payload() payload: { id: IdType; updateUser: UserUpdateType },
+    @UserContext() user: UserContextType,
+    )  {
+    return await this.userService.update(payload, user);
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.IS_ACTIVE)
