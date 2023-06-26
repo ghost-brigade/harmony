@@ -13,6 +13,7 @@ import { ToastComponent } from "./core/components/toast/toast.component";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { BottomNavComponent } from "./shared/components/application/bottom-nav/bottom-nav.component";
 import { ROUTE_TRANSITIONS } from "./route-transitions.animation";
+import { AuthService } from "./core/services/auth.service";
 
 @Component({
   selector: "harmony-root",
@@ -29,6 +30,7 @@ import { ROUTE_TRANSITIONS } from "./route-transitions.animation";
 })
 export class AppComponent implements OnInit {
   i18nService = inject(I18nService);
+  authService = inject(AuthService);
 
   ngOnInit() {
     this.i18nService.getUserLanguage();
@@ -36,6 +38,9 @@ export class AppComponent implements OnInit {
     setWebviewBounce(true);
     if (Capacitor.getPlatform() === "android") this.registerAndroidListener();
     SplashScreen.hide();
+    if (this.authService.$token()) {
+      this.authService.login();
+    }
   }
 
   registerAndroidListener() {

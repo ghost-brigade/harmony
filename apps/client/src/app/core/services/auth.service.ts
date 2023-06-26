@@ -1,9 +1,11 @@
-import { Injectable, effect, signal } from "@angular/core";
+import { Injectable, effect, inject, signal } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
+  router = inject(Router);
   $token = signal("");
 
   constructor() {
@@ -22,5 +24,14 @@ export class AuthService {
 
   removeToken() {
     this.$token.set("");
+  }
+
+  login() {
+    this.router.navigate(["/app"]);
+  }
+
+  logout() {
+    this.removeToken();
+    this.router.navigate(["/login"]);
   }
 }

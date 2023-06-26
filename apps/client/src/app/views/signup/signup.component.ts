@@ -4,6 +4,9 @@ import { I18nPipe } from "../../core/pipes/i18n.pipe";
 import { LogoComponent } from "../../core/components/logo/logo.component";
 import { RouterModule } from "@angular/router";
 import { LoaderService } from "../../core/components/loader/loader.service";
+import { RequestService } from "../../core/services/request.service";
+import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
+import { finalize } from "rxjs";
 
 @Component({
   selector: "harmony-signup",
@@ -13,6 +16,7 @@ import { LoaderService } from "../../core/components/loader/loader.service";
 })
 export class SignupComponent {
   loaderService = inject(LoaderService);
+  requestService = inject(RequestService);
   email = signal("");
   username = signal("");
   password = signal("");
@@ -38,8 +42,18 @@ export class SignupComponent {
 
   register() {
     this.loaderService.show();
-    setTimeout(() => {
-      this.loaderService.hide();
-    }, 3000);
+    this.requestService
+      .post({
+        endpoint: PostEndpoint.Register,
+        body: {
+          email: this.email(),
+          username: this.username(),
+          password: this.password(),
+        },
+      })
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 }

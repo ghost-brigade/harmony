@@ -2,7 +2,7 @@ export const PostEndpoint = {
   Login: "/login",
   Register: "/register",
 } as const;
-import { LoginType } from "@harmony/zod";
+import { LoginType, UserCreateType } from "@harmony/zod";
 
 export type PostEndpointValue =
   (typeof PostEndpoint)[keyof typeof PostEndpoint];
@@ -20,11 +20,7 @@ export type PostEndpointMap = {
       success: boolean;
       token: string;
     };
-    body: {
-      username: string;
-      password: string;
-      rememberMe: boolean;
-    };
+    body: UserCreateType;
   };
 };
 
