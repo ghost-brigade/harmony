@@ -7,3 +7,4 @@ export * from './file.enum';
 export * from './friendRequest.enum';
 export * from './friend.enum';
 export * from './search.enum';
+export * from './channel.enum';

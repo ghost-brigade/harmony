@@ -11,3 +11,4 @@ export * from "./schemas/file/file.zod";
 export * from "./schemas/friendship/friendRequest.zod";
 export * from "./schemas/friendship/friend.zod";
 export * from "./schemas/search/search.zod";
+export * from "./schemas/channel/channel.zod";

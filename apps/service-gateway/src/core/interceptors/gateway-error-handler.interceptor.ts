@@ -27,7 +27,10 @@ export class GatewayErrorHandlerInterceptor implements NestInterceptor {
       .handle()
       .pipe(
         catchError((error) =>
-          throwError(() => new RpcException(error.response))
+          throwError(() => {
+            console.log("error", error);
+            return new RpcException(error.response);
+          })
         )
       );
   }
