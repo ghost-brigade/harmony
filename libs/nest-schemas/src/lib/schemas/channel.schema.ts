@@ -7,7 +7,16 @@ import { ChannelType } from "@harmony/enums";
 
 export type ChannelDocument = HydratedDocument<Channel>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
+})
 export class Channel {
   @Prop({ type: String, required: true })
   name: string;

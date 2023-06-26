@@ -49,7 +49,7 @@ export class ChannelController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: CHANNEL_MESSAGE_PATTERN.GET_ALL_BY_SERVER_ID,
-      data: { server: id },
+      data: { serverId: id },
     });
   }
 
@@ -76,11 +76,11 @@ export class ChannelController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post()
-  create(@Body() data: ChannelCreateType) {
+  create(@Body() channel: ChannelCreateType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: CHANNEL_MESSAGE_PATTERN.CREATE,
-      data,
+      data: { channel },
     });
   }
 

@@ -27,7 +27,7 @@ export class ChannelAuthorizationService {
   }: {
     serverId: IdType;
     user: UserContextType;
-  }) {
+  }): Promise<boolean> {
     return await this.checkPermissions({
       serverId,
       user,
@@ -41,7 +41,7 @@ export class ChannelAuthorizationService {
   }: {
     serverId: IdType;
     user: UserContextType;
-  }) {
+  }): Promise<boolean> {
     return await this.checkPermissions({
       serverId,
       user,
@@ -57,7 +57,7 @@ export class ChannelAuthorizationService {
     serverId: IdType;
     user: UserContextType;
     permissions: Permissions[];
-  }) {
+  }): Promise<boolean> {
     try {
       return await this.serviceRequest.send({
         client: this.client,
@@ -70,9 +70,13 @@ export class ChannelAuthorizationService {
         promise: true,
       });
     } catch (error) {
-      throw new RpcException(
-        new InternalServerErrorException("Error checking channel permissions")
-      );
+      /**
+       * Non blocking error
+       */
+      return false;
+      // throw new RpcException(
+      //   new InternalServerErrorException("Error checking channel permissions")
+      // );
     }
   }
 }

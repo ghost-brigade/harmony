@@ -32,11 +32,9 @@ export class ChannelController {
 
   @MessagePattern(CHANNEL_MESSAGE_PATTERN.CREATE)
   async create(
-    @Payload() payload: ChannelCreateType,
+    @Payload() payload: { channel: ChannelCreateType },
     @UserContext() user: UserContextType
   ) {
-
-    console.log("create channel", payload);
     return await this.channelService.create(payload, user);
   }
 
