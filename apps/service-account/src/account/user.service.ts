@@ -1,7 +1,11 @@
+import { UserAvatarService } from "./user-avatar.service";
+import { map } from "rxjs";
 import { genSalt, hash } from "bcryptjs";
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  InternalServerErrorException,
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -19,14 +23,27 @@ import {
   UsersPublicSchema,
   UserContextType,
   UsernameStatusType,
+  UserPublicSchema,
 } from "@harmony/zod";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
 import { ObjectId } from "mongodb";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import {
+  AUTHORIZATION_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel("User") private readonly userModel) {}
+  constructor(
+    @InjectModel("User") private readonly userModel,
+    private readonly serviceRequest: ServiceRequest,
+    @Inject(getServiceProperty(Services.AUTHORIZATION, "name"))
+    private readonly clientAuthorization: ClientProxy,
+    private readonly userAvatarService: UserAvatarService
+  ) {}
 
   async isUsernameAvailable(
     payload: {
@@ -103,6 +120,18 @@ export class UserService {
   }
 
   async findAll(params: UserParamsType): Promise<UserPublicType[] | null> {
+    if (
+      (await this.serviceRequest.send({
+        client: this.clientAuthorization,
+        pattern: AUTHORIZATION_MESSAGE_PATTERN.IS_ADMIN,
+        promise: true,
+      })) === false
+    ) {
+      throw new RpcException(
+        new BadRequestException("You are not authorized to perform this action")
+      );
+    }
+
     const result = UserParamsSchema.safeParse(params);
 
     if (result.success === false) {
@@ -112,14 +141,40 @@ export class UserService {
       );
     }
 
-    return await this.userModel.find(params).exec();
+    try {
+      const users = await this.userModel.find(params).exec();
+
+      return users.map((user) => {
+        const uObj = user.toObject();
+
+        // todo async avatar
+        // if (typeof uObj.avatar === "string" && uObj.avatar.length > 0) {
+        //   try {
+        //     uObj.avatar =
+        //       (await this.userAvatarService.getAvatar({
+        //         id: uObj.avatar,
+        //         object: false,
+        //       })) ?? undefined;
+        //   } catch (error) {
+        //     console.log(error);
+        //   }
+        // }
+
+        return UserPublicSchema.parse(uObj);
+      });
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occurred while fetching users. Please try again later."
+        )
+      );
+    }
   }
 
-  async findAllByIds(ids: ObjectId[]): Promise<UserPublicType[] | null> {
-    return await this.userModel.find(
-      { _id: { $in: ids } },
-      { username: 1, email: 1, status: 1 }
-    );
+  async findAllByIds(ids: ObjectId[]) {
+    const user = await this.userModel
+      .find({ _id: { $in: ids } }, { username: 1, email: 1, status: 1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<UserType | null> {
@@ -237,7 +292,13 @@ export class UserService {
 
       return result.data;
     } catch (error) {
-      return null;
+      console.error(error);
+
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
     }
   }
 }

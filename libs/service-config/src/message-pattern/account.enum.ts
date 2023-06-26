@@ -9,4 +9,5 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   IS_ACTIVE = "account.isActive",
   IS_EXIST = "account.isExist",
   USERNAME_AVAILABLE = "account.usernameAvailable",
+  CHANGE_AVATAR = "account.changeAvatar",
 }
