@@ -104,14 +104,35 @@ export class UserController {
   @ApiOkResponse({ description: "User updated", type: User })
   @ApiNotFoundResponse({ description: "User not found" })
   @Put(":id")
-  public update(
-    @Param("id") id: string,
-    @Body() updateUser: UserUpdateType,
-  ) {
+  public update(@Param("id") id: string, @Body() updateUser: UserUpdateType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ACCOUNT_MESSAGE_PATTERN.UPDATE,
       data: { id, updateUser },
+    });
+  }
+
+  @ApiOperation({ summary: "Ban user" })
+  @ApiOkResponse({ description: "Banned User added", type: User })
+  @ApiNotFoundResponse({ description: "User not found" })
+  @Post("/ban/:id")
+  public banUser(@Param("id") id: string) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ACCOUNT_MESSAGE_PATTERN.BAN_USER,
+      data: { id },
+    });
+  }
+
+  @ApiOperation({ summary: "Canel ban user" })
+  @ApiOkResponse({ description: "Banned User canceled", type: User })
+  @ApiNotFoundResponse({ description: "User not found" })
+  @Post("/unban/:id")
+  public cancelBanUser(@Param("id") id: string) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ACCOUNT_MESSAGE_PATTERN.CANCEL_BAN_USER,
+      data: { id },
     });
   }
 }

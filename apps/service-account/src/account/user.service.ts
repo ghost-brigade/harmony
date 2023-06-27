@@ -26,6 +26,8 @@ import {
   UserContextType,
   UsernameStatusType,
   UserPublicSchema,
+  UserBanType,
+  UserBanSchema,
 } from "@harmony/zod";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -342,6 +344,56 @@ export class UserService {
         // @ts-ignore
         id: result.data._id,
       };
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
+    }
+  }
+  async banUser(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<Boolean> {
+    const userId = payload.id;
+
+
+    try {
+      const userData = await this.userModel.findByIdAndUpdate(
+        user.id,
+        { $addToSet: { blockedUsers: payload.id } },
+        { new: true }
+      );
+      return true;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
+    }
+  }
+
+  async cancelBanUser(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<Boolean> {
+    const userId = payload.id;
+
+
+    try {
+      const userData = await this.userModel.findByIdAndUpdate(
+        user.id,
+        { $pull: { blockedUsers: userId } },
+        { new: true }
+        );
+        console.log(userData);
+      return true;
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
