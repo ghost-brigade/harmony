@@ -7,6 +7,7 @@ import { ServerSchema } from "@harmony/nest-schemas";
 import { NestMicroserviceModule } from "@harmony/nest-microservice";
 import { Services, getService } from "@harmony/service-config";
 import { ClientsModule } from "@nestjs/microservices";
+import { ServerAuthorizationService } from "./server-authorization.service";
 
 @Module({
   imports: [
@@ -16,12 +17,13 @@ import { ClientsModule } from "@nestjs/microservices";
     }),
     ClientsModule.register([
       getService(Services.ACCOUNT),
+      getService(Services.AUTHORIZATION),
     ]),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     MongooseModule.forFeature([{ name: "Server", schema: ServerSchema }]),
   ],
   controllers: [ServerController],
-  providers: [ServerService],
+  providers: [ServerService, ServerAuthorizationService],
   exports: [],
 })
 export class ServerModule {}

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
@@ -19,13 +20,15 @@ import { Services, getServiceProperty } from "@harmony/service-config";
 import { firstValueFrom } from "rxjs";
 import { Errors } from "@harmony/enums";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
+import { ServerAuthorizationService } from "./server-authorization.service";
 
 @Injectable()
 export class ServerService {
   constructor(
     @InjectModel("Server") private readonly serverModel,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
-    private readonly accountService: ClientProxy
+    private readonly accountService: ClientProxy,
+    private readonly serverAuthorizationService: ServerAuthorizationService
   ) {}
 
   async create(createServer: ServerCreateType, user): Promise<ServerType> {
@@ -229,5 +232,21 @@ export class ServerService {
     const servers = await this.serverModel.find({ members: memberId }).exec();
 
     return servers;
+  }
+
+  async banMember(payload: { serverId: IdType; memberId: IdType }, user) {
+    const canBan = await this.serverAuthorizationService.canBanUser({
+      serverId: payload.serverId,
+      user,
+    });
+
+    if (canBan === false) {
+      throw new RpcException(
+        new BadRequestException("You do not have permission to ban this user")
+      );
+    }
+
+    console.log(payload);
+    return "test";
   }
 }

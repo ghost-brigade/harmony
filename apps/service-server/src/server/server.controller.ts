@@ -101,4 +101,12 @@ export class ServerController {
     console.log(user.id);
     return await this.serverService.addMember(payload, user.id);
   }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.BAN_MEMBER)
+  async banMemberFromServer(
+    @Payload() payload: { serverId: IdType; memberId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.banMember(payload, user);
+  }
 }

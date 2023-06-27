@@ -224,4 +224,16 @@ export class ServerController {
       data: { serverId },
     });
   }
+
+  @Post(":id/members/:memberId/ban")
+  async banMember(
+    @Param("id") serverId: string,
+    @Param("memberId") memberId: string
+  ) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.BAN_MEMBER,
+      data: { serverId, memberId },
+    });
+  }
 }
