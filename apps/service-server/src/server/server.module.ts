@@ -3,7 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ServerController } from "./server.controller";
 import { ServerService } from "./server.service";
-import { ServerSchema } from "@harmony/zod";
+import { ServerSchema } from "@harmony/nest-schemas";
 import { NestMicroserviceModule } from "@harmony/nest-microservice";
 import { Services, getService } from "@harmony/service-config";
 import { ClientsModule } from "@nestjs/microservices";
