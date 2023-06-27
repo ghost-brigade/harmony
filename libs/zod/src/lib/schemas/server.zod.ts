@@ -4,7 +4,7 @@ import { createZodDto } from "nestjs-zod";
 
 export const ServerSchema = z.object({
   id: IdSchema.optional(),
-  name: z.string(),
+  name: z.string().min(3).max(50),
   owner: IdSchema.optional(),
   members: z.array(IdSchema).optional(),
   categories: z.array(IdSchema).optional(),
@@ -14,17 +14,8 @@ export const ServerSchema = z.object({
   cover: z.string().optional(),
 });
 
-export const ServerCreateSchema = ServerSchema.omit({
-  id: true,
-  avatar: true,
-  isVerified: true,
-  blockedUsers: true,
-  owner: true,
-  members: true,
-  categories: true,
-  channels: true,
-  roles: true,
-  emojis: true,
+export const ServerCreateSchema = ServerSchema.pick({
+  name: true,
 });
 
 export const ServerUpdateSchema = z.object({

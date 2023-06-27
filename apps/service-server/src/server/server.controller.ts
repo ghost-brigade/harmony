@@ -18,15 +18,24 @@ import {
 import { Errors } from "@harmony/enums";
 import { IdType } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
+import { ServerCreateService } from "./server-create.service";
 
 @Controller("server")
 export class ServerController {
-  constructor(private readonly serverService: ServerService) {}
+  constructor(
+    private readonly serverService: ServerService,
+    private readonly serverCreateService: ServerCreateService
+  ) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
-  // async createServer(data: ServerCreateType) {
-  async createServer(data) {
-    return await this.serverService.create(data.server, data.user);
+  async createServer(
+    @Payload()
+    payload: {
+      server: ServerCreateType;
+    },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverCreateService.create(payload, user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)

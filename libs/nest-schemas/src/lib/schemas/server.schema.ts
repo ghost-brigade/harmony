@@ -9,7 +9,16 @@ import { File } from "./file.schema";
 
 export type ServerDocument = HydratedDocument<Server>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
+})
 export class Server {
   @Prop({ type: String, required: true })
   name: string;

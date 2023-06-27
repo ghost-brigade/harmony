@@ -34,7 +34,7 @@ export class RoleUserService {
   ) {}
 
   async addUsersToRole(
-    @Payload() payload: { id: IdType; userId: IdType },
+    @Payload() payload: { id: IdType; userId: IdType; authorization?: boolean },
     @UserContext() user: UserContextType
   ): Promise<RoleType> {
     const idParsed = IdSchema.safeParse(payload.id);
@@ -51,14 +51,18 @@ export class RoleUserService {
       );
     }
 
-    // Check if user has permission to manage role
-    if (
-      (await this.roleService.canManageRole({ serverId: payload.id, user })) ===
-      false
-    ) {
-      throw new RpcException(
-        new BadRequestException("You don't have permission to update role")
-      );
+    if (payload?.authorization === undefined) {
+      // Check if user has permission to manage role
+      if (
+        (await this.roleService.canManageRole({
+          serverId: payload.id,
+          user,
+        })) === false
+      ) {
+        throw new RpcException(
+          new BadRequestException("You don't have permission to update role")
+        );
+      }
     }
 
     let userExistList: UserPublicType[] | null = null;
@@ -86,12 +90,12 @@ export class RoleUserService {
       throw new RpcException(new NotFoundException("Role doesn't exist"));
     }
 
-    // Check if role is default
-    if (role.name.startsWith("@")) {
-      throw new RpcException(
-        new BadRequestException("You can't update default roles name")
-      );
-    }
+    // // Check if role is default
+    // if (role.name.startsWith("@")) {
+    //   throw new RpcException(
+    //     new BadRequestException("You can't update default roles name")
+    //   );
+    // }
 
     // Check if user is already in role
     if (

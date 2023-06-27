@@ -222,7 +222,7 @@ export class UserService {
 
   async findOneBy(params: UserType): Promise<UserType | null> {
     try {
-      return await this.userModel.findOne(params).exec();
+      return (await this.userModel.findOne(params).exec());
     } catch (error) {
       return null;
     }
@@ -317,7 +317,8 @@ export class UserService {
 
   async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
-      const profile = await this.findOneBy({ email: user.email });
+      // @ts-ignore
+      const profile = (await this.findOneBy({ email: user.email })).toObject();
       const result = UserProfileSchema.safeParse(profile);
 
       if (result.success === false) {

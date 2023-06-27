@@ -54,13 +54,11 @@ export class ServerController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post()
-  async createServer(
-    @Body() ServerCreateType: ServerCreateDto,
-    @Req() request: RequestWithUser
-  ) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.CREATE, {
-      server: ServerCreateType,
-      user: await getUserFromRequest(request),
+  async createServer(@Body() ServerCreateType: ServerCreateDto) {
+    return this.serviceRequest.send({
+      client: this.client,
+      data: { server: ServerCreateType },
+      pattern: SERVER_MESSAGE_PATTERN.CREATE,
     });
   }
 
