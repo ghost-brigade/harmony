@@ -68,13 +68,13 @@ export class ServerCreateService {
         );
       }
 
-      const server = await this.createServer(payload.server, user);
+      const newServer = await this.createServer(payload.server, user);
 
-      await this.channelService.create(
+      const channel = await this.channelService.create(
         {
           channel: {
             name: "general",
-            server: server.id,
+            server: newServer.id,
             order: 1,
             type: ChannelTypeEnum.TEXT,
           },
@@ -88,7 +88,7 @@ export class ServerCreateService {
         pattern: ROLE_MESSAGE_PATTERN.CREATE,
         data: {
           role: {
-            server: server.id,
+            server: newServer.id,
             name: "@admin",
             permissions: [Permissions.SERVER_ADMIN],
           },
@@ -113,7 +113,7 @@ export class ServerCreateService {
         pattern: ROLE_MESSAGE_PATTERN.CREATE,
         data: {
           role: {
-            server: server.id,
+            server: newServer.id,
             name: "@default",
             permissions: [
               Permissions.CHANNEL_VIEW,
@@ -126,7 +126,17 @@ export class ServerCreateService {
         promise: true,
       });
 
-      server.roles = [roleAdmin.id, roleDefault.id];
+      // update server with roles and channels
+      const server = await this.serverModel.findOneAndUpdate(
+        { _id: newServer.id },
+        {
+          $set: {
+            channels: [channel.id],
+            roles: [roleAdmin.id, roleDefault.id],
+          },
+        },
+        { new: true }
+      );
 
       return server;
     } catch (error) {
