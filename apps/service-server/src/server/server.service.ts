@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
@@ -16,11 +17,16 @@ import {
 } from "@harmony/zod";
 import { InjectModel } from "@nestjs/mongoose";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { Services, getServiceProperty } from "@harmony/service-config";
+import {
+  ROLE_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 import { firstValueFrom } from "rxjs";
-import { Errors } from "@harmony/enums";
+import { Errors, Permissions } from "@harmony/enums";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 import { ServerAuthorizationService } from "./server-authorization.service";
+import { ServiceRequest } from "@harmony/nest-microservice";
 
 @Injectable()
 export class ServerService {
@@ -28,7 +34,10 @@ export class ServerService {
     @InjectModel("Server") private readonly serverModel,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly accountService: ClientProxy,
-    private readonly serverAuthorizationService: ServerAuthorizationService
+    private readonly serverAuthorizationService: ServerAuthorizationService,
+    private readonly serviceRequest: ServiceRequest,
+    @Inject(getServiceProperty(Services.ROLE, "name"))
+    private readonly roleService: ClientProxy
   ) {}
 
   async create(createServer: ServerCreateType, user): Promise<ServerType> {
@@ -99,6 +108,18 @@ export class ServerService {
       );
     }
 
+    if (server.owner === memberId) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_USER_IS_OWNER_IN_SERVER)
+      );
+    }
+
+    if (server.banned.includes(memberId)) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_USER_IS_BANNED_IN_SERVER)
+      );
+    }
+
     const user: UserType = await firstValueFrom(
       this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
         id: memberId,
@@ -113,19 +134,60 @@ export class ServerService {
     const isUserAlreadyMember = server.members.includes(memberId);
     if (isUserAlreadyMember) {
       throw new RpcException(
-        new NotFoundException(Errors.ERROR_USER_ALREADY_IN_SERVER)
+        new BadRequestException(Errors.ERROR_USER_ALREADY_IN_SERVER)
       );
     }
 
-    const updatedServer = await this.serverModel
-      .findByIdAndUpdate(
-        payload.serverId,
-        { $addToSet: { members: memberId } },
-        { new: true }
-      )
-      .exec();
+    const roleDefaultId = await this.serviceRequest.send({
+      client: this.roleService,
+      pattern: ROLE_MESSAGE_PATTERN.FIND_ALL,
+      data: {
+        params: {
+          server: payload.serverId,
+          name: "@default",
+        },
+      },
+      promise: true,
+    });
 
-    return updatedServer;
+    if (roleDefaultId.length === 0) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_DEFAULT_ROLE_NOT_FOUND)
+      );
+    }
+
+    try {
+      await this.serviceRequest.send({
+        client: this.roleService,
+        pattern: ROLE_MESSAGE_PATTERN.ADD_USER,
+        data: {
+          id: roleDefaultId[0].id,
+          userId: user.id,
+          authorization: false,
+        },
+        promise: true,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
+      );
+    }
+
+    try {
+      const updatedServer = await this.serverModel
+        .findByIdAndUpdate(
+          payload.serverId,
+          { $addToSet: { members: memberId } },
+          { new: true }
+        )
+        .exec();
+      return updatedServer;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
+      );
+    }
   }
 
   async removeMember(serverId: string, memberId: string) {

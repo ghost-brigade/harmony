@@ -107,7 +107,6 @@ export class ServerController {
     @Payload() payload: { serverId: IdType },
     @UserContext() user: UserContextType
   ) {
-    console.log(user.id);
     return await this.serverService.addMember(payload, user.id);
   }
 

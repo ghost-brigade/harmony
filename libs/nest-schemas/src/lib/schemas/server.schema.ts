@@ -43,6 +43,9 @@ export class Server {
 
   @Prop({ type: { type: Types.ObjectId, ref: "File" } })
   cover: File;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
+  banned: User[];
 }
 
 export const ServerSchema = SchemaFactory.createForClass(Server);

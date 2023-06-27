@@ -12,6 +12,7 @@ export const ServerSchema = z.object({
   roles: z.array(IdSchema).optional(),
   emojis: z.array(IdSchema).optional(),
   cover: z.string().optional(),
+  banned: z.array(IdSchema).optional(),
 });
 
 export const ServerCreateSchema = ServerSchema.pick({
