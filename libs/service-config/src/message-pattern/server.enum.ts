@@ -10,4 +10,5 @@ export enum SERVER_MESSAGE_PATTERN {
   GET_SERVERS_OF_MEMBER = "server.get_servers_of_member",
   JOIN_SERVER = "server.join",
   BAN_MEMBER = "server.ban_member",
+  UNBAN_MEMBER = "server.unban_member",
 }

@@ -214,7 +214,7 @@ export class ServerController {
     description: "Successfully joined the server.",
   })
   @ApiResponse({ status: 404, description: "Server not found" })
-  @Patch("join/:serverId")
+  @Post("join/:serverId")
   async joinServer(@Param("serverId") serverId: IdType) {
     return this.serviceRequest.send({
       client: this.client,
@@ -231,6 +231,18 @@ export class ServerController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: SERVER_MESSAGE_PATTERN.BAN_MEMBER,
+      data: { serverId, memberId },
+    });
+  }
+
+  @Post(":id/members/:memberId/unban")
+  async unbanMember(
+    @Param("id") serverId: string,
+    @Param("memberId") memberId: string
+  ) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.UNBAN_MEMBER,
       data: { serverId, memberId },
     });
   }

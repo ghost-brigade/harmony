@@ -117,4 +117,12 @@ export class ServerController {
   ) {
     return await this.serverService.banMember(payload, user);
   }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.UNBAN_MEMBER)
+  async unbanMemberFromServer(
+    @Payload() payload: { serverId: IdType; memberId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.unbanMember(payload, user);
+  }
 }

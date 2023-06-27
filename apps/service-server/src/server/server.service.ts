@@ -308,7 +308,70 @@ export class ServerService {
       );
     }
 
-    console.log(payload);
-    return "test";
+    const server = await this.findOne(payload.serverId);
+
+    if (!server) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
+      );
+    }
+
+    const isUserAlreadyBanned = server.banned.includes(payload.memberId);
+
+    if (isUserAlreadyBanned) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_USER_ALREADY_BANNED_IN_SERVER)
+      );
+    }
+
+    const updatedServer = await this.serverModel
+      .findByIdAndUpdate(
+        payload.serverId,
+        { $addToSet: { banned: payload.memberId } },
+        { new: true }
+      )
+      .exec();
+
+    return updatedServer;
+  }
+
+  async unbanMember(payload: { serverId: IdType; memberId: IdType }, user) {
+    const canBan = await this.serverAuthorizationService.canBanUser({
+      serverId: payload.serverId,
+      user,
+    });
+
+    if (canBan === false) {
+      throw new RpcException(
+        new BadRequestException("You do not have permission to unban this user")
+      );
+    }
+
+    const server = await this.findOne(payload.serverId);
+
+    if (!server) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
+      );
+    }
+
+    const isUserAlreadyBanned = server.banned.includes(payload.memberId);
+
+    if (!isUserAlreadyBanned) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_USER_NOT_BANNED_IN_SERVER)
+      );
+    }
+
+    const updatedServer = await this.serverModel
+
+      .findByIdAndUpdate(
+        payload.serverId,
+        { $pull: { banned: payload.memberId } },
+        { new: true }
+      )
+      .exec();
+
+    return updatedServer;
   }
 }

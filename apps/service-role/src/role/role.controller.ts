@@ -46,13 +46,10 @@ export class RoleController {
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.CREATE)
   async createRole(
-    @Payload() payload: { role: RoleCreateType, authorization?: boolean },
-    @UserContext() user: UserContextType,
+    @Payload() payload: { role: RoleCreateType; authorization?: boolean },
+    @UserContext() user: UserContextType
   ): Promise<RoleType> {
-    return await this.roleCreateService.createRole(
-      payload,
-      user,
-    );
+    return await this.roleCreateService.createRole(payload, user);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.UPDATE)
@@ -65,24 +62,18 @@ export class RoleController {
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.DELETE)
   async deleteRole(
-    @Payload() payload: { id: IdType, authorization?: boolean },
-    @UserContext() user: UserContextType,
+    @Payload() payload: { id: IdType; authorization?: boolean },
+    @UserContext() user: UserContextType
   ): Promise<boolean> {
-    return await this.roleDeleteService.deleteRole(
-      payload,
-      user,
-    );
+    return await this.roleDeleteService.deleteRole(payload, user);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.ADD_USER)
   async addUserToRole(
-    @Payload() payload: { id: IdType; userId: IdType, authorization?: boolean },
-    @UserContext() user: UserContextType,
+    @Payload() payload: { id: IdType; userId: IdType; authorization?: boolean },
+    @UserContext() user: UserContextType
   ): Promise<RoleType> {
-    return await this.roleUserService.addUsersToRole(
-      payload,
-      user,
-    );
+    return await this.roleUserService.addUsersToRole(payload, user);
   }
 
   @MessagePattern(ROLE_MESSAGE_PATTERN.REMOVE_USER)
