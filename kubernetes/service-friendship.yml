@@ -1,27 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-account
-  labels:
-    app: service-account
-  #externalsecrets.kubernetes-client.io/secret-ref: gcp-secrets-manager
-
+  name: service-friendship
 spec:
   selector:
     matchLabels:
-      app: service-account
+      app: service-friendship
   template:
     metadata:
       labels:
-        app: service-account
+        app: service-friendship
     spec:
       hostAliases:
       - ip: "0.0.0.0"
         hostnames:
-          - "service-account"
+          - "service-friendship"
       containers:
-        - name: service-account
-          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-account:stable
+        - name: service-friendship
+          image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-friendship:stable
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -36,14 +32,6 @@ spec:
                 configMapKeyRef:
                   name: api-config
                   key: PORT
-            - name: MONGODB_URI
-              value: "mongodb+srv://boss:boss@account.rkyvao3.mongodb.net/?retryWrites=true&w=majority"
-
-            # - name: MONGODB_URI
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: gcp-secrets-manager
-            #       key: MONGODB_URI
           resources:
             requests:
               cpu: 100m
@@ -51,22 +39,17 @@ spec:
             limits:
               cpu: 200m
               memory: 256Mi
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
 
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: service-account-hpa
+  name: service-friendship-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: service-account
+    name: service-friendship
   minReplicas: 1
   maxReplicas: 5
   metrics:

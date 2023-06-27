@@ -1,18 +1,22 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { MongooseModule } from "@nestjs/mongoose";
 import { ServerController } from "./server.controller";
 import { ServerService } from "./server.service";
-import { ServerSchema } from "@harmony/nest-schemas";
-import { MongooseModule } from "@nestjs/mongoose";
-import { ClientsModule } from "@nestjs/microservices";
+import { ServerSchema } from "@harmony/zod";
+import { NestMicroserviceModule } from "@harmony/nest-microservice";
 import { Services, getService } from "@harmony/service-config";
+import { ClientsModule } from "@nestjs/microservices";
 
 @Module({
   imports: [
-    ClientsModule.register([getService(Services.ACCOUNT)]),
+    NestMicroserviceModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ClientsModule.register([
+      getService(Services.ACCOUNT),
+    ]),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     MongooseModule.forFeature([{ name: "Server", schema: ServerSchema }]),
   ],

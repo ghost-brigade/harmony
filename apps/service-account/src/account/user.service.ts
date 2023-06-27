@@ -179,27 +179,28 @@ export class UserService {
 
     try {
       const users = await this.userModel.find(params).exec();
-      console.log("______________________");
-      console.log(users);
-      console.log("______________________");
-      return users.map((user) => {
-        const uObj = user.toObject();
 
-        // todo async avatar
-        // if (typeof uObj.avatar === "string" && uObj.avatar.length > 0) {
-        //   try {
-        //     uObj.avatar =
-        //       (await this.userAvatarService.getAvatar({
-        //         id: uObj.avatar,
-        //         object: false,
-        //       })) ?? undefined;
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // }
+      return await Promise.all(
+        users.map(async (user) => {
+          const uObj = user.toObject();
+          uObj.id = uObj._id.toString();
 
-        return UserPublicSchema.parse(uObj);
-      });
+          if (uObj.avatar) {
+            const avatar = await this.userAvatarService.getAvatar({
+              id: uObj.avatar,
+              object: false,
+            });
+
+            if (avatar) {
+              uObj.avatar = avatar;
+            } else {
+              delete uObj.avatar;
+            }
+          }
+
+          return UserPublicSchema.parse(uObj);
+        })
+      );
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
@@ -221,7 +222,7 @@ export class UserService {
 
   async findOneBy(params: UserType): Promise<UserType | null> {
     try {
-      return await this.userModel.findOne(params).exec();
+      return (await this.userModel.findOne(params).exec()).toObject();
     } catch (error) {
       return null;
     }
@@ -316,9 +317,8 @@ export class UserService {
 
   async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
-      const result = UserProfileSchema.safeParse(
-        await this.findOneBy({ email: user.email })
-      );
+      const profile = await this.findOneBy({ email: user.email });
+      const result = UserProfileSchema.safeParse(profile);
 
       if (result.success === false) {
         throw new RpcException(
@@ -328,10 +328,23 @@ export class UserService {
         );
       }
 
-      return result.data;
-    } catch (error) {
-      console.error(error);
+      if (result.data.avatar) {
+        const avatar = await this.userAvatarService.getAvatar({
+          id: result.data.avatar,
+          object: false,
+        });
 
+        if (typeof avatar === "string") {
+          result.data.avatar = avatar;
+        }
+      }
+
+      return {
+        ...result.data,
+        // @ts-ignore
+        id: result.data._id,
+      };
+    } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
           "An error occured while fetching your profile"
