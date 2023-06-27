@@ -8,6 +8,8 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   PROFILE = "account.profile",
   IS_ACTIVE = "account.isActive",
   IS_EXIST = "account.isExist",
+  BAN_USER = "account.banUser",
+  CANCEL_BAN_USER = "account.cancelBanUser",
   USERNAME_AVAILABLE = "account.usernameAvailable",
   CHANGE_AVATAR = "account.changeAvatar",
 }

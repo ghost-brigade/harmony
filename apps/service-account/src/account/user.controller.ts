@@ -3,6 +3,7 @@ import { MessagePattern, Payload, RpcException } from "@nestjs/microservices";
 import { UserService } from "./user.service";
 import {
   IdType,
+  UserBanType,
   UserContextType,
   UserCreateType,
   UserParamsType,
@@ -66,6 +67,22 @@ export class UserController {
     @UserContext() user: UserContextType,
     )  {
     return await this.userService.update(payload, user);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.BAN_USER)
+  async banUser(
+    @Payload() payload: { id: IdType },
+    @UserContext() user: UserContextType,
+    ) : Promise<Boolean> {
+    return await this.userService.banUser(payload, user);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.CANCEL_BAN_USER)
+  async cancelBanUser(
+    @Payload() payload: { id: IdType },
+    @UserContext() user: UserContextType,
+    ) : Promise<Boolean> {
+    return await this.userService.cancelBanUser(payload, user);
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.IS_ACTIVE)

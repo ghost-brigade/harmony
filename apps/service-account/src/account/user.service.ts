@@ -26,6 +26,8 @@ import {
   UserContextType,
   UsernameStatusType,
   UserPublicSchema,
+  UserBanType,
+  UserBanSchema,
 } from "@harmony/zod";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -100,48 +102,53 @@ export class UserService {
   }
 
   async update(
-    payload : {
-      id: IdType,
-      updateUser: UserUpdateType
+    payload: {
+      id: IdType;
+      updateUser: UserUpdateType;
     },
     user: UserContextType
- 
-    ): Promise<UserPublicType> {
+  ): Promise<UserPublicType> {
     const parse = UserCreateSchema.safeParse(payload.updateUser);
 
-    
     if (parse.success === false) {
       throw new RpcException(
         new UnprocessableEntityException(FormatZodResponse(parse.error.issues))
-        );
-      }
-      
-      if (payload.updateUser.password) {
-        payload.updateUser.password = await this.hashPassword(payload.updateUser.password);
-      }
-      
-      const userId = payload.id;
-      if ( userId !== user.id) {
-        throw new RpcException(
-          new UnauthorizedException("You are not authorized to perform this action.")
-          );
-        }
+      );
+    }
+
+    if (payload.updateUser.password) {
+      payload.updateUser.password = await this.hashPassword(
+        payload.updateUser.password
+      );
+    }
+
+    const userId = payload.id;
+    if (userId !== user.id) {
+      throw new RpcException(
+        new UnauthorizedException(
+          "You are not authorized to perform this action."
+        )
+      );
+    }
 
     const updatedUser = await this.userModel.findByIdAndUpdate(
       userId,
-      { $set: { username: payload.updateUser.username, password: payload.updateUser.password, email: payload.updateUser.email } },
+      {
+        $set: {
+          username: payload.updateUser.username,
+          password: payload.updateUser.password,
+          email: payload.updateUser.email,
+        },
+      },
       { new: true }
     );
-  
+
     if (!updatedUser) {
-      throw new RpcException(
-        new NotFoundException('User not found.')
-      );
+      throw new RpcException(new NotFoundException("User not found."));
     }
-  
+
     return updatedUser;
   }
-  
 
   async delete(id: string): Promise<null> {
     const deletedUser = await this.userModel.findByIdAndRemove(id).exec();
@@ -172,7 +179,9 @@ export class UserService {
 
     try {
       const users = await this.userModel.find(params).exec();
-
+      console.log("______________________");
+      console.log(users);
+      console.log("______________________");
       return users.map((user) => {
         const uObj = user.toObject();
 
@@ -323,6 +332,56 @@ export class UserService {
     } catch (error) {
       console.error(error);
 
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
+    }
+  }
+  async banUser(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<Boolean> {
+    const userId = payload.id;
+
+
+    try {
+      const userData = await this.userModel.findByIdAndUpdate(
+        user.id,
+        { $addToSet: { blockedUsers: payload.id } },
+        { new: true }
+      );
+      return true;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
+    }
+  }
+
+  async cancelBanUser(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<Boolean> {
+    const userId = payload.id;
+
+
+    try {
+      const userData = await this.userModel.findByIdAndUpdate(
+        user.id,
+        { $pull: { blockedUsers: userId } },
+        { new: true }
+        );
+        console.log(userData);
+      return true;
+    } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
           "An error occured while fetching your profile"
