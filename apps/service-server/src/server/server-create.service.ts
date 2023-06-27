@@ -26,8 +26,6 @@ import { ChannelType as ChannelTypeEnum, Permissions } from "@harmony/enums";
 export class ServerCreateService {
   constructor(
     @InjectModel("Server") private readonly serverModel,
-    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
-    private readonly accountService: ClientProxy,
     @Inject(getServiceProperty(Services.ROLE, "name"))
     private readonly roleService: ClientProxy,
     private readonly serviceRequest: ServiceRequest,
@@ -126,7 +124,6 @@ export class ServerCreateService {
         promise: true,
       });
 
-      // update server with roles and channels
       const server = await this.serverModel.findOneAndUpdate(
         { _id: newServer.id },
         {
