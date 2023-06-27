@@ -11,11 +11,13 @@ import {
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Put,
   Req,
 } from "@nestjs/common";
 import {
+  IdType,
   ServerCreateDto,
   ServerCreateType,
   ServerDto,
@@ -34,12 +36,14 @@ import {
   RequestWithUser,
   getUserFromRequest,
 } from "../core/utils/get-user-from-request";
+import { ServiceRequest } from "@harmony/nest-microservice";
 
 @Controller("server")
 export class ServerController {
   constructor(
     @Inject(getServiceProperty(Services.SERVER, "name"))
-    private readonly client: ClientProxy
+    private readonly client: ClientProxy,
+    private readonly serviceRequest: ServiceRequest
   ) {}
 
   @ApiTags("Server")
@@ -203,5 +207,21 @@ export class ServerController {
       SERVER_MESSAGE_PATTERN.GET_SERVERS_OF_MEMBER,
       memberId
     );
+  }
+
+  @ApiTags("Server")
+  @ApiOperation({ summary: "Join a server" })
+  @ApiResponse({
+    status: 200,
+    description: "Successfully joined the server.",
+  })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Patch("join/:serverId")
+  async joinServer(@Param("serverId") serverId: IdType) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.JOIN_SERVER,
+      data: { serverId },
+    });
   }
 }

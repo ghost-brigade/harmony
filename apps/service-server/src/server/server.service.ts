@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import {
   FormatZodResponse,
+  IdType,
   ServerCreateSchema,
   ServerCreateType,
   ServerType,
@@ -87,10 +88,12 @@ export class ServerService {
     }
   }
 
-  async addMember(serverId: string, memberId: string) {
-    const server = await this.findOne(serverId);
+  async addMember(payload: { serverId: IdType }, memberId: string) {
+    const server = await this.findOne(payload.serverId);
     if (!server) {
-      throw new NotFoundException(`Server with ID ${serverId} not found`);
+      throw new NotFoundException(
+        `Server with ID ${payload.serverId} not found`
+      );
     }
 
     const user: UserType = await firstValueFrom(
@@ -113,7 +116,7 @@ export class ServerService {
 
     const updatedServer = await this.serverModel
       .findByIdAndUpdate(
-        serverId,
+        payload.serverId,
         { $addToSet: { members: memberId } },
         { new: true }
       )
