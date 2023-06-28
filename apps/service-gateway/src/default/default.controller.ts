@@ -4,7 +4,6 @@ import { Public } from "../core/decorators/public.decorator";
 
 @Controller()
 export class DefaultController {
-
   @ApiTags("Default")
   @ApiOperation({ summary: "Default route" })
   @Get()
@@ -16,4 +15,3 @@ export class DefaultController {
     };
   }
 }
-

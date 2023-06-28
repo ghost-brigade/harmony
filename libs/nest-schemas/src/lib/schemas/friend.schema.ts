@@ -4,7 +4,7 @@ import { User } from "./user.schema";
 
 export type FriendDocument = HydratedDocument<Friend>;
 
-@Schema({ 
+@Schema({
   timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
@@ -14,15 +14,12 @@ export type FriendDocument = HydratedDocument<Friend>;
     },
   },
 })
-
 export class Friend {
-
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   user1: User;
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   user2: User;
-
 }
 
 export const FriendSchema = SchemaFactory.createForClass(Friend);

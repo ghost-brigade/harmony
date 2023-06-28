@@ -152,16 +152,16 @@
     "colId": "history",
     "containerId": "",
     "name": "localhost:3000/user",
-    "url": "localhost:3000/user/6499a80ac15e8c1d6172c512",
-    "method": "PUT",
+    "url": "localhost:3000/user/unban/64456ca89684a2566d8686ee",
+    "method": "POST",
     "sortNum": 0,
     "created": "2023-06-26T15:00:17.583Z",
-    "modified": "2023-06-26T16:59:01.194Z",
+    "modified": "2023-06-27T00:10:59.703Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"username\": \"julien\",\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+      "raw": "{\n  \"username\": \"julien3\",\n  \"email\": \"julien3@test.fr\",\n  \"password\": \"password\",\n  \"blockedUsers\": [\"64456ca89684a2566d8686ee\",\"64456ca89684a2566d8686ee\"]\n}",
       "form": []
     },
     "auth": {

@@ -17,11 +17,14 @@ export const FriendRequestPermissionSchema = z.nativeEnum(Permissions);
 export const FriendRequestZodSchema = FriendRequestSchema;
 export const FriendRequestCreateZodSchema = FriendRequestCreateSchema;
 
-
 export type FriendRequestType = z.infer<typeof FriendRequestSchema>;
-export type FriendRequestPermissionType = z.infer<typeof FriendRequestPermissionSchema>;
+export type FriendRequestPermissionType = z.infer<
+  typeof FriendRequestPermissionSchema
+>;
 export type FriendRequestCreateType = z.infer<typeof FriendRequestCreateSchema>;
 export type FriendRequestParamsType = z.infer<typeof FriendRequestSchema>;
 
 export class FriendRequestDto extends createZodDto(FriendRequestSchema) {}
-export class FriendRequestCreateDto extends createZodDto(FriendRequestCreateSchema) {}
+export class FriendRequestCreateDto extends createZodDto(
+  FriendRequestCreateSchema
+) {}

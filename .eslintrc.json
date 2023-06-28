@@ -13,9 +13,7 @@
   "root": true,
   "overrides": [
     {
-      "files": [
-        "apps/client/**/*.ts"
-      ],
+      "files": ["apps/client/**/*.ts"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -29,9 +27,7 @@
       }
     },
     {
-      "files": [
-        "apps/**/*.ts"
-      ],
+      "files": ["apps/**/*.ts"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -43,21 +39,13 @@
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {}
     },
     {
-      "files": [
-        "*.html"
-      ],
-      "excludedFiles": [
-        "*inline-template-*.component.html"
-      ],
+      "files": ["*.html"],
+      "excludedFiles": ["*inline-template-*.component.html"],
       "extends": [
         "plugin:prettier/recommended",
         "plugin:tailwindcss/recommended"

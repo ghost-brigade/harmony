@@ -12,9 +12,9 @@ spec:
         app: service-role
     spec:
       hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-          - "service-role"
+        - ip: "0.0.0.0"
+          hostnames:
+            - "service-role"
       containers:
         - name: service-role
           image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-role:stable
@@ -61,4 +61,3 @@ spec:
         target:
           type: Utilization
           averageUtilization: 80
-

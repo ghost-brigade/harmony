@@ -20,7 +20,7 @@ export const ChannelCreateSchema = z.object({
   server: IdSchema,
   type: z.nativeEnum(ChannelTypeEnum),
   order: z.number().int().min(1).max(30).optional(),
-})
+});
 
 export const ChannelUpdateSchema = ChannelSchema.omit({
   id: true,

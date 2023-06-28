@@ -12,9 +12,9 @@ spec:
         app: service-server
     spec:
       hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-          - "service-server"
+        - ip: "0.0.0.0"
+          hostnames:
+            - "service-server"
       containers:
         - name: service-server
           image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-server:stable
@@ -61,4 +61,3 @@ spec:
         target:
           type: Utilization
           averageUtilization: 80
-

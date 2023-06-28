@@ -12,9 +12,9 @@ spec:
         app: service-message
     spec:
       hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-          - "service-message"
+        - ip: "0.0.0.0"
+          hostnames:
+            - "service-message"
       containers:
         - name: service-message
           image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-message:stable
@@ -61,4 +61,3 @@ spec:
         target:
           type: Utilization
           averageUtilization: 80
-

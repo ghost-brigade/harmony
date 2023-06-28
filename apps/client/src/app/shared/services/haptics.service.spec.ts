@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { HapticsService } from './haptics.service';
+import { HapticsService } from "./haptics.service";
 
-describe('HapticsService', () => {
+describe("HapticsService", () => {
   let service: HapticsService;
 
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('HapticsService', () => {
     service = TestBed.inject(HapticsService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

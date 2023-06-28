@@ -19,6 +19,7 @@ export class RoleDeleteService {
   async deleteRole(
     payload: {
       id: string;
+      authorization?: boolean;
     },
     user: UserContextType
   ): Promise<boolean> {
@@ -30,13 +31,17 @@ export class RoleDeleteService {
       );
     }
 
-    if (
-      (await this.roleService.canManageRole({ serverId: payload.id, user })) ===
-      false
-    ) {
-      throw new RpcException(
-        new BadRequestException("You don't have permission to delete role")
-      );
+    if (payload?.authorization === undefined) {
+      if (
+        (await this.roleService.canManageRole({
+          serverId: payload.id,
+          user,
+        })) === false
+      ) {
+        throw new RpcException(
+          new BadRequestException("You don't have permission to delete role")
+        );
+      }
     }
 
     const role = await this.roleService.findOneBy(payload);
@@ -47,10 +52,12 @@ export class RoleDeleteService {
     }
 
     // Check if role is default
-    if (role.name.startsWith("@")) {
-      throw new RpcException(
-        new BadRequestException("You can't delete default roles")
-      );
+    if (payload?.authorization === undefined) {
+      if (role.name.startsWith("@")) {
+        throw new RpcException(
+          new BadRequestException("You can't delete default roles")
+        );
+      }
     }
 
     try {

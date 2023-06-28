@@ -120,7 +120,11 @@ export class ChannelService {
     return channel;
   }
 
-  async create(payload: { channel: ChannelCreateType }, user: UserContextType) {
+  async create(
+    payload: { channel: ChannelCreateType },
+    user: UserContextType,
+    bypassAuthorization = false
+  ): Promise<ChannelType> {
     if (payload.channel === undefined) {
       throw new RpcException(
         new BadRequestException("You must provide a channel to create.")
@@ -162,17 +166,21 @@ export class ChannelService {
       order: payload?.channel?.order,
     });
 
-    const canManage = await this.channelAuthorizationService.canManageChannel({
-      serverId: payload.channel.server,
-      user,
-    });
-
-    if (canManage === false) {
-      throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to create channels for this server."
-        )
+    if (bypassAuthorization === true) {
+      const canManage = await this.channelAuthorizationService.canManageChannel(
+        {
+          serverId: payload.channel.server,
+          user,
+        }
       );
+
+      if (canManage === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to create channels for this server."
+          )
+        );
+      }
     }
 
     if ((await this.getChannelCount(payload.channel.server)) >= 50) {

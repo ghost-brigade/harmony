@@ -20,9 +20,7 @@ import { ChannelService } from "./channel.service";
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
-    MongooseModule.forFeature([
-      { name: "Channel", schema: ChannelSchema },
-    ]),
+    MongooseModule.forFeature([{ name: "Channel", schema: ChannelSchema }]),
   ],
   controllers: [ChannelController],
   providers: [ChannelService, ChannelAuthorizationService],

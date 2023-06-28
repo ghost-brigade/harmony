@@ -25,6 +25,7 @@ export class RoleCreateService {
   async createRole(
     payload: {
       role: RoleCreateType;
+      authorization?: boolean;
     },
     user: UserContextType
   ): Promise<RoleType> {
@@ -36,20 +37,24 @@ export class RoleCreateService {
       );
     }
 
-    if (
-      (await this.roleService.canManageRole({
-        serverId: payload.role.server,
-        user,
-      })) === false
-    ) {
-      throw new RpcException(
-        new BadRequestException("You don't have permission to create role")
-      );
+    if (payload?.authorization === undefined) {
+      if (
+        (await this.roleService.canManageRole({
+          serverId: payload.role.server,
+          user,
+        })) === false
+      ) {
+        throw new RpcException(
+          new BadRequestException("You don't have permission to create role")
+        );
+      }
     }
 
     const { name, server, permissions } = parse.data;
 
-    this.roleService.isRoleNameValid({ name, throwError: true });
+    if (payload?.authorization === undefined) {
+      this.roleService.isRoleNameValid({ name, throwError: true });
+    }
 
     await this.roleService.isRoleNameAlreadyExist({
       name,

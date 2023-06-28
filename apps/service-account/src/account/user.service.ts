@@ -26,6 +26,9 @@ import {
   UserContextType,
   UsernameStatusType,
   UserPublicSchema,
+  UserBanType,
+  UserBanSchema,
+  UserUpdateSchema,
 } from "@harmony/zod";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { Errors } from "@harmony/enums";
@@ -106,7 +109,7 @@ export class UserService {
     },
     user: UserContextType
   ): Promise<UserPublicType> {
-    const parse = UserCreateSchema.safeParse(payload.updateUser);
+    const parse = UserUpdateSchema.safeParse(payload.updateUser);
 
     if (parse.success === false) {
       throw new RpcException(
@@ -114,14 +117,13 @@ export class UserService {
       );
     }
 
-    if (payload.updateUser.password) {
+    if (payload?.updateUser?.password) {
       payload.updateUser.password = await this.hashPassword(
         payload.updateUser.password
       );
     }
 
-    const userId = payload.id;
-    if (userId !== user.id) {
+    if (payload.id !== user.id) {
       throw new RpcException(
         new UnauthorizedException(
           "You are not authorized to perform this action."
@@ -130,13 +132,9 @@ export class UserService {
     }
 
     const updatedUser = await this.userModel.findByIdAndUpdate(
-      userId,
+      payload.id,
       {
-        $set: {
-          username: payload.updateUser.username,
-          password: payload.updateUser.password,
-          email: payload.updateUser.email,
-        },
+        $set: payload.updateUser,
       },
       { new: true }
     );
@@ -145,7 +143,7 @@ export class UserService {
       throw new RpcException(new NotFoundException("User not found."));
     }
 
-    return updatedUser;
+    return UserProfileSchema.parse(updatedUser);
   }
 
   async delete(id: string): Promise<null> {
@@ -220,7 +218,7 @@ export class UserService {
 
   async findOneBy(params: UserType): Promise<UserType | null> {
     try {
-      return (await this.userModel.findOne(params).exec()).toObject();
+      return await this.userModel.findOne(params).exec();
     } catch (error) {
       return null;
     }
@@ -315,6 +313,7 @@ export class UserService {
 
   async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
+      // @ts-ignore
       const profile = await this.findOneBy({ email: user.email });
       const result = UserProfileSchema.safeParse(profile);
 
@@ -337,11 +336,55 @@ export class UserService {
         }
       }
 
-      return {
-        ...result.data,
-        // @ts-ignore
-        id: result.data._id,
-      };
+      return result.data;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
+    }
+  }
+  async banUser(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<Boolean> {
+    const userId = payload.id;
+
+    try {
+      const userData = await this.userModel.findByIdAndUpdate(
+        user.id,
+        { $addToSet: { blockedUsers: payload.id } },
+        { new: true }
+      );
+      return true;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occured while fetching your profile"
+        )
+      );
+    }
+  }
+
+  async cancelBanUser(
+    payload: {
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<Boolean> {
+    const userId = payload.id;
+
+    try {
+      const userData = await this.userModel.findByIdAndUpdate(
+        user.id,
+        { $pull: { blockedUsers: userId } },
+        { new: true }
+      );
+      console.log(userData);
+      return true;
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(

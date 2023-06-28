@@ -11,11 +11,13 @@ import {
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Put,
   Req,
 } from "@nestjs/common";
 import {
+  IdType,
   ServerCreateDto,
   ServerCreateType,
   ServerDto,
@@ -34,12 +36,14 @@ import {
   RequestWithUser,
   getUserFromRequest,
 } from "../core/utils/get-user-from-request";
+import { ServiceRequest } from "@harmony/nest-microservice";
 
 @Controller("server")
 export class ServerController {
   constructor(
     @Inject(getServiceProperty(Services.SERVER, "name"))
-    private readonly client: ClientProxy
+    private readonly client: ClientProxy,
+    private readonly serviceRequest: ServiceRequest
   ) {}
 
   @ApiTags("Server")
@@ -50,13 +54,11 @@ export class ServerController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @Post()
-  async createServer(
-    @Body() ServerCreateType: ServerCreateDto,
-    @Req() request: RequestWithUser
-  ) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.CREATE, {
-      server: ServerCreateType,
-      user: await getUserFromRequest(request),
+  async createServer(@Body() ServerCreateType: ServerCreateDto) {
+    return this.serviceRequest.send({
+      client: this.client,
+      data: { server: ServerCreateType },
+      pattern: SERVER_MESSAGE_PATTERN.CREATE,
     });
   }
 
@@ -203,5 +205,45 @@ export class ServerController {
       SERVER_MESSAGE_PATTERN.GET_SERVERS_OF_MEMBER,
       memberId
     );
+  }
+
+  @ApiTags("Server")
+  @ApiOperation({ summary: "Join a server" })
+  @ApiResponse({
+    status: 200,
+    description: "Successfully joined the server.",
+  })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Post("join/:serverId")
+  async joinServer(@Param("serverId") serverId: IdType) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.JOIN_SERVER,
+      data: { serverId },
+    });
+  }
+
+  @Post(":id/members/:memberId/ban")
+  async banMember(
+    @Param("id") serverId: string,
+    @Param("memberId") memberId: string
+  ) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.BAN_MEMBER,
+      data: { serverId, memberId },
+    });
+  }
+
+  @Post(":id/members/:memberId/unban")
+  async unbanMember(
+    @Param("id") serverId: string,
+    @Param("memberId") memberId: string
+  ) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.UNBAN_MEMBER,
+      data: { serverId, memberId },
+    });
   }
 }

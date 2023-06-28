@@ -1,6 +1,6 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
-import { IdSchema } from "../global/id.zod";
+import { IdSchema, IdArraySchema } from "../global/id.zod";
 import { Roles } from "@harmony/enums";
 
 const UserRoleSchema = z.nativeEnum(Roles).default(Roles.USER);
@@ -15,10 +15,10 @@ export const UserSchema = z.object({
   password: z.string().min(8).max(128),
   username: z.string().min(4).max(18),
   status: z.string().optional(),
-  avatar: z.string().optional(),
+  avatar: z.any().optional(),
   isVerified: z.boolean().optional(),
   role: UserRoleSchema.optional(),
-  blockedUsers: z.array(IdSchema).optional(),
+  blockedUsers: z.union([IdSchema, IdArraySchema]).optional(),
 });
 
 export const UsersSchema = z.array(UserSchema);
@@ -29,7 +29,7 @@ export const UserProfileSchema = UserSchema.omit({
 
 export const UserPublicSchema = UserSchema.omit({
   password: true,
-  blockedUsers: true,
+  // blockedUsers: true,
 });
 
 export const UsersPublicSchema = z.array(UserPublicSchema);
@@ -40,15 +40,22 @@ export const UserParamsSchema = UserSchema.pick({
   username: true,
 }).partial();
 
+export const UserBanSchema = UserSchema.pick({
+  id: true,
+  email: true,
+  username: true,
+  blockedUsers: true,
+}).partial();
+
 export const UserCreateSchema = UserSchema.omit({
   id: true,
   avatar: true,
   isVerified: true,
-  blockedUsers: true,
+  // blockedUsers: true,
   status: true,
 });
 
-const UserUpdateSchema = UserSchema.omit({
+export const UserUpdateSchema = UserSchema.omit({
   blockedUsers: true,
   isVerified: true,
 }).partial();
@@ -59,7 +66,9 @@ export type UserParamsType = z.infer<typeof UserParamsSchema>;
 export type UserProfileType = z.infer<typeof UserProfileSchema>;
 export type UserCreateType = z.infer<typeof UserCreateSchema>;
 export type UserUpdateType = z.infer<typeof UserUpdateSchema>;
+export type UserBanType = z.infer<typeof UserBanSchema>;
 
 export class UserPublicDto extends createZodDto(UserParamsSchema) {}
 export class UserCreateDto extends createZodDto(UserCreateSchema) {}
 export class UserUpdateDto extends createZodDto(UserUpdateSchema) {}
+export class UserBanDto extends createZodDto(UserBanSchema) {}

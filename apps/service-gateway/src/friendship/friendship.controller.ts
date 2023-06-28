@@ -5,7 +5,13 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import { FriendRequestCreateDto, FriendRequestDto, FriendCreateDto, FriendDto, IdType } from "@harmony/zod";
+import {
+  FriendRequestCreateDto,
+  FriendRequestDto,
+  FriendCreateDto,
+  FriendDto,
+  IdType,
+} from "@harmony/zod";
 import {
   Body,
   Controller,
@@ -26,7 +32,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
   ApiBody,
-  ApiParam
+  ApiParam,
 } from "@nestjs/swagger";
 
 // Due to a bug we need to import Multer without using it
@@ -54,8 +60,6 @@ export class FriendshipController {
     });
   }
 
-
-
   @ApiOperation({ summary: "Find friend request by id" })
   @ApiOkResponse({
     status: 200,
@@ -72,21 +76,19 @@ export class FriendshipController {
       data: { id },
     });
   }
-  
 
   @ApiOperation({ summary: "Send friend request" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @ApiParam({ name: "id", type: String })
   @Post("/friend-request/send/:id")
-  async sendFriendRequest( @Param("id") id: string) {
+  async sendFriendRequest(@Param("id") id: string) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.CREATE,
       data: { receiver: id },
     });
   }
-
 
   @ApiOperation({ summary: "Accept friend request" })
   @ApiNoContentResponse({ status: 204, description: "FriendRequest accepted" })
@@ -101,7 +103,7 @@ export class FriendshipController {
       data: { id: id },
     });
   }
-  
+
   @ApiOperation({ summary: "Reject friend request" })
   @ApiNoContentResponse({ status: 204, description: "FriendRequest rejected" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
@@ -117,13 +119,16 @@ export class FriendshipController {
   }
 
   @ApiOperation({ summary: "Cancel friend request" })
-  @ApiNoContentResponse({ status: 204, description: "Return deleted friendrequest" })
+  @ApiNoContentResponse({
+    status: 204,
+    description: "Return deleted friendrequest",
+  })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @ApiParam({ name: "id", type: String })
   @HttpCode(204)
   @Delete("/friend-request/cancel/:id")
-  async deleteFriendRequest(@Param("id") id: IdType, ) {
+  async deleteFriendRequest(@Param("id") id: IdType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.DELETE,
@@ -136,14 +141,13 @@ export class FriendshipController {
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Post("/newFriend")
-  async newFriend( @Body() data: IdType) {
+  async newFriend(@Body() data: IdType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIEND_MESSAGE_PATTERN.CREATE,
       data,
     });
   }
-
 
   @ApiOperation({ summary: "Get all friends" })
   @ApiOkResponse({ status: 200, description: "Return all friends" })
@@ -158,7 +162,11 @@ export class FriendshipController {
   }
 
   @ApiOperation({ summary: "Get one friend" })
-  @ApiOkResponse({ status: 200, description: "Return one friend", type: FriendCreateDto })
+  @ApiOkResponse({
+    status: 200,
+    description: "Return one friend",
+    type: FriendCreateDto,
+  })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @ApiParam({ name: "id", type: String })
@@ -178,7 +186,7 @@ export class FriendshipController {
   @HttpCode(204)
   @ApiParam({ name: "id", type: String })
   @Delete("/friend/delete/:id")
-  async deleteFriend(@Param("id") id: IdType, ) {
+  async deleteFriend(@Param("id") id: IdType) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIEND_MESSAGE_PATTERN.DELETE,

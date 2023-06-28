@@ -10,15 +10,12 @@ const FriendSchema = z.object({
   user2: IdSchema,
 });
 
-const FriendCreateSchema = FriendSchema.omit({
-
-});
+const FriendCreateSchema = FriendSchema.omit({});
 
 export const FriendPermissionSchema = z.nativeEnum(Permissions);
 
 export const FriendZodSchema = FriendSchema;
 export const FriendCreateZodSchema = FriendCreateSchema;
-
 
 export type FriendType = z.infer<typeof FriendSchema>;
 export type FriendPermissionType = z.infer<typeof FriendPermissionSchema>;
