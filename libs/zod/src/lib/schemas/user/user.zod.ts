@@ -15,7 +15,7 @@ export const UserSchema = z.object({
   password: z.string().min(8).max(128),
   username: z.string().min(4).max(18),
   status: z.string().optional(),
-  avatar: z.string().optional(),
+  avatar: z.any().optional(),
   isVerified: z.boolean().optional(),
   role: UserRoleSchema.optional(),
   blockedUsers: z.union([IdSchema, IdArraySchema]).optional(),
@@ -55,7 +55,7 @@ export const UserCreateSchema = UserSchema.omit({
   status: true,
 });
 
-const UserUpdateSchema = UserSchema.omit({
+export const UserUpdateSchema = UserSchema.omit({
   blockedUsers: true,
   isVerified: true,
 }).partial();
