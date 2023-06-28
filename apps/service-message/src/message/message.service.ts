@@ -7,9 +7,11 @@ import {
   IdType,
   UserContextType,
   MessageCreateSchema,
+  MessageUpdateType,
 } from "@harmony/zod";
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -20,12 +22,10 @@ import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class MessageService {
-  constructor(
-    @InjectModel("Message") private readonly messageModel,
-  ) {}
+  constructor(@InjectModel("Message") private readonly messageModel) {}
 
   async newMessage(
-    payload: {message: MessageCreateType},
+    payload: { message: MessageCreateType },
     user: UserContextType
   ): Promise<MessageType> {
     const parse = MessageCreateSchema.safeParse(payload.message);
@@ -45,6 +45,42 @@ export class MessageService {
     }
   }
 
+  async updateMessage(
+    payload: {
+      content: MessageUpdateType;
+      id: IdType;
+    },
+    user: UserContextType
+  ): Promise<MessageUpdateType> {
+    try {
+      const existingMessage = await this.messageModel.findOne({
+        _id: payload.id,
+      });
+
+      if (!existingMessage) {
+        throw new RpcException(new NotFoundException("Message not found"));
+      }
+
+      // Vérifier si l'utilisateur est l'auteur du message
+      if (existingMessage.author !== user.id) {
+        throw new RpcException(
+          new ForbiddenException("You are not allowed to update this message")
+        );
+      }
+
+      // Mettre à jour le contenu du message uniquement
+      existingMessage.content = payload.content.content;
+      const updatedMessage = await existingMessage.save();
+
+      return updatedMessage;
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error updating message")
+      );
+    }
+  }
+
   async deleteMessage(
     payload: {
       id: IdType;
@@ -52,20 +88,27 @@ export class MessageService {
     user: UserContextType
   ): Promise<boolean> {
     try {
-      const messagerequest = await this.messageModel.findMessage({
-        id: payload.id,
-      });
+      const message = await this.findMessage(
+        {
+          id: payload.id,
+        },
+        user
+      );
 
-      if (!messagerequest) {
+      console.log("______________");
+      console.log(message);
+      console.log("______________");
+
+      if (!message) {
         throw new RpcException(
-          new NotFoundException("MessageRequest request not found.")
+          new NotFoundException("message request not found.")
         );
       }
 
-      if (messagerequest.sender !== user.id) {
+      if (message.author !== user.id) {
         throw new RpcException(
           new UnauthorizedException(
-            "You are not authorized to delete this messagerequest request."
+            "You are not authorized to delete this message request."
           )
         );
       }
@@ -75,38 +118,47 @@ export class MessageService {
       });
       return true;
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error deleting message.")
       );
     }
   }
 
-  public async findAll(
-    user: UserContextType
-  ): Promise<MessageType[]> {
-    console.log("______________");
-    console.log(user);
-    console.log("______________");
+  public async findAll(user: UserContextType): Promise<MessageType[]> {
     try {
-      const messages = await this.messageModel
+      const messages = (await this.messageModel
         .find({
           $or: [{ author: user.id }, { recipient: user.id }],
         })
-        .exec() as MessageType[];
+        .exec()) as MessageType[];
 
-      return messages ;
+      return messages;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
 
   public async findMessage(
-    payload: { id: IdType },
+    payload: { id: string },
     user: UserContextType
   ): Promise<MessageType> {
     try {
       const message = await this.messageModel
-        .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
+        .findOne({
+          $and: [
+            {
+              $or: [
+                { author: payload.id },
+                { recipient: payload.id },
+                { _id: payload.id },
+              ],
+            },
+            {
+              $or: [{ author: user.id }, { recipient: user.id }],
+            },
+          ],
+        })
         .exec();
 
       if (!message) {

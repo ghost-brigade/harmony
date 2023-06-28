@@ -14,6 +14,7 @@ import {
   FriendDto,
   IdType,
   MessageDto,
+  MessageUpdateDto,
 } from "@harmony/zod";
 import {
   Body,
@@ -24,6 +25,7 @@ import {
   Inject,
   Param,
   Post,
+  Put,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
@@ -101,6 +103,98 @@ export class MessageController {
       pattern: MESSENGER_MESSAGE_PATTERN.FIND_ALL,
     });
   }
-}
 
-//6499a80ac15e8c1d6172c512
+  @Get(":id")
+  @HttpCode(201)
+  @ApiOperation({
+    summary: "Find a message",
+    description: "Find a message",
+  })
+  @ApiCreatedResponse({
+    description: "The message have been successfully found.",
+    type: MessageDto,
+  })
+  @ApiBadRequestResponse({
+    description: "The provided data was invalid.",
+  })
+  @ApiUnauthorizedResponse({
+    description: "The user is not authorized.",
+  })
+  @ApiParam({
+    name: "id",
+    description: "The id of the message to find.",
+    type: String,
+  })
+  async findMessage(@Param("id") id: string): Promise<MessageDto> {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: MESSENGER_MESSAGE_PATTERN.FIND_BY_ID,
+      data: { id },
+    });
+  }
+
+  @Delete(":id")
+  @HttpCode(201)
+  @ApiOperation({
+    summary: "Delete a message",
+    description: "Delete a message",
+  })
+  @ApiCreatedResponse({
+    description: "The message have been successfully found.",
+    type: MessageDto,
+  })
+  @ApiBadRequestResponse({
+    description: "The provided data was invalid.",
+  })
+  @ApiUnauthorizedResponse({
+    description: "The user is not authorized.",
+  })
+  @ApiParam({
+    name: "id",
+    description: "The id of the message to Delete.",
+    type: String,
+  })
+  async deleteMessage(@Param("id") id: string): Promise<MessageDto> {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: MESSENGER_MESSAGE_PATTERN.DELETE,
+      data: { id },
+    });
+  }
+
+  @Put(":id")
+  @HttpCode(201)
+  @ApiOperation({
+    summary: "Delete a message",
+    description: "Delete a message",
+  })
+  @ApiCreatedResponse({
+    description: "The message have been successfully found.",
+    type: MessageDto,
+  })
+  @ApiBadRequestResponse({
+    description: "The provided data was invalid.",
+  })
+  @ApiUnauthorizedResponse({
+    description: "The user is not authorized.",
+  })
+  @ApiBody({
+    description: "The message to update.",
+    type: MessageCreateDto,
+  })
+  @ApiParam({
+    name: "id",
+    description: "The id of the message to Update.",
+    type: String,
+  })
+  async updateMessage(
+    @Body() updateMessageDto: MessageUpdateDto,
+    @Param("id") id: string
+  ): Promise<MessageUpdateDto> {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: MESSENGER_MESSAGE_PATTERN.UPDATE,
+      data: { content: updateMessageDto, id },
+    });
+  }
+}
