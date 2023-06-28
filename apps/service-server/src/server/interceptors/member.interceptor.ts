@@ -30,13 +30,24 @@ export class MemberInterceptor implements NestInterceptor {
   }
 
   private async member(server: ServerType) {
+    if (!server.members) return server;
+
     const users = await this.memberServer(server);
 
+    console.log(server);
+
     // @ts-ignore
-    const data = server.toJSON();
+    if (server.toJSON()) {
+      // @ts-ignore
+      const data = server.toJSON();
+      return {
+        ...data,
+        members: users,
+      };
+    }
 
     return {
-      ...data,
+      ...server,
       members: users,
     };
   }
