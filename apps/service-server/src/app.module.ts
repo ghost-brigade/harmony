@@ -4,6 +4,6 @@ import { ChannelModule } from "./channel/channel.module";
 
 @Module({
   // imports: [ServerModule, ChannelModule],
-  imports: [ChannelModule],
+  imports: [ChannelModule, ServerModule],
 })
 export class AppModule {}

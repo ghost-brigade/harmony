@@ -6,25 +6,36 @@ import {
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { ServerService } from "./server.service";
-import { MessagePattern, RpcException } from "@nestjs/microservices";
+import { MessagePattern, Payload, RpcException } from "@nestjs/microservices";
 import {
   ServerMemberAddType,
   ServerCreateType,
   ServerSchema,
   ServerMemberRemoveType,
   ServerRemoveType,
+  UserContextType,
 } from "@harmony/zod";
 import { Errors } from "@harmony/enums";
 import { IdType } from "@harmony/zod";
+import { UserContext } from "@harmony/nest-microservice";
+import { ServerCreateService } from "./server-create.service";
 
 @Controller("server")
 export class ServerController {
-  constructor(private readonly serverService: ServerService) {}
+  constructor(
+    private readonly serverService: ServerService,
+    private readonly serverCreateService: ServerCreateService
+  ) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
-  // async createServer(data: ServerCreateType) {
-  async createServer(data) {
-    return await this.serverService.create(data.server, data.user);
+  async createServer(
+    @Payload()
+    payload: {
+      server: ServerCreateType;
+    },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverCreateService.create(payload, user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)
@@ -57,13 +68,13 @@ export class ServerController {
     }
   }
 
-  @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
-  async addMemberToServer(addMemberData: ServerMemberAddType) {
-    return await this.serverService.addMember(
-      addMemberData.serverId,
-      addMemberData.memberId
-    );
-  }
+  // @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
+  // async addMemberToServer(addMemberData: ServerMemberAddType) {
+  //   return await this.serverService.addMember(
+  //     addMemberData.serverId,
+  //     addMemberData.memberId
+  //   );
+  // }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.REMOVE_MEMBER)
   async removeMemberToServer(removeMemberData: ServerMemberRemoveType) {
@@ -89,5 +100,29 @@ export class ServerController {
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_SERVERS_OF_MEMBER)
   async getServersOfMember(memberId: IdType) {
     return await this.serverService.getServersOfMember(memberId);
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.JOIN_SERVER)
+  async joinServer(
+    @Payload() payload: { serverId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.addMember(payload, user.id);
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.BAN_MEMBER)
+  async banMemberFromServer(
+    @Payload() payload: { serverId: IdType; memberId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.banMember(payload, user);
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.UNBAN_MEMBER)
+  async unbanMemberFromServer(
+    @Payload() payload: { serverId: IdType; memberId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.unbanMember(payload, user);
   }
 }

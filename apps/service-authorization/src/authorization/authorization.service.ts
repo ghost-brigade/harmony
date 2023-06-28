@@ -47,6 +47,8 @@ export class AuthorizationService {
 
       const hasRight = await this.checkServerPermissions(payload);
 
+      // console.log(payload);
+
       if (!hasRight) {
         return await this.isAdmin(payload, user);
       }
@@ -112,10 +114,12 @@ export class AuthorizationService {
         return false;
       }
 
+      const permissionsAdmin = [...permissions, Permissions.SERVER_ADMIN];
+
       return hasRight
         .map((role) => role.permissions)
         .flat()
-        .some((permission) => permissions.includes(permission));
+        .some((permission) => permissionsAdmin.includes(permission));
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
