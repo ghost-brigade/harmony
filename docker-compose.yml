@@ -40,11 +40,11 @@ services:
   #     service: service-template
   #   command: npx nx serve service-server
 
-  # service-message:
-  #   extends:
-  #     file: docker-compose.template.yml
-  #     service: service-template
-  #   command: npx nx serve service-message
+  service-message:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-message
 
   service-search:
     extends:
