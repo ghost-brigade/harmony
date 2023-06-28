@@ -314,7 +314,7 @@ export class UserService {
   async profile({ user }: { user: UserContextType }): Promise<UserType> {
     try {
       // @ts-ignore
-      const profile = (await this.findOneBy({ email: user.email })).toObject();
+      const profile = await this.findOneBy({ email: user.email });
       const result = UserProfileSchema.safeParse(profile);
 
       if (result.success === false) {
@@ -336,11 +336,7 @@ export class UserService {
         }
       }
 
-      return {
-        ...result.data,
-        // @ts-ignore
-        id: result.data._id,
-      };
+      return result.data;
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
