@@ -1,4 +1,4 @@
-import { AppModule } from './app.module';
+import { AppModule } from "./app.module";
 import { getService, Services } from "@harmony/service-config";
 import { NestFactory } from "@nestjs/core";
 

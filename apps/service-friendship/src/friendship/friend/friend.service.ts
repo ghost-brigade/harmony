@@ -39,13 +39,10 @@ export class FriendService {
 
     const { user1, user2 } = payload;
 
-
-
     const existingFriendRequest = await this.findFriend(
       { id: payload.user2 },
       user
     );
-
 
     if (existingFriendRequest) {
       throw new RpcException(

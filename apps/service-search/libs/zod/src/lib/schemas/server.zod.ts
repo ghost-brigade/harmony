@@ -65,4 +65,6 @@ export class ServerCreateDto extends createZodDto(ServerCreateSchema) {}
 export class ServerUpdateDto extends createZodDto(ServerUpdateSchema) {}
 export class ServerRemoveDto extends createZodDto(ServerRemoveSchema) {}
 export class ServerMemberAddDto extends createZodDto(ServerMemberAddSchema) {}
-export class ServerMemberRemoveDto extends createZodDto(ServerMemberRemoveSchema) {}
+export class ServerMemberRemoveDto extends createZodDto(
+  ServerMemberRemoveSchema
+) {}

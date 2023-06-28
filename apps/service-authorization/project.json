@@ -60,7 +60,7 @@
         }
       }
     },
-		"container": {
+    "container": {
       "dependsOn": ["build"],
       "executor": "@nx-tools/nx-container:build",
       "options": {

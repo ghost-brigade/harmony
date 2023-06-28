@@ -23,5 +23,9 @@ export class PrivateMessage {
   attachment: File[];
 }
 
-export const PrivateMessageSchema = SchemaFactory.createForClass(PrivateMessage);
-export const PrivateMessageModel = model<PrivateMessage>("PrivateMessage", PrivateMessageSchema);
+export const PrivateMessageSchema =
+  SchemaFactory.createForClass(PrivateMessage);
+export const PrivateMessageModel = model<PrivateMessage>(
+  "PrivateMessage",
+  PrivateMessageSchema
+);

@@ -16,12 +16,12 @@ metadata:
     networking.gke.io/managed-certificates: client-cert
 spec:
   rules:
-  - host: harmony.vg
-    http:
-      paths:
-      - pathType: ImplementationSpecific
-        backend:
-          service:
-            name: client-svc
-            port:
-              number: 60080
+    - host: harmony.vg
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: client-svc
+                port:
+                  number: 60080

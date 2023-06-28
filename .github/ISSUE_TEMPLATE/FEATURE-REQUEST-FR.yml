@@ -1,9 +1,7 @@
 name: "💡 Demande de fonctionnalité - FR"
 description: Créer un nouveau ticket pour une nouvelle demande de fonctionnalité
 title: "💡 [DEMANDE] - <titre>"
-labels: [
-  "question"
-]
+labels: ["question"]
 body:
   - type: textarea
     id: summary

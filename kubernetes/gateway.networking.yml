@@ -16,12 +16,12 @@ metadata:
     networking.gke.io/managed-certificates: service-gateway-cert
 spec:
   rules:
-  - host: api.harmony.vg
-    http:
-      paths:
-      - pathType: ImplementationSpecific
-        backend:
-          service:
-            name: service-gateway-svc
-            port:
-              number: 60000
+    - host: api.harmony.vg
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: service-gateway-svc
+                port:
+                  number: 60000

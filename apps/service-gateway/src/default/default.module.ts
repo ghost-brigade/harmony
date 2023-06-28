@@ -3,4 +3,4 @@ import { DefaultController } from "./default.controller";
 @Module({
   controllers: [DefaultController],
 })
-export class DefaultModule {};
+export class DefaultModule {}

@@ -12,9 +12,9 @@ spec:
         app: service-friendship
     spec:
       hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-          - "service-friendship"
+        - ip: "0.0.0.0"
+          hostnames:
+            - "service-friendship"
       containers:
         - name: service-friendship
           image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-friendship:stable
@@ -59,4 +59,3 @@ spec:
         target:
           type: Utilization
           averageUtilization: 80
-

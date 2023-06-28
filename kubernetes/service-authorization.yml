@@ -12,9 +12,9 @@ spec:
         app: service-authorization
     spec:
       hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-          - "service-authorization"
+        - ip: "0.0.0.0"
+          hostnames:
+            - "service-authorization"
       containers:
         - name: service-authorization
           image: europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-authorization:stable
@@ -59,4 +59,3 @@ spec:
         target:
           type: Utilization
           averageUtilization: 80
-

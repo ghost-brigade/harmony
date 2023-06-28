@@ -13,13 +13,13 @@ import { FriendService } from "./friend/friend.service";
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
-    MongooseModule.forFeature([{ name: "FriendRequest", schema: FriendRequestSchema }, { name: "Friend", schema: FriendSchema }]),
+    MongooseModule.forFeature([
+      { name: "FriendRequest", schema: FriendRequestSchema },
+      { name: "Friend", schema: FriendSchema },
+    ]),
   ],
 
   controllers: [FriendshipController],
-  providers: [
-    FriendRequestService,
-    FriendService,
-  ],
+  providers: [FriendRequestService, FriendService],
 })
 export class FriendshipModule {}
