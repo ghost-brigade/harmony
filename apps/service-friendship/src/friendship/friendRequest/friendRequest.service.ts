@@ -8,37 +8,46 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { FriendService } from "../friend/friend.service";
 import { ObjectId } from "mongoose";
+import { getServiceProperty, Services } from "@harmony/service-config";
+import { ServiceRequest } from "@harmony/nest-microservice";
 
 @Injectable()
 export class FriendRequestService {
   constructor(
     @InjectModel("FriendRequest") private readonly friendrequestModel,
     @InjectModel("Friend") private readonly friendModel,
-    private readonly friendService: FriendService
+    private readonly friendService: FriendService,
+    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
+    private readonly accountService: ClientProxy,
+    private readonly serviceRequest: ServiceRequest
   ) {}
   async createFriendRequest(
     payload: {
-      receiver: IdType;
+      username: string;
     },
     user: UserContextType
   ): Promise<FriendRequestType> {
-    const parse = IdSchema.safeParse(payload.receiver);
-    if (parse.success === false) {
-      throw new RpcException(
-        new BadRequestException(FormatZodResponse(parse.error.issues))
-      );
-    }
+    // useanem = string
 
-    const receiver = parse.data;
+    const userByUsername = await this.serviceRequest.send({
+      client: this.accountService,
+      pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_BY_USERNAME,
+      data: { username: payload.username },
+      promise: true,
+    });
+
+    const receiver = userByUsername.id;
 
     if (receiver === user.id) {
       throw new RpcException(
@@ -119,7 +128,7 @@ export class FriendRequestService {
   async acceptFriendRequest(
     payload: { id: IdType },
     user: UserContextType
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     try {
       const friendrequest = await this.findOneRequestFriend(payload.id, user);
 
@@ -152,7 +161,7 @@ export class FriendRequestService {
   async rejectFriendRequest(
     payload: { id: IdType },
     user: UserContextType
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     // const { id } = payload;
 
     try {

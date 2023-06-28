@@ -43,7 +43,7 @@ export class FriendshipController {
 
   @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.CREATE)
   request(
-    @Payload() payload: { receiver: IdType },
+    @Payload() payload: { username: string },
     @UserContext() userContext: UserContextType
   ) {
     return this.friendRequestService.createFriendRequest(payload, userContext);
