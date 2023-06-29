@@ -54,6 +54,15 @@ export class FriendRequestService {
         new BadRequestException("You cannot send a friend request to yourself.")
       );
     }
+    const friendExists = await this.friendService.findFriend(
+      { id: user.id },
+      receiver
+    );
+    if (friendExists) {
+      throw new RpcException(
+        new BadRequestException("You are already friend with this user.")
+      );
+    }
 
     const existingFriendRequest = await this.friendrequestModel.findOne({
       sender: user.id,
@@ -102,6 +111,10 @@ export class FriendRequestService {
     friendrequestId: IdType,
     user: UserContextType
   ): Promise<FriendRequestType> {
+    console.log("__________________________");
+    console.log("findOneRequestFriend");
+    console.log("__________________________");
+
     try {
       const friendrequest = await this.friendrequestModel.findOne({
         $or: [
@@ -152,6 +165,7 @@ export class FriendRequestService {
       );
       return this.deleteFriendRequest({ id: user.id }, user);
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new BadRequestException("Error accepting friendrequest request.")
       );
@@ -182,6 +196,7 @@ export class FriendRequestService {
 
       return this.deleteFriendRequest({ id: user.id }, user);
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new BadRequestException("Error rejecting friendrequest.")
       );
