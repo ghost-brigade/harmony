@@ -64,17 +64,21 @@
         "colId": "history",
         "containerId": "",
         "name": "http://localhost:3000/login",
-        "url": "http://localhost:3000/login",
+        "url": "http://localhost:3000/friend-request/accept/649dbd7591d968fb4453caa8",
         "method": "POST",
         "sortNum": 0,
         "created": "2023-06-21T17:18:40.637Z",
-        "modified": "2023-06-21T17:18:40.637Z",
+        "modified": "2023-06-29T17:21:10.360Z",
         "headers": [],
         "params": [],
         "body": {
             "type": "json",
             "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
             "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg4MDU4ODEzLCJleHAiOjE2ODgxNDUyMTN9.pTPPF2ATxnTTYyJ_m04_4aTk8L77vCLLW-rA3cTRex0"
         },
         "tests": []
     },
