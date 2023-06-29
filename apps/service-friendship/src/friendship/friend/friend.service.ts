@@ -30,24 +30,9 @@ export class FriendService {
     },
     user: UserContextType
   ): Promise<FriendType> {
-    const parse = IdSchema.safeParse(payload.user1);
-    if (parse.success === false) {
-      throw new RpcException(
-        new BadRequestException(FormatZodResponse(parse.error.issues))
-      );
-    }
-
-    const { user1, user2 } = payload;
-
-    const existingFriendRequest = await this.findFriend(
-      { id: payload.user2 },
-      user
-    );
-
-    if (existingFriendRequest) {
-      throw new RpcException(
-        new BadRequestException("FriendRequest already exists.")
-      );
+    const existingFriend = await this.findFriend({ id: payload.user2 }, user);
+    if (existingFriend) {
+      throw new RpcException(new BadRequestException("Friend already exists."));
     }
 
     try {
@@ -70,29 +55,22 @@ export class FriendService {
     user: UserContextType
   ): Promise<boolean> {
     try {
-      const friendrequest = await this.friendrequestModel.findFriend({
-        id: payload.id,
-      });
+      const friend = await this.findFriend(
+        {
+          id: payload.id,
+        },
+        user
+      );
 
-      if (!friendrequest) {
-        throw new RpcException(
-          new NotFoundException("FriendRequest request not found.")
-        );
+      if (!friend) {
+        throw new RpcException(new NotFoundException("Friend not found."));
       }
 
-      if (friendrequest.sender !== user.id) {
-        throw new RpcException(
-          new UnauthorizedException(
-            "You are not authorized to delete this friendrequest request."
-          )
-        );
-      }
-
-      await this.friendModel.deleteOne({
-        _id: payload.id,
+      return await this.friendModel.deleteOne({
+        _id: friend.id,
       });
-      return true;
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error deleting friend.")
       );
@@ -124,12 +102,6 @@ export class FriendService {
       const friend = await this.friendModel
         .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
         .exec();
-
-      if (!friend) {
-        throw new RpcException(
-          new BadRequestException("Friend does not exist.")
-        );
-      }
 
       return friend as FriendType;
     } catch (error) {

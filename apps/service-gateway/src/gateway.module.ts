@@ -20,7 +20,7 @@ import { ChannelModule } from "./channel/server.module";
     }),
     ThrottlerModule.forRoot({
       ttl: parseInt(process.env?.RATE_LIMIT_TTL || "1"),
-      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "20"),
+      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "60"),
     }),
     DefaultModule,
     AuthenticationModule,

@@ -60,6 +60,20 @@ export class UserController {
     }
   }
 
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE_BY_USERNAME)
+  async findOneByUsername(
+    @Payload() payload: { username: string },
+    @UserContext() user
+  ) {
+    try {
+      return await this.userService.findOneByUsername(payload, user);
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
+    }
+  }
+
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.CREATE)
   async create(data: UserCreateType): Promise<UserPublicType> {
     return await this.userService.create(data);
