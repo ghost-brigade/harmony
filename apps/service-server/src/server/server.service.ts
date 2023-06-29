@@ -84,8 +84,12 @@ export class ServerService {
     }
   }
 
-  async findAll(): Promise<ServerType[]> {
-    return await this.serverModel.find().exec();
+  async findAll(user): Promise<ServerType[]> {
+    return await this.serverModel
+      .find({
+        $or: [{ members: user.id }, { owner: user.id }],
+      })
+      .exec();
   }
 
   async findOne(id: string): Promise<ServerType> {

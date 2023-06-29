@@ -3,7 +3,6 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import { ServerService } from "./server.service";
 import {
   Body,
   Controller,
@@ -92,7 +91,11 @@ export class ServerController {
   })
   @Get()
   async getAllServers() {
-    return this.client.send(SERVER_MESSAGE_PATTERN.GET_ALL, {});
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.GET_ALL,
+      data: {},
+    });
   }
 
   @ApiTags("Server")

@@ -39,8 +39,8 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)
-  async getAllServers() {
-    return await this.serverService.findAll();
+  async getAllServers(@UserContext() user: UserContextType) {
+    return await this.serverService.findAll(user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
@@ -107,6 +107,7 @@ export class ServerController {
     @Payload() payload: { serverId: IdType; memberId: IdType },
     @UserContext() user: UserContextType
   ) {
+    console.log(user);
     return await this.serverService.banMember(payload, user);
   }
 
