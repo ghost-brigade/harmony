@@ -68,14 +68,6 @@ export class ServerController {
     }
   }
 
-  // @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
-  // async addMemberToServer(addMemberData: ServerMemberAddType) {
-  //   return await this.serverService.addMember(
-  //     addMemberData.serverId,
-  //     addMemberData.memberId
-  //   );
-  // }
-
   @MessagePattern(SERVER_MESSAGE_PATTERN.REMOVE_MEMBER)
   async removeMemberToServer(removeMemberData: ServerMemberRemoveType) {
     return await this.serverService.removeMember(

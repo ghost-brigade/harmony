@@ -80,28 +80,6 @@ export class ServerController {
   }
 
   @ApiTags("Server")
-  @ApiOperation({ summary: "Add a member to a server" })
-  @ApiResponse({
-    status: 200,
-    description: "The member has been successfully added to the server.",
-  })
-  @ApiResponse({ status: 404, description: "Server or user not found" })
-  @ApiResponse({
-    status: 409,
-    description: "User is already a member of the server",
-  })
-  @Put(":id/members")
-  async addMemberToServer(
-    @Param("id") serverId: string,
-    @Body("memberId") memberId: string
-  ) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.ADD_MEMBER, {
-      serverId,
-      memberId,
-    });
-  }
-
-  @ApiTags("Server")
   @ApiOperation({ summary: "Get all servers" })
   @ApiOkResponse({
     description: "Server",
