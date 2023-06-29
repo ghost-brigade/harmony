@@ -16,6 +16,14 @@ services:
       - ${GATEWAY_PORT:-3000}:3000
     command: npx nx serve service-gateway
 
+  service-notification:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    ports:
+      - ${SOCKET_PORT:-3001}:3001
+    command: npx nx serve service-notification
+
   service-authentication:
     extends:
       file: docker-compose.template.yml

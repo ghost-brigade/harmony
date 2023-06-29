@@ -18,6 +18,7 @@
       "@harmony/enums": ["libs/enums/src/index.ts"],
       "@harmony/nest-microservice": ["libs/nest-microservice/src/index.ts"],
       "@harmony/nest-schemas": ["libs/nest-schemas/src/index.ts"],
+      "@harmony/notification": ["libs/notification/src/index.ts"],
       "@harmony/service-config": ["libs/service-config/src/index.ts"],
       "@harmony/zod": ["libs/zod/src/index.ts"]
     }

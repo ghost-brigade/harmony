@@ -1,3 +1,5 @@
+import { MessageNotification } from "@harmony/notification";
+import { MessageType } from "@harmony/zod";
 import {
   MessageBody,
   SubscribeMessage,
@@ -15,14 +17,14 @@ export class MessageGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage("test")
-  test(@MessageBody() data: any) {
-    this.message(data);
-  }
-
-  @SubscribeMessage("message")
-  message(message) {
-    console.log(message);
-    this.server.emit("message", message);
+  @SubscribeMessage(MessageNotification.NEW_MESSAGE)
+  newMessage({
+    channelId,
+    message,
+  }: {
+    channelId: string;
+    message: MessageType;
+  }) {
+    this.server.to(channelId).emit(MessageNotification.NEW_MESSAGE, message);
   }
 }
