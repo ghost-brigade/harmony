@@ -20,8 +20,7 @@ import { Errors } from "@harmony/enums";
 import { IdType } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
 import { ServerCreateService } from "./server-create.service";
-import { MemberInterceptor } from "./interceptors/member.interceptor";
-import { ChannelInterceptor } from "./interceptors/channel.interceptor";
+import { GlobalServerInterceptor } from "./interceptors/global-server.interceptor";
 
 @Controller("server")
 export class ServerController {
@@ -47,7 +46,7 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
-  @UseInterceptors(MemberInterceptor, ChannelInterceptor)
+  @UseInterceptors(GlobalServerInterceptor)
   async getServerById(id: string) {
     try {
       const server = await this.serverService.findOne(id);
