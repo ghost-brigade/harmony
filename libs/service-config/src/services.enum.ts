@@ -9,4 +9,5 @@ export enum Services {
   MESSAGE = "message",
   FRIEND = "friend",
   SEARCH = "search",
+  NOTIFICATION = "notification",
 }
