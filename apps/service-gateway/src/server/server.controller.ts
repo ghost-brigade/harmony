@@ -209,6 +209,7 @@ export class ServerController {
     });
   }
 
+  @ApiTags("Server")
   @Post(":id/members/:memberId/ban")
   async banMember(
     @Param("id") serverId: string,
@@ -221,6 +222,7 @@ export class ServerController {
     });
   }
 
+  @ApiTags("Server")
   @Post(":id/members/:memberId/unban")
   async unbanMember(
     @Param("id") serverId: string,
