@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException,
+  UseInterceptors,
 } from "@nestjs/common";
 import { ServerService } from "./server.service";
 import { MessagePattern, Payload, RpcException } from "@nestjs/microservices";
@@ -19,6 +20,7 @@ import { Errors } from "@harmony/enums";
 import { IdType } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
 import { ServerCreateService } from "./server-create.service";
+import { GlobalServerInterceptor } from "./interceptors/global-server.interceptor";
 
 @Controller("server")
 export class ServerController {
@@ -44,6 +46,7 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
+  @UseInterceptors(GlobalServerInterceptor)
   async getServerById(id: string) {
     try {
       const server = await this.serverService.findOne(id);
@@ -54,15 +57,16 @@ export class ServerController {
         );
       }
 
-      const result = ServerSchema.safeParse(server);
+      // const result = ServerSchema.safeParse(server);
 
-      if (!result.success) {
-        throw new RpcException(
-          new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
-        );
-      }
+      // if (result.success === false) {
+      //   console.log(result.error.issues);
+      //   throw new RpcException(
+      //     new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
+      //   );
+      // }
 
-      return result.data;
+      return server;
     } catch (error) {
       throw new RpcException(error.message);
     }
