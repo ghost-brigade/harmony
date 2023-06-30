@@ -86,7 +86,7 @@ export class FriendshipController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.CREATE,
-      data: { receiver: id },
+      data: { username: id },
     });
   }
 

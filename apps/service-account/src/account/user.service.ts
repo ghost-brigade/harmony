@@ -218,8 +218,24 @@ export class UserService {
   }
 
   async findOneBy(params: UserType): Promise<UserType | null> {
+    console.log(params);
     try {
       return await this.userModel.findOne(params).exec();
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async findOneByUsername(
+    payload: { username: string },
+    user: UserType
+  ): Promise<UserPublicType> {
+    try {
+      return await this.userModel
+        .findOne({
+          username: payload.username,
+        })
+        .exec();
     } catch (error) {
       return null;
     }

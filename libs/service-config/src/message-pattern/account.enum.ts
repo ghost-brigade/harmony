@@ -12,4 +12,5 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   CANCEL_BAN_USER = "account.cancelBanUser",
   USERNAME_AVAILABLE = "account.usernameAvailable",
   CHANGE_AVATAR = "account.changeAvatar",
+  FIND_ONE_BY_USERNAME = "account.findOneByUsername",
 }

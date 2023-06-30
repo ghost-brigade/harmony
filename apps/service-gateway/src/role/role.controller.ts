@@ -17,7 +17,9 @@ import {
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
+  ApiBody,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -56,6 +58,7 @@ export class RoleController {
   @ApiResponse({ status: 200, description: "Return all roles" })
   @ApiResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @ApiParam({ name: "id", type: "string" })
   @Get("server/:id")
   async getRolesForServer(@Param("id") id: IdType) {
     return this.serviceRequest.send({
@@ -68,6 +71,7 @@ export class RoleController {
   @ApiOperation({ summary: "Get a role by id" })
   @ApiResponse({ status: 200, description: "Return a role by id" })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiParam({ name: "id", type: "string" })
   @Get(":id")
   async getRole(@Param("id") id: IdType) {
     return this.serviceRequest.send({
@@ -99,6 +103,7 @@ export class RoleController {
   })
   @ApiResponse({ status: 400, description: "Bad request" })
   @HttpCode(204)
+  @ApiParam({ name: "id", type: "string" })
   @Delete(":id")
   async deleteRole(@Param("id") id: IdType) {
     return this.serviceRequest.send({
@@ -114,6 +119,8 @@ export class RoleController {
     description: "The role has been successfully updated.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiParam({ name: "id", type: "string" })
+  @ApiBody({ type: RoleUpdateDto })
   @Put(":id")
   async updateRole(@Param("id") id: IdType, @Body() RoleUpdate: RoleUpdateDto) {
     return this.serviceRequest.send({
@@ -132,6 +139,7 @@ export class RoleController {
     description: "The user has been successfully added to the role.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiParam({ name: "id", type: "string" })
   @Post(":id/user")
   async addUserToRole(@Param("id") id: IdType, @Body() userId: IdType) {
     return this.serviceRequest.send({
@@ -150,6 +158,8 @@ export class RoleController {
   })
   @HttpCode(204)
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiParam({ name: "id", type: "string" })
+  @ApiParam({ name: "userId", type: "string" })
   @Delete(":id/user/:userId")
   async removeUserFromRole(
     @Param("id") id: IdType,
@@ -171,6 +181,7 @@ export class RoleController {
     description: "The permission has been successfully added to the role.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiParam({ name: "id", type: "string" })
   @Post(":id/permission")
   async addPermissionToRole(
     @Param("id") id: IdType,
@@ -191,6 +202,8 @@ export class RoleController {
     description: "The permission has been successfully removed from the role.",
   })
   @ApiResponse({ status: 400, description: "Bad request" })
+  @ApiParam({ name: "id", type: "string" })
+  @ApiParam({ name: "permission", type: "string" })
   @HttpCode(204)
   @Delete(":id/permission/:permission")
   async removePermissionFromRole(
