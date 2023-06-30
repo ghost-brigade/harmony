@@ -86,12 +86,6 @@ export class ServerService {
 
   async update(serverId, serverUpdated, user): Promise<ServerType> {
     try {
-      const loggedUser = await firstValueFrom(
-        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
-          email: user.email,
-        })
-      );
-
       const server = await this.findOne(serverId);
 
       if (!server) {
@@ -111,15 +105,15 @@ export class ServerService {
         );
       }
 
-      // const result = ServerCreateSchema.safeParse(server);
+      const result = ServerCreateSchema.safeParse(server);
 
-      // if (result.success === false) {
-      //   throw new RpcException(
-      //     new UnprocessableEntityException(
-      //       FormatZodResponse(result.error.issues)
-      //     )
-      //   );
-      // }
+      if (result.success === false) {
+        throw new RpcException(
+          new UnprocessableEntityException(
+            FormatZodResponse(result.error.issues)
+          )
+        );
+      }
 
       const isUnique = (await this.serverModel
         .findOne()

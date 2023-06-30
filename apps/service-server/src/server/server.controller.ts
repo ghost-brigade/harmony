@@ -91,13 +91,13 @@ export class ServerController {
     @Payload()
     payload: {
       serverId: ServerCreateType;
-      serverUpdated: ServerUpdateType;
+      server: ServerUpdateType;
     },
     @UserContext() user: UserContextType
   ) {
     return await this.serverService.update(
       payload.serverId,
-      payload.serverUpdated,
+      payload.server,
       user
     );
   }
