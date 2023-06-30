@@ -155,7 +155,7 @@ export class ServerService {
   }
 
   async findOne(id: string): Promise<ServerType> {
-    return await this.serverModel.findById(id).exec();
+    return await this.serverModel.findOne({ _id: id }).exec();
   }
 
   async findOneBy(params: ServerType): Promise<ServerType | null> {
