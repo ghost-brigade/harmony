@@ -69,6 +69,17 @@ export class UserController {
       );
     }
   }
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_FRIENDS)
+  async findAllFriends(data) {
+    try {
+      const user = await this.userService.findAllFriends(data);
+      return user;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
+    }
+  }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE_BY_USERNAME)
   async findOneByUsername(

@@ -14,4 +14,5 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   USERNAME_AVAILABLE = "account.usernameAvailable",
   CHANGE_AVATAR = "account.changeAvatar",
   FIND_ONE_BY_USERNAME = "account.findOneByUsername",
+  FIND_ALL_FRIENDS = "account.findAllFriends",
 }

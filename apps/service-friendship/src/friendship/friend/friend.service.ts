@@ -45,6 +45,7 @@ export class FriendService {
       });
       return await newFriend.save();
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error creating friend")
       );
@@ -102,9 +103,25 @@ export class FriendService {
       const friend = await this.friendModel
         .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
         .exec();
+      return friend as FriendType;
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
+  public async findFriendWithUser(
+    payload: { id: IdType },
+    user: UserContextType
+  ): Promise<FriendType> {
+    try {
+      const friend = await this.friendModel
+        .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
+        .exec();
       return { friend, user } as FriendType;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
 }
+
+// 64995774ed26b6822ff79246, 649958f4ed26b6822ff7924a, 6499a741ed26b6822ff79440, 649a082d2e04423eb6b0b0f8
+
