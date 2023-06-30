@@ -46,7 +46,7 @@ export class UserController {
     try {
       let user: UserType;
 
-      if (Object.keys(data).length === 1 && "id" in data) {
+      if (Object.keys(data).length === 2 && "id" in data) {
         user = await this.userService.findOne(data.id);
       } else {
         user = await this.userService.findOneBy(data);
