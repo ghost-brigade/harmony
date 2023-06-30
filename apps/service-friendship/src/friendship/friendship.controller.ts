@@ -14,7 +14,8 @@ import {
 } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
 import { FriendService } from "./friend/friend.service";
-import { GlobalServerInterceptor } from "./interceptor/global-friendship.interceptor";
+import { FindFriend } from "./interceptor/findFriend.interceptor";
+// import { FindAllFriends } from "./interceptor/findAllFriends.interceptor";
 
 @Controller()
 export class FriendshipController {
@@ -83,12 +84,13 @@ export class FriendshipController {
   }
 
   @MessagePattern(FRIEND_MESSAGE_PATTERN.FIND_ALL)
+  // @UseInterceptors(FindAllFriends)
   async findAllFriends(@UserContext() user: UserContextType) {
     return (await this.friendService.findAllFriends(user)) ?? [];
   }
 
   @MessagePattern(FRIEND_MESSAGE_PATTERN.FIND_BY_ID)
-  @UseInterceptors(GlobalServerInterceptor)
+  @UseInterceptors(FindFriend)
   async findFriend(
     @Payload() payload: { id: IdType },
     @UserContext() user: UserContextType

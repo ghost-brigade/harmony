@@ -102,7 +102,7 @@ export class FriendService {
       const friend = await this.friendModel
         .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
         .exec();
-      return friend as FriendType;
+      return { friend, user } as FriendType;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }

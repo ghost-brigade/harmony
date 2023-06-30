@@ -25,7 +25,7 @@ import { switchMap } from "rxjs/operators";
 import { FriendService } from "../friend/friend.service";
 
 @Injectable()
-export class GlobalServerInterceptor implements NestInterceptor {
+export class FindFriend implements NestInterceptor {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly accountService: ClientProxy,
@@ -37,53 +37,35 @@ export class GlobalServerInterceptor implements NestInterceptor {
     return next.handle().pipe(switchMap((value) => from(this.global(value))));
   }
 
-  private async global(friend: FriendType) {
-    const aggregateObject = {
-      user1: [],
-      user2: [],
-    };
-
-    console.log(friend);
-
-    if (friend.user1) {
-      aggregateObject.user1 = await this.friendUser1Return(friend);
+  private async global(findFriend) {
+    if (findFriend.friend.user1 !== findFriend.user.id) {
+      return this.friendUser1Return(findFriend.friend);
+    } else {
+      return this.friendUser2Return(findFriend.friend);
     }
-    if (friend.user2) {
-      aggregateObject.user2 = await this.friendUser2Return(friend);
-    }
-    console.log("___________aggregate________________");
-    console.log(aggregateObject);
-    // @ts-ignore
-    return Object.assign(friend.toJSON(), aggregateObject);
   }
-  private async friendUser1Return(friend: FriendType) {
+  private async friendUser1Return(findFriend) {
     try {
       const user = await this.serviceRequest.send({
         client: this.accountService,
-        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
-        data: {
-          id: friend.user1,
-        },
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND,
+        data: { id: findFriend.friend.user1 },
         promise: true,
       });
-      console.log(user);
       delete user.email;
       return user;
     } catch (error) {
       console.log("Error", error);
     }
   }
-  private async friendUser2Return(friend: FriendType) {
+  private async friendUser2Return(friend) {
     try {
       const user = await this.serviceRequest.send({
         client: this.accountService,
-        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
-        data: {
-          id: friend.user2,
-        },
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND,
+        data: { id: friend.user2 },
         promise: true,
       });
-      console.log(user);
       delete user.email;
       return user;
     } catch (error) {
