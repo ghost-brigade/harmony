@@ -143,4 +143,12 @@ export class ServerController {
   ) {
     return await this.serverService.unbanMember(payload, user);
   }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.SEARCH)
+  async searchServer(
+    @Payload() payload: { queryParams: string },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.search(payload, user);
+  }
 }

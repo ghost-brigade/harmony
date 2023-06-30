@@ -13,6 +13,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
 } from "@nestjs/common";
 import {
@@ -44,6 +45,15 @@ export class ServerController {
     private readonly client: ClientProxy,
     private readonly serviceRequest: ServiceRequest
   ) {}
+
+  @Get("search")
+  async searchServers(@Query() queryParams): Promise<any[]> {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.SEARCH,
+      data: { queryParams },
+    });
+  }
 
   @ApiTags("Server")
   @ApiOperation({ summary: "Create a new server" })

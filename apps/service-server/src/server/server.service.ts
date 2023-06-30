@@ -434,4 +434,23 @@ export class ServerService {
 
     return updatedServer;
   }
+
+  async search(payload: { queryParams: any }, user): Promise<any[]> {
+    const query = {
+      private: false,
+    };
+
+    if (Object.keys(payload.queryParams).length === 0) {
+      throw new RpcException(
+        new UnprocessableEntityException(Errors.ERROR_QUERY_PARAMS_NOT_FOUND)
+      );
+    }
+
+    if (payload.queryParams.name) {
+      query["name"] = { $regex: payload.queryParams.name, $options: "i" };
+    }
+
+    const servers = await this.serverModel.find(query).exec();
+    return servers;
+  }
 }
