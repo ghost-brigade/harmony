@@ -56,8 +56,8 @@ export class ServerController {
   async createServer(@Body() ServerCreateType: ServerCreateDto) {
     return this.serviceRequest.send({
       client: this.client,
-      data: { server: ServerCreateType },
       pattern: SERVER_MESSAGE_PATTERN.CREATE,
+      data: { server: ServerCreateType },
     });
   }
 
@@ -75,7 +75,11 @@ export class ServerController {
   @ApiResponse({ status: 404, description: "Server not found" })
   @Get(":id")
   async getServerById(@Param("id") id: string) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.GET_BY_ID, id);
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.GET_BY_ID,
+      data: { serverId: id },
+    });
   }
 
   @ApiTags("Server")
@@ -111,9 +115,10 @@ export class ServerController {
     @Param("id") id: string,
     @Body() serverUpdateDto: ServerUpdateDto
   ) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.UPDATE, {
-      id,
-      server: serverUpdateDto,
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.UPDATE,
+      data: { serverId: id, server: serverUpdateDto },
     });
   }
 

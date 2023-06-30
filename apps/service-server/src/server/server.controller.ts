@@ -14,6 +14,7 @@ import {
   ServerMemberRemoveType,
   ServerRemoveType,
   UserContextType,
+  ServerUpdateType,
 } from "@harmony/zod";
 import { Errors } from "@harmony/enums";
 import { IdType } from "@harmony/zod";
@@ -44,9 +45,14 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
-  async getServerById(id: string) {
+  async getServerById(
+    @Payload()
+    payload: {
+      serverId: IdType;
+    }
+  ) {
     try {
-      const server = await this.serverService.findOne(id);
+      const server = await this.serverService.findOne(payload.serverId);
 
       if (!server) {
         throw new RpcException(
@@ -73,6 +79,22 @@ export class ServerController {
     return await this.serverService.removeMember(
       removeMemberData.serverId,
       removeMemberData.memberId
+    );
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.UPDATE)
+  async updateServer(
+    @Payload()
+    payload: {
+      serverId: ServerCreateType;
+      serverUpdated: ServerUpdateType;
+    },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.update(
+      payload.serverId,
+      payload.serverUpdated,
+      user
     );
   }
 

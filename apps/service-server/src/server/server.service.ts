@@ -84,6 +84,68 @@ export class ServerService {
     }
   }
 
+  async update(serverId, serverUpdated, user): Promise<ServerType> {
+    try {
+      const loggedUser = await firstValueFrom(
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+          email: user.email,
+        })
+      );
+
+      const server = await this.findOne(serverId);
+
+      if (!server) {
+        throw new RpcException(
+          new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
+        );
+      }
+
+      const canUpdate = await this.serverAuthorizationService.canUpdateServer({
+        serverId: serverId,
+        user,
+      });
+
+      if (canUpdate === false) {
+        throw new RpcException(
+          new UnauthorizedException(Errors.ERROR_USER_NOT_SERVER_OWNER)
+        );
+      }
+
+      // const result = ServerCreateSchema.safeParse(server);
+
+      // if (result.success === false) {
+      //   throw new RpcException(
+      //     new UnprocessableEntityException(
+      //       FormatZodResponse(result.error.issues)
+      //     )
+      //   );
+      // }
+
+      const isUnique = (await this.serverModel
+        .findOne()
+        .or([{ name: serverUpdated.name }])
+        .exec()) as ServerType;
+
+      if (isUnique) {
+        throw new RpcException(
+          new UnprocessableEntityException(
+            isUnique.name === serverUpdated.name
+              ? Errors.ERROR_SERVER_NAME_ALREADY_EXISTS
+              : null
+          )
+        );
+      }
+
+      const updatedServer = await this.serverModel
+        .findByIdAndUpdate(serverId, serverUpdated, { new: true })
+        .exec();
+
+      return updatedServer;
+    } catch (error) {
+      throw new RpcException(new UnprocessableEntityException(error.message));
+    }
+  }
+
   async findAll(user): Promise<ServerType[]> {
     return await this.serverModel
       .find({
