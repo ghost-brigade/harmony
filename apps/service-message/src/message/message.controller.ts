@@ -7,17 +7,18 @@ import {
   IdType,
   UserContextType,
   MessageCreateType,
-  UserParamsType,
-  MessageUpdateDto,
+  MessageUpdateType,
 } from "@harmony/zod";
 import { MessageCreateService } from "./message-create.service";
 import { MessageDeleteService } from "./message-delete.service";
+import { MessageUpdateService } from "./message-update.service";
 
 @Controller()
 export class MessageController {
   constructor(
     private readonly messageCreateService: MessageCreateService,
     private readonly messageDeleteService: MessageDeleteService,
+    private readonly messageUpdateService: MessageUpdateService,
     private readonly messageService: MessageService
   ) {}
 
@@ -37,6 +38,15 @@ export class MessageController {
     return this.messageDeleteService.delete(payload, user);
   }
 
+  @MessagePattern(MESSENGER_MESSAGE_PATTERN.UPDATE)
+  update(
+    @Payload() payload: { message: MessageUpdateType },
+    @UserContext() user: UserContextType
+  ) {
+    console.log(payload);
+    return this.messageUpdateService.update(payload, user);
+  }
+
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.FIND_BY_ID)
   findById(
     @Payload() payload: { id: IdType },
@@ -46,24 +56,17 @@ export class MessageController {
     return this.messageService.findById(payload, user, authorization);
   }
 
-  // @MessagePattern(MESSENGER_MESSAGE_PATTERN.UPDATE)
-  // updateMessage(
-  //   @Payload() payload: { content: MessageUpdateDto; id: IdType },
-  //   @UserContext() userContext: UserContextType
-  // ) {
-  //   return this.messageService.updateMessage(payload, userContext);
-  // }
+  @MessagePattern(MESSENGER_MESSAGE_PATTERN.FIND_BY_CHANNEL_ID)
+  findByChannelId(
+    @Payload()
+    payload: { channelId: IdType; params?: { page?: number; limit?: number } },
+    @UserContext() user: UserContextType
+  ) {
+    return this.messageService.findByChannelId(payload, user);
+  }
 
   // @MessagePattern(MESSENGER_MESSAGE_PATTERN.FIND_ALL)
   // findAll(@UserContext() userContext: UserParamsType) {
   //   return this.messageService.findAll(userContext);
-  // }
-
-  // @MessagePattern(MESSENGER_MESSAGE_PATTERN.FIND_BY_ID)
-  // findMessage(
-  //   @Payload() payload: { id: IdType },
-  //   @UserContext() userContext: UserContextType
-  // ) {
-  //   return this.messageService.findMessage(payload, userContext);
   // }
 }

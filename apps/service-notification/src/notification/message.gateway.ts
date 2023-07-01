@@ -106,9 +106,14 @@ export class MessageGateway
     channelId: IdType;
     message: MessageType;
   }) {
-    this.server
-      .to(this.getRoomName(channelId))
-      .emit(MessageNotification.UPDATE_MESSAGE, message);
+    try {
+      this.server
+        .to(this.getRoomName(channelId))
+        .emit(MessageNotification.UPDATE_MESSAGE, message);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   @SubscribeMessage(MessageNotification.DELETE_MESSAGE)

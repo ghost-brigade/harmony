@@ -34,10 +34,6 @@ export class MessageDeleteService {
     private readonly serviceRequest: ServiceRequest,
     @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
     private readonly clientNotification: ClientProxy,
-    @Inject(getServiceProperty(Services.AUTHORIZATION, "name"))
-    private readonly clientAuthorization: ClientProxy,
-    @Inject(getServiceProperty(Services.SERVER, "name"))
-    private readonly clientServer: ClientProxy,
     @Inject(getServiceProperty(Services.SEARCH, "name"))
     private readonly clientSearch: ClientProxy
   ) {}

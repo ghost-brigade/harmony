@@ -133,41 +133,46 @@ export class MessageService {
     }
   }
 
-  // async updateMessage(
-  //   payload: {
-  //     content: MessageUpdateType;
-  //     id: IdType;
-  //   },
-  //   user: UserContextType
-  // ): Promise<MessageUpdateType> {
-  //   try {
-  //     const existingMessage = await this.messageModel.findOne({
-  //       _id: payload.id,
-  //     });
+  public async findByChannelId(
+    payload: { channelId: IdType; params?: { page?: number; limit?: number } },
+    user: UserType
+  ) {
+    try {
+      const authorization = await this.checkPermissions({
+        channelId: payload.channelId,
+        user,
+        permissions: [Permissions.CHANNEL_VIEW],
+      });
 
-  //     if (!existingMessage) {
-  //       throw new RpcException(new NotFoundException("Message not found"));
-  //     }
+      if (!authorization) {
+        throw new RpcException(
+          new UnauthorizedException(
+            "You are not authorized to view messages on this channel"
+          )
+        );
+      }
 
-  //     // Vérifier si l'utilisateur est l'auteur du message
-  //     if (existingMessage.author !== user.id) {
-  //       throw new RpcException(
-  //         new ForbiddenException("You are not allowed to update this message")
-  //       );
-  //     }
+      const messages = await this.messageModel
+        .find({
+          channel: payload.channelId,
+        })
+        .limit(payload.params?.limit ?? 10)
+        .skip((payload.params?.page ?? 1) * (payload.params?.limit ?? 10))
+        .sort({ createdAt: -1 })
+        .exec();
 
-  //     // Mettre à jour le contenu du message uniquement
-  //     existingMessage.content = payload.content.content;
-  //     const updatedMessage = await existingMessage.save();
+      const count = await this.messageModel.countDocuments({
+        channel: payload.channelId,
+      });
 
-  //     return updatedMessage;
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw new RpcException(
-  //       new InternalServerErrorException("Error updating message")
-  //     );
-  //   }
-  // }
+      return { messages, count, currentPage: payload.params?.page ?? 1 };
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error getting messages")
+      );
+    }
+  }
 
   // public async findAll(user: UserContextType): Promise<MessageType[]> {
   //   try {

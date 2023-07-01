@@ -1,8 +1,6 @@
-import { Permissions } from "@harmony/enums";
+import { Permissions, Roles } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
-  AUTHORIZATION_MESSAGE_PATTERN,
-  CHANNEL_MESSAGE_PATTERN,
   NOTIFICATION_MESSAGE_PATTERN,
   SEARCH_MESSAGE_PATTERN,
   Services,
@@ -11,19 +9,17 @@ import {
 import {
   FormatZodResponse,
   MessageType,
-  MessageCreateType,
-  IdType,
   UserContextType,
-  MessageCreateSchema,
+  IdType,
+  IdSchema,
   MessageUpdateType,
+  MessageUpdateSchema,
 } from "@harmony/zod";
 import {
   BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
@@ -31,7 +27,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { MessageService } from "./message.service";
 
 @Injectable()
-export class MessageCreateService {
+export class MessageUpdateService {
   constructor(
     private readonly messageService: MessageService,
     @InjectModel("Message") private readonly messageModel,
@@ -42,11 +38,11 @@ export class MessageCreateService {
     private readonly clientSearch: ClientProxy
   ) {}
 
-  async create(
-    payload: { message: MessageCreateType },
+  async update(
+    payload: { message: MessageUpdateType },
     user: UserContextType
-  ): Promise<MessageType> {
-    const parse = MessageCreateSchema.safeParse(payload.message);
+  ): Promise<boolean> {
+    const parse = MessageUpdateSchema.safeParse(payload.message);
 
     if (parse.success === false) {
       throw new RpcException(
@@ -54,41 +50,55 @@ export class MessageCreateService {
       );
     }
 
+    const message = await this.messageModel.findById(payload.message.id);
+
+    if (
+      message.author !== user.id ||
+      [Roles.ADMIN, Roles.MODERATOR].includes(user.role) === false
+    ) {
+      throw new RpcException(
+        new UnauthorizedException(
+          "You are not authorized to update this message."
+        )
+      );
+    }
+
     const authorization = await this.messageService.checkPermissions({
-      channelId: payload.message.channel,
+      channelId: message.channel,
       user,
       permissions: [Permissions.MESSAGE_CREATE],
     });
 
     if (!authorization) {
       throw new RpcException(
-        new UnauthorizedException("You are not authorized to create a message")
+        new UnauthorizedException("You are not authorized to update a message")
       );
     }
 
-    const message = await this.messageModel(payload.message);
+    const updatedMessage = await this.messageModel.findOneAndUpdate(
+      { _id: message.id },
+      { content: payload.message.content }
+    );
 
-    await this.sendToSearch(message);
-    await this.emitNotification(message);
+    await this.sendToSearch(updatedMessage);
+    await this.emitNotification(updatedMessage);
 
     try {
-      return await message.save();
+      return updatedMessage;
     } catch (error) {
-      console.log(error);
       throw new RpcException(
-        new InternalServerErrorException("Error creating message")
+        new InternalServerErrorException("Error while updating message")
       );
     }
   }
 
-  async sendToSearch(message: MessageType & { _id: any }): Promise<void> {
+  async sendToSearch(message: MessageUpdateType): Promise<void> {
     try {
       await this.serviceRequest.send({
         client: this.clientSearch,
-        pattern: SEARCH_MESSAGE_PATTERN.CREATE,
+        pattern: SEARCH_MESSAGE_PATTERN.UPDATE,
         data: {
-          id: message._id.toString(),
-          channelId: message.channel,
+          id: message.id,
           content: message.content,
         },
         promise: true,
@@ -96,7 +106,7 @@ export class MessageCreateService {
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException(
-          "Error sending message to search service"
+          "Error updating message from search index"
         )
       );
     }
@@ -106,7 +116,7 @@ export class MessageCreateService {
     try {
       await this.serviceRequest.send({
         client: this.clientNotification,
-        pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE,
+        pattern: NOTIFICATION_MESSAGE_PATTERN.UPDATE_MESSAGE,
         data: {
           message,
         },

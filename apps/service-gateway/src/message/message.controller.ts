@@ -11,9 +11,11 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Param,
   Post,
   Put,
+  Query,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import {
@@ -24,6 +26,7 @@ import {
   ApiUnauthorizedResponse,
   ApiBody,
   ApiParam,
+  ApiQuery,
 } from "@nestjs/swagger";
 
 // Due to a bug we need to import Multer without using it
@@ -67,15 +70,34 @@ export class MessageController {
     });
   }
 
-  @Get()
+  // @Get()
+  // @HttpCode(200)
+  // @ApiOperation({
+  //   summary: "Find all messages",
+  //   description: "Find all messages",
+  // })
+  // @ApiCreatedResponse({
+  //   description: "The messages have been successfully found.",
+  //   type: MessageDto,
+  // })
+  // @ApiBadRequestResponse({
+  //   description: "The provided data was invalid.",
+  // })
+  // @ApiUnauthorizedResponse({
+  //   description: "The user is not authorized.",
+  // })
+  // async findAll(): Promise<MessageDto> {
+  //   return this.serviceRequest.send({
+  //     client: this.client,
+  //     pattern: MESSENGER_MESSAGE_PATTERN.FIND_ALL,
+  //   });
+  // }
+
+  @Get("/channel/:channelId")
   @HttpCode(200)
   @ApiOperation({
-    summary: "Find all messages",
-    description: "Find all messages",
-  })
-  @ApiCreatedResponse({
-    description: "The messages have been successfully found.",
-    type: MessageDto,
+    summary: "Find all messages from a channel",
+    description: "Find all messages from a channel",
   })
   @ApiBadRequestResponse({
     description: "The provided data was invalid.",
@@ -83,10 +105,30 @@ export class MessageController {
   @ApiUnauthorizedResponse({
     description: "The user is not authorized.",
   })
-  async findAll(): Promise<MessageDto> {
+  @ApiParam({
+    name: "channelId",
+    description: "The id of the channel to find messages from.",
+    type: String,
+  })
+  @ApiQuery({
+    name: "limit",
+    description: "The maximum number of messages to return.",
+    type: Number,
+  })
+  @ApiQuery({
+    name: "page",
+    description: "The page of messages to return.",
+    type: Number,
+  })
+  async findAllFromChannel(
+    @Param("channelId") channelId: string,
+    @Query("limit") limit: number = 10,
+    @Query("page") page: number = 1
+  ): Promise<MessageDto[]> {
     return this.serviceRequest.send({
       client: this.client,
-      pattern: MESSENGER_MESSAGE_PATTERN.FIND_ALL,
+      pattern: MESSENGER_MESSAGE_PATTERN.FIND_BY_CHANNEL_ID,
+      data: { channelId, limit, page },
     });
   }
 
@@ -180,7 +222,7 @@ export class MessageController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: MESSENGER_MESSAGE_PATTERN.UPDATE,
-      data: { content: updateMessageDto, id },
+      data: { message: { ...updateMessageDto, id } },
     });
   }
 }

@@ -21,7 +21,7 @@ export class MessageController {
 
   @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.UPDATE_MESSAGE)
   async updateMessage(@Payload() payload: { message: MessageType }) {
-    this.messageGateway.onUpdateMessage({
+    return this.messageGateway.onUpdateMessage({
       channelId: payload.message.channel,
       message: payload.message,
     });

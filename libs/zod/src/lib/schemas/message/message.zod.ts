@@ -14,7 +14,12 @@ const MessageSchema = z.object({
 });
 
 export const MessageCreateSchema = MessageSchema.omit({ id: true, recipient: true, attachment: true });
-export const MessageUpdateSchema = MessageSchema.pick({ content: true });
+export const MessageUpdateSchema = MessageSchema.omit({
+  author: true,
+  channel: true,
+  recipient: true,
+  attachment: true,
+})
 
 export const MessagePermissionSchema = z.nativeEnum(Permissions);
 
