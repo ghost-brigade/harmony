@@ -90,10 +90,7 @@ export class FriendRequestService {
     }
   }
 
-  public async findAll(
-    payload: { params: FriendRequestParamsType },
-    user: UserContextType
-  ): Promise<FriendRequestType[]> {
+  public async findAll(user: UserContextType): Promise<FriendRequestType[]> {
     try {
       const friendrequests = await this.friendrequestModel
         .find({

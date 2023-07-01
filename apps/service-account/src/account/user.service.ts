@@ -229,6 +229,23 @@ export class UserService {
     return user;
   }
 
+  async findAllFriendRequest(ids) {
+    const array = ids.user2Array;
+    const distinctUsers = Array.from(
+      new Set([
+        ...array.map((element) => element.sender),
+        ...array.map((element) => element.receiver),
+      ])
+    ).filter((element) => element !== ids._user.id);
+    const user = await this.userModel
+      .find(
+        { _id: { $in: distinctUsers } },
+        { username: 1, email: 1, status: 1 }
+      )
+      .exec();
+    return user;
+  }
+
   async findOne(id: string): Promise<UserType | null> {
     return await this.userModel.findById(id).exec();
   }
