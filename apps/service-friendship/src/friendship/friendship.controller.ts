@@ -16,6 +16,8 @@ import { UserContext } from "@harmony/nest-microservice";
 import { FriendService } from "./friend/friend.service";
 import { FindFriend } from "./interceptor/findFriend.interceptor";
 import { FindAllFriends } from "./interceptor/findAllFriends.interceptor";
+// import { FindAllFriendRequest } from "./interceptor/findAllFriendRequest.interceptor";
+import { FindFriendRequest } from "./interceptor/findFriendRequest.interceptor";
 
 @Controller()
 export class FriendshipController {
@@ -33,12 +35,13 @@ export class FriendshipController {
   }
 
   @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.FIND_BY_ID)
+  @UseInterceptors(FindFriendRequest)
   async findOneRequestFriend(
     @Payload() payload: { id: IdType },
     @UserContext() user: UserContextType
   ) {
-    return await this.friendRequestService.findOneRequestFriend(
-      payload.id,
+    return await this.friendRequestService.findOneRequestFriendWithUser(
+      payload,
       user
     );
   }
