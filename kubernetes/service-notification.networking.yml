@@ -1,0 +1,27 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: service-notification-cert
+spec:
+  domains:
+    - ws.api.harmony.vg
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: service-notification-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: harmony-notification-ip
+    networking.gke.io/managed-certificates: service-notification-cert
+spec:
+  rules:
+    - host: ws.api.harmony.vg
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: service-notification-svc
+                port:
+                  number: 3001

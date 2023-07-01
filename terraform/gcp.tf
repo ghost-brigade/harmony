@@ -22,6 +22,10 @@ resource "google_compute_global_address" "gateway_ip" {
   name = "${var.app_name}-gateway-ip"
 }
 
+resource "google_compute_global_address" "gateway_ws_ip" {
+  name = "${var.app_name}-gateway-ws-ip"
+}
+
 module "google_compute_network" {
   source           = "./modules/google_compute_network"
   vpc_network_name = var.app_name

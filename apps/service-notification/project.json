@@ -15,7 +15,8 @@
         "main": "apps/service-notification/src/main.ts",
         "tsConfig": "apps/service-notification/tsconfig.app.json",
         "isolatedConfig": true,
-        "webpackConfig": "apps/service-notification/webpack.config.js"
+        "webpackConfig": "apps/service-notification/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},
@@ -56,6 +57,31 @@
           "ci": true,
           "codeCoverage": true
         }
+      }
+    },
+    "container": {
+      "dependsOn": ["build"],
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "engine": "docker",
+        "buildArgs": {
+          "NODE_ENV": "production"
+        },
+        "metadata": {
+          "images": [
+            "ghcr.io/ghost-brigade/harmony-service-notification",
+            "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-notification"
+          ],
+          "load": true,
+          "tags": [
+            "type=raw,value=stable,enable={{is_default_branch}}",
+            "type=raw,value=latest",
+            "type=sha,prefix=sha-"
+          ]
+        },
+        "push": true,
+        "cache-from": ["type=gha"],
+        "cache-to": ["type=gha,mode=max"]
       }
     }
   },

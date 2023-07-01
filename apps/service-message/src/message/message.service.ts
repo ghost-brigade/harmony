@@ -165,7 +165,12 @@ export class MessageService {
         channel: payload.channelId,
       });
 
-      return { messages, count, currentPage: payload.params?.page ?? 1 };
+      return {
+        messages,
+        count,
+        currentPage: payload.params?.page ?? 1,
+        lastPage: Math.ceil(count / (payload.params?.limit ?? 10)),
+      };
     } catch (error) {
       console.log(error);
       throw new RpcException(

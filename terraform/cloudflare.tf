@@ -25,3 +25,11 @@ resource "cloudflare_record" "api" {
   value   = google_compute_global_address.gateway_ip.address
   proxied = true
 }
+
+resource "cloudflare_record" "ws" {
+  zone_id = var.cloudflare_zone_id
+  name    = "ws.api"
+  type    = "A"
+  value   = google_compute_global_address.gateway_ws_ip.address
+  proxied = true
+}
