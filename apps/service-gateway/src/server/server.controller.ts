@@ -46,6 +46,7 @@ export class ServerController {
     private readonly serviceRequest: ServiceRequest
   ) {}
 
+  @ApiTags("Server")
   @Get("search")
   async searchServers(@Query() queryParams): Promise<any[]> {
     return this.serviceRequest.send({
