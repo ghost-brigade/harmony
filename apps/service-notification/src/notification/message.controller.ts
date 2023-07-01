@@ -31,7 +31,7 @@ export class MessageController {
   async deleteMessage(
     @Payload() payload: { messageId: IdType; channelId: IdType }
   ) {
-    this.messageGateway.onDeleteMessage({
+    return this.messageGateway.onDeleteMessage({
       channelId: payload.channelId,
       messageId: payload.messageId,
     });

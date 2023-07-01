@@ -16,6 +16,7 @@ import {
   UserContextType,
   MessageCreateSchema,
   MessageUpdateType,
+  UserType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -96,134 +97,123 @@ export class MessageService {
     }
   }
 
-
-
-
-  async updateMessage(
-    payload: {
-      content: MessageUpdateType;
-      id: IdType;
-    },
-    user: UserContextType
-  ): Promise<MessageUpdateType> {
-    try {
-      const existingMessage = await this.messageModel.findOne({
-        _id: payload.id,
-      });
-
-      if (!existingMessage) {
-        throw new RpcException(new NotFoundException("Message not found"));
-      }
-
-      // Vérifier si l'utilisateur est l'auteur du message
-      if (existingMessage.author !== user.id) {
-        throw new RpcException(
-          new ForbiddenException("You are not allowed to update this message")
-        );
-      }
-
-      // Mettre à jour le contenu du message uniquement
-      existingMessage.content = payload.content.content;
-      const updatedMessage = await existingMessage.save();
-
-      return updatedMessage;
-    } catch (error) {
-      console.log(error);
-      throw new RpcException(
-        new InternalServerErrorException("Error updating message")
-      );
-    }
-  }
-
-  async deleteMessage(
-    payload: {
-      id: IdType;
-    },
-    user: UserContextType
-  ): Promise<boolean> {
-    try {
-      const message = await this.findMessage(
-        {
-          id: payload.id,
-        },
-        user
-      );
-
-      console.log("______________");
-      console.log(message);
-      console.log("______________");
-
-      if (!message) {
-        throw new RpcException(
-          new NotFoundException("message request not found.")
-        );
-      }
-
-      if (message.author !== user.id) {
-        throw new RpcException(
-          new UnauthorizedException(
-            "You are not authorized to delete this message request."
-          )
-        );
-      }
-
-      await this.messageModel.deleteOne({
-        _id: payload.id,
-      });
-      return true;
-    } catch (error) {
-      console.log(error);
-      throw new RpcException(
-        new InternalServerErrorException("Error deleting message.")
-      );
-    }
-  }
-
-  public async findAll(user: UserContextType): Promise<MessageType[]> {
-    try {
-      const messages = (await this.messageModel
-        .find({
-          $or: [{ author: user.id }, { recipient: user.id }],
-        })
-        .exec()) as MessageType[];
-
-      return messages;
-    } catch (error) {
-      throw new RpcException(new InternalServerErrorException(error.message));
-    }
-  }
-
-  public async findMessage(
-    payload: { id: string },
-    user: UserContextType
+  public async findById(
+    payload: { id: IdType },
+    user: UserType,
+    authorization?: boolean
   ): Promise<MessageType> {
-    try {
-      const message = await this.messageModel
-        .findOne({
-          $and: [
-            {
-              $or: [
-                { author: payload.id },
-                { recipient: payload.id },
-                { _id: payload.id },
-              ],
-            },
-            {
-              $or: [{ author: user.id }, { recipient: user.id }],
-            },
-          ],
-        })
-        .exec();
+    const message = await this.messageModel.findById(payload.id);
 
-      if (!message) {
-        throw new RpcException(
-          new BadRequestException("Message does not exist.")
-        );
+    if (!message) {
+      throw new RpcException(new NotFoundException("Message not found"));
+    }
+
+    try {
+      if (authorization) {
+        const authorization = await this.checkPermissions({
+          channelId: message.channel,
+          user,
+          permissions: [Permissions.CHANNEL_VIEW],
+        });
+
+        if (!authorization) {
+          throw new RpcException(
+            new UnauthorizedException(
+              "You are not authorized to view message on this channel"
+            )
+          );
+        }
       }
 
-      return message as MessageType;
+      return message;
     } catch (error) {
-      throw new RpcException(new InternalServerErrorException(error.message));
+      throw new RpcException(
+        new InternalServerErrorException("Error getting message")
+      );
     }
   }
+
+  // async updateMessage(
+  //   payload: {
+  //     content: MessageUpdateType;
+  //     id: IdType;
+  //   },
+  //   user: UserContextType
+  // ): Promise<MessageUpdateType> {
+  //   try {
+  //     const existingMessage = await this.messageModel.findOne({
+  //       _id: payload.id,
+  //     });
+
+  //     if (!existingMessage) {
+  //       throw new RpcException(new NotFoundException("Message not found"));
+  //     }
+
+  //     // Vérifier si l'utilisateur est l'auteur du message
+  //     if (existingMessage.author !== user.id) {
+  //       throw new RpcException(
+  //         new ForbiddenException("You are not allowed to update this message")
+  //       );
+  //     }
+
+  //     // Mettre à jour le contenu du message uniquement
+  //     existingMessage.content = payload.content.content;
+  //     const updatedMessage = await existingMessage.save();
+
+  //     return updatedMessage;
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw new RpcException(
+  //       new InternalServerErrorException("Error updating message")
+  //     );
+  //   }
+  // }
+
+  // public async findAll(user: UserContextType): Promise<MessageType[]> {
+  //   try {
+  //     const messages = (await this.messageModel
+  //       .find({
+  //         $or: [{ author: user.id }, { recipient: user.id }],
+  //       })
+  //       .exec()) as MessageType[];
+
+  //     return messages;
+  //   } catch (error) {
+  //     throw new RpcException(new InternalServerErrorException(error.message));
+  //   }
+  // }
+
+  // public async findMessage(
+  //   payload: { id: string },
+  //   user: UserContextType
+  // ): Promise<MessageType> {
+  //   try {
+  //     const message = await this.messageModel
+  //       .findOne({
+  //         $and: [
+  //           {
+  //             $or: [
+  //               { author: payload.id },
+  //               { recipient: payload.id },
+  //               { _id: payload.id },
+  //             ],
+  //           },
+  //           {
+  //             $or: [{ author: user.id }, { recipient: user.id }],
+  //           },
+  //         ],
+  //       })
+  //       .exec();
+
+  //     if (!message) {
+  //       throw new RpcException(
+  //         new BadRequestException("Message does not exist.")
+  //       );
+  //     }
+
+  //     return message as MessageType;
+  //   } catch (error) {
+  //     throw new RpcException(new InternalServerErrorException(error.message));
+  //   }
+  // }
 }

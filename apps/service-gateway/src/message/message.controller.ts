@@ -1,28 +1,16 @@
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
-  FRIENDREQUEST_MESSAGE_PATTERN,
-  FRIEND_MESSAGE_PATTERN,
   MESSENGER_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import {
-  FriendRequestCreateDto,
-  FriendRequestDto,
-  MessageCreateDto,
-  FriendCreateDto,
-  FriendDto,
-  IdType,
-  MessageDto,
-  MessageUpdateDto,
-} from "@harmony/zod";
+import { MessageCreateDto, MessageDto, MessageUpdateDto } from "@harmony/zod";
 import {
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
-  Inject,
   Param,
   Post,
   Put,
@@ -31,8 +19,6 @@ import { ClientProxy } from "@nestjs/microservices";
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -82,7 +68,7 @@ export class MessageController {
   }
 
   @Get()
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiOperation({
     summary: "Find all messages",
     description: "Find all messages",
@@ -105,7 +91,7 @@ export class MessageController {
   }
 
   @Get(":id")
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiOperation({
     summary: "Find a message",
     description: "Find a message",
@@ -134,7 +120,7 @@ export class MessageController {
   }
 
   @Delete(":id")
-  @HttpCode(201)
+  @HttpCode(204)
   @ApiOperation({
     summary: "Delete a message",
     description: "Delete a message",
@@ -154,7 +140,7 @@ export class MessageController {
     description: "The id of the message to Delete.",
     type: String,
   })
-  async deleteMessage(@Param("id") id: string): Promise<MessageDto> {
+  async deleteMessage(@Param("id") id: string): Promise<boolean> {
     return this.serviceRequest.send({
       client: this.client,
       pattern: MESSENGER_MESSAGE_PATTERN.DELETE,
@@ -163,7 +149,7 @@ export class MessageController {
   }
 
   @Put(":id")
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiOperation({
     summary: "Delete a message",
     description: "Delete a message",

@@ -9,6 +9,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config";
 import { Services, getService } from "@harmony/service-config";
 import { MessageCreateService } from "./message-create.service";
+import { MessageDeleteService } from "./message-delete.service";
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { MessageCreateService } from "./message-create.service";
     MongooseModule.forFeature([{ name: "Message", schema: MessageSchema }]),
   ],
   controllers: [MessageController],
-  providers: [MessageService, MessageCreateService],
+  providers: [MessageService, MessageCreateService, MessageDeleteService],
 })
 export class MessageModule {}

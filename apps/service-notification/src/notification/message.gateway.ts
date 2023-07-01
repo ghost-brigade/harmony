@@ -119,8 +119,13 @@ export class MessageGateway
     channelId: IdType;
     messageId: IdType;
   }) {
-    this.server
-      .to(this.getRoomName(channelId))
-      .emit(MessageNotification.DELETE_MESSAGE, messageId);
+    try {
+      this.server
+        .to(this.getRoomName(channelId))
+        .emit(MessageNotification.DELETE_MESSAGE, messageId);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
