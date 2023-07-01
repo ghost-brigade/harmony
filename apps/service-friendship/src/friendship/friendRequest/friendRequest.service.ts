@@ -138,6 +138,37 @@ export class FriendRequestService {
     }
   }
 
+  async findOneRequestFriendWithUser(
+    payload: { id: IdType },
+    user: UserContextType
+  ): Promise<FriendRequestType> {
+    console.log("__________________________");
+    console.log("findOneRequestFriend");
+    console.log("__________________________");
+
+    try {
+      const friendrequest = await this.friendrequestModel.findOne({
+        $or: [
+          { sender: payload.id },
+          { receiver: payload.id },
+          { _id: payload.id },
+        ],
+      });
+
+      if (!friendrequest) {
+        throw new RpcException(
+          new NotFoundException("FriendRequest not found.")
+        );
+      }
+
+      return { friendrequest, user } as FriendRequestType;
+    } catch (error) {
+      throw new RpcException(
+        new BadRequestException("Error finding friendrequest.")
+      );
+    }
+  }
+
   async acceptFriendRequest(
     payload: { id: IdType },
     user: UserContextType

@@ -25,7 +25,7 @@ import { switchMap } from "rxjs/operators";
 import { FriendService } from "../friend/friend.service";
 
 @Injectable()
-export class FindFriend implements NestInterceptor {
+export class FindFriendRequest implements NestInterceptor {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly accountService: ClientProxy,
@@ -38,10 +38,10 @@ export class FindFriend implements NestInterceptor {
   }
 
   private async global(findFriend) {
-    if (findFriend.friend.user1 !== findFriend.user.id) {
-      return this.friendUser1Return(findFriend.friend);
+    if (findFriend.friendrequest.sender !== findFriend.user.id) {
+      return this.friendUser1Return(findFriend.friendrequest);
     } else {
-      return this.friendUser2Return(findFriend.friend);
+      return this.friendUser2Return(findFriend.friendrequest);
     }
   }
   private async friendUser1Return(findFriend) {
@@ -49,7 +49,7 @@ export class FindFriend implements NestInterceptor {
       const user = await this.serviceRequest.send({
         client: this.accountService,
         pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND,
-        data: { id: findFriend.friend.user1 },
+        data: { id: findFriend.friendrequest.sender },
         promise: true,
       });
       delete user.email;
@@ -68,7 +68,7 @@ export class FindFriend implements NestInterceptor {
       const user = await this.serviceRequest.send({
         client: this.accountService,
         pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND,
-        data: { id: friend.user2 },
+        data: { id: friend.receiver },
         promise: true,
       });
       delete user.email;
