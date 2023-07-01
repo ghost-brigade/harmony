@@ -138,9 +138,17 @@ export class RoleService {
       if (name) query["name"] = name;
       if (serverId) query["server"] = serverId;
       if (permissions) query["permissions"] = { $in: permissions };
-      if (usersId) query["users"] = { $in: [usersId] };
 
-      return await this.roleModel.find(query).exec();
+      // in userId or owner
+      if (usersId) {
+        query["users"] = {
+          $or: [{ users: { $in: usersId } }, { owner: { $in: usersId } }],
+        };
+      }
+
+      const role = await this.roleModel.find(query).exec();
+
+      return role;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }

@@ -64,11 +64,11 @@
         "colId": "history",
         "containerId": "",
         "name": "http://localhost:3000/login",
-        "url": "http://localhost:3000/friend-request/accept/649dbd7591d968fb4453caa8",
+        "url": "http://localhost:3000/login",
         "method": "POST",
         "sortNum": 0,
         "created": "2023-06-21T17:18:40.637Z",
-        "modified": "2023-06-29T17:21:10.360Z",
+        "modified": "2023-06-21T17:18:40.637Z",
         "headers": [],
         "params": [],
         "body": {
@@ -133,6 +133,11 @@
         "colId": "history",
         "containerId": "",
         "name": "http://localhost:3000/friendship/request",
+        "url": "localhost:3000/friendship/reject/64962d41c0e727d0ada0300e",
+        "method": "POST",
+        "sortNum": 0,
+        "created": "2023-06-21T17:20:31.159Z",
+        "modified": "2023-06-23T23:40:18.778Z",
         "url": "localhost:3000/newFriend/",
         "method": "POST",
         "sortNum": 0,
@@ -142,12 +147,12 @@
         "params": [],
         "body": {
             "type": "json",
-            "raw": "{\n  \"user1\": \"64933094aa642927bb6095ec\",\n  \"user2\": \"64456ca89684a2566d8686ee\"\n}",
+            "raw": "{\n  \"sender\": \"64456ca89684a2566d8686ee\",\n  \"receiver\": \"646633f9e0d2720f7e75f603\"\n}",
             "form": []
         },
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTkyNDgyLCJleHAiOjE2ODgwNzg4ODJ9.HWR8aGol5Nn6VmVoJD_y3wuCcpaH73FspEbFnLyq51A"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3NTU1MzA3LCJleHAiOjE2ODc2NDE3MDd9.fusk9_-6EIuJR8bHMhPZFP-wuMvkr-9L56ouajsXSqk"
         },
         "tests": []
     },
@@ -171,6 +176,163 @@
         "auth": {
             "type": "bearer",
             "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3NzkyMTM4LCJleHAiOjE2ODc4Nzg1Mzh9.8YQXRrY8HDXXX3keS6WWJtmhjsZInYYAlJiKRQx40eg"
+        },
+        "tests": []
+    },
+    {
+        "_id": "9d055859-805a-4695-b8bd-8076167e2191",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/login",
+        "url": "localhost:3000/login",
+        "method": "POST",
+        "sortNum": 0,
+        "created": "2023-06-28T14:26:21.933Z",
+        "modified": "2023-06-28T14:26:21.933Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+            "form": []
+        },
+        "tests": []
+    },
+    {
+        "_id": "affd8266-671c-4fb4-810a-41849027fb03",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/message",
+        "url": "localhost:3000/message",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-28T14:26:51.450Z",
+        "modified": "2023-06-28T14:26:51.450Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+            "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
+        },
+        "tests": []
+    },
+    {
+        "_id": "374f9258-75fc-4692-8cc1-06a95d326c58",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/message/649b1f1a73935057808f3b9c",
+        "url": "localhost:3000/message/649b1f1a73935057808f3b9c",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-28T14:27:01.322Z",
+        "modified": "2023-06-28T14:27:01.322Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+            "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
+        },
+        "tests": []
+    },
+    {
+        "_id": "7a2595c5-7017-46cc-9969-7ed763361b90",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/message/",
+        "url": "localhost:3000/message/",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-28T14:31:14.737Z",
+        "modified": "2023-06-28T14:31:14.737Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+            "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
+        },
+        "tests": []
+    },
+    {
+        "_id": "b09229bf-ddb5-4210-8237-18d1fa0b0899",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/message/649b1f1a73935057808f3b9c",
+        "url": "localhost:3000/message/649b1f1a73935057808f3b9c",
+        "method": "DELETE",
+        "sortNum": 0,
+        "created": "2023-06-28T15:20:11.529Z",
+        "modified": "2023-06-28T15:20:11.529Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+            "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
+        },
+        "tests": []
+    },
+    {
+        "_id": "ff64c22a-702a-405e-b390-9d3d4e601a84",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/message/649b202e73935057808f3b9f",
+        "url": "localhost:3000/message/649b202e73935057808f3b9f",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-28T15:28:44.423Z",
+        "modified": "2023-06-28T15:28:44.423Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
+            "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
+        },
+        "tests": []
+    },
+    {
+        "_id": "159b79c2-2afc-4a86-8f7c-f73d738dd13c",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:3000/message/649b202e73935057808f3b9f",
+        "url": "localhost:3000/message/649b202e73935057808f3b9f",
+        "method": "PUT",
+        "sortNum": 0,
+        "created": "2023-06-28T16:26:55.607Z",
+        "modified": "2023-06-28T17:42:39.737Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"content\": \"Ca marche ? toto 27\"\n}",
+            "form": []
+        },
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
         },
         "tests": []
     }

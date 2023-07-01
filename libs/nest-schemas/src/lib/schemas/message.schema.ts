@@ -5,9 +5,18 @@ import { Channel } from "./channel.schema";
 
 export type MessageDocument = HydratedDocument<Message>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
+})
 export class Message {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, default: "" })
   content: string;
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })

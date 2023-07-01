@@ -6,6 +6,8 @@ export enum Services {
   ROLE = "role",
   FILE = "file",
   FRIENDSHIP = "friendship",
+  MESSAGE = "message",
   FRIEND = "friend",
   SEARCH = "search",
+  NOTIFICATION = "notification",
 }

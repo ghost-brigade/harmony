@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  # typesense:
-  #   image: typesense/typesense:0.24.0
-  #   restart: always
-  #   volumes:
-  #     - typesense-data:/data
-  #   command: "--data-dir /data --enable-cors --api-key=${TYPESENSE_API_KEY}"
+  typesense:
+    image: typesense/typesense:0.24.0
+    restart: always
+    volumes:
+      - typesense-data:/data
+    command: "--data-dir /data --enable-cors --api-key=${TYPESENSE_API_KEY}"
 
   service-gateway:
     extends:
@@ -15,6 +15,14 @@ services:
     ports:
       - ${GATEWAY_PORT:-3000}:3000
     command: npx nx serve service-gateway
+
+  service-notification:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    ports:
+      - ${SOCKET_PORT:-3001}:3001
+    command: npx nx serve service-notification
 
   service-authentication:
     extends:
@@ -34,17 +42,17 @@ services:
       service: service-template
     command: npx nx serve service-account
 
-  # service-server:
-  #   extends:
-  #     file: docker-compose.template.yml
-  #     service: service-template
-  #   command: npx nx serve service-server
+  service-server:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-server
 
-  # service-message:
-  #   extends:
-  #     file: docker-compose.template.yml
-  #     service: service-template
-  #   command: npx nx serve service-message
+  service-message:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-message
 
   service-search:
     extends:
@@ -52,17 +60,17 @@ services:
       service: service-template
     command: npx nx serve service-search
 
-  # service-file:
-  #   extends:
-  #     file: docker-compose.template.yml
-  #     service: service-template
-  #   command: npx nx serve service-file
+  service-file:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-file
 
-  # service-role:
-  #   extends:
-  #     file: docker-compose.template.yml
-  #     service: service-template
-  #   command: npx nx serve service-role
+  service-role:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-role
 
   service-friendship:
     extends:
@@ -71,5 +79,5 @@ services:
     command: npx nx serve service-friendship
 
 volumes:
-  mono-node-modules: null
+  # mono-node-modules: null
   typesense-data: null
