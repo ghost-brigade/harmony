@@ -46,6 +46,9 @@ export class Server {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
   banned: User[];
+
+  @Prop({ type: Boolean, default: true })
+  private: boolean;
 }
 
 export const ServerSchema = SchemaFactory.createForClass(Server);

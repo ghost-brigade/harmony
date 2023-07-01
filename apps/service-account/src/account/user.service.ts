@@ -206,10 +206,11 @@ export class UserService {
     }
   }
 
-  async findAllByIds(ids: ObjectId[]) {
+  async findAllByIds(payload: { ids: IdType[] }): Promise<UserPublicType[]> {
     const user = await this.userModel
-      .find({ _id: { $in: ids } }, { username: 1, email: 1, status: 1 })
+      .find({ _id: { $in: payload.ids } }, { username: 1, email: 1, status: 1 })
       .exec();
+    return user;
   }
 
   async findAllFriends(ids) {
@@ -251,7 +252,6 @@ export class UserService {
   }
 
   async findOneBy(params: UserType): Promise<UserType | null> {
-    console.log(params);
     try {
       return await this.userModel.findOne(params).exec();
     } catch (error) {
@@ -282,7 +282,6 @@ export class UserService {
    */
   async usernameAlreadyExist(username: string): Promise<boolean> {
     const user = await this.findOneBy({ username });
-    console.log(user);
     return user !== null;
   }
 
@@ -433,7 +432,6 @@ export class UserService {
         { $pull: { blockedUsers: userId } },
         { new: true }
       );
-      console.log(userData);
       return true;
     } catch (error) {
       throw new RpcException(

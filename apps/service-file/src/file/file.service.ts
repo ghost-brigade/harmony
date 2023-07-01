@@ -45,7 +45,12 @@ export class FileService {
   private async getSignedUrl(file: FileType): Promise<string | null> {
     const url = await this.storage
       .bucket(this.bucketName)
-      .file(`${this.getDestinationFolder(file)}/${file.id}/${file.filename}`)
+      .file(
+        `${this.getDestinationFolder(file)}/${
+          this.getDestinationFolder(file) !== Folders.USER ? `${file.id}/` : ""
+        }${file.filename}`
+      )
+
       .getSignedUrl({
         action: "read",
         expires: Date.now() + 24 * 60 * 60 * 1000,

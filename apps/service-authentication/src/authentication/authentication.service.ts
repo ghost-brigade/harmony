@@ -30,7 +30,6 @@ export class AuthenticationService {
   ) {}
 
   async validateUser(user: UserType) {
-    console.log(user);
 
     // if (
     //   user &&

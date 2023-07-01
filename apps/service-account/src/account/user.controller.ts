@@ -37,8 +37,8 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS)
-  async findAllByIds(data) {
-    return await this.userService.findAllByIds(data.ids);
+  async findAllByIds(@Payload() payload: { ids: IdType[] }) {
+    return await this.userService.findAllByIds(payload);
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)

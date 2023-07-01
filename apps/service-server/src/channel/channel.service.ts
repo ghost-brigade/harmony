@@ -79,6 +79,16 @@ export class ChannelService {
     }
   }
 
+  async getAllByIds(payload: { ids: IdType[] }): Promise<ChannelType[]> {
+    const user = await this.channelModel
+      .find(
+        { _id: { $in: payload.ids } },
+        { id: 1, name: 1, type: 1, order: 1 }
+      )
+      .exec();
+    return user;
+  }
+
   async getById(payload: { id: IdType }, user: UserContextType) {
     if (payload.id === undefined) {
       throw new RpcException(
