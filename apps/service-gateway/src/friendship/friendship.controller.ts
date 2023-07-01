@@ -59,6 +59,28 @@ export class FriendshipController {
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL,
     });
   }
+  @ApiOperation({ summary: "Get all friendrequests" })
+  @ApiOkResponse({ status: 200, description: "Return all friend requests" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @Get("/friend-request/sent")
+  async findAllSent() {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL_SENT,
+    });
+  }
+  @ApiOperation({ summary: "Get all friendrequests" })
+  @ApiOkResponse({ status: 200, description: "Return all friend requests" })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @Get("/friend-request/received")
+  async findAllReceived() {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL_RECEIVED,
+    });
+  }
 
   @ApiOperation({ summary: "Find friend request by id" })
   @ApiOkResponse({
