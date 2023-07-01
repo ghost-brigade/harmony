@@ -25,9 +25,10 @@ export class ChannelController {
   @MessagePattern(CHANNEL_MESSAGE_PATTERN.GET_BY_ID)
   async getById(
     @Payload() payload: { id: IdType },
-    @UserContext() user: UserContextType
+    @UserContext() user: UserContextType,
+    authorization: boolean = true
   ) {
-    return this.channelService.getById(payload, user);
+    return this.channelService.getById(payload, user, authorization);
   }
 
   @MessagePattern(CHANNEL_MESSAGE_PATTERN.CREATE)

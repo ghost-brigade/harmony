@@ -79,7 +79,11 @@ export class ChannelService {
     }
   }
 
-  async getById(payload: { id: IdType }, user: UserContextType) {
+  async getById(
+    payload: { id: IdType },
+    user: UserContextType,
+    authorization: boolean
+  ) {
     if (payload.id === undefined) {
       throw new RpcException(
         new BadRequestException("You must provide a channel id.")
@@ -104,17 +108,19 @@ export class ChannelService {
       throw new RpcException(new BadRequestException("Channel not found."));
     }
 
-    const canView = await this.channelAuthorizationService.canViewChannel({
-      serverId: channel.server,
-      user,
-    });
+    if (authorization) {
+      const canView = await this.channelAuthorizationService.canViewChannel({
+        serverId: channel.server,
+        user,
+      });
 
-    if (canView === false) {
-      throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to view channels for this server."
-        )
-      );
+      if (canView === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to view channels for this server."
+          )
+        );
+      }
     }
 
     return channel;
