@@ -8,12 +8,16 @@ import { MessageSchema } from "@harmony/nest-schemas";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config";
 import { Services, getService } from "@harmony/service-config";
+import { MessageCreateService } from "./message-create.service";
 
 @Module({
   imports: [
     NestMicroserviceModule,
     ClientsModule.register([
       getService(Services.NOTIFICATION),
+      getService(Services.AUTHORIZATION),
+      getService(Services.SERVER),
+      getService(Services.SEARCH),
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -22,6 +26,6 @@ import { Services, getService } from "@harmony/service-config";
     MongooseModule.forFeature([{ name: "Message", schema: MessageSchema }]),
   ],
   controllers: [MessageController],
-  providers: [MessageService],
+  providers: [MessageService, MessageCreateService],
 })
 export class MessageModule {}

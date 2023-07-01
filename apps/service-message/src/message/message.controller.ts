@@ -10,17 +10,21 @@ import {
   UserParamsType,
   MessageUpdateDto,
 } from "@harmony/zod";
+import { MessageCreateService } from "./message-create.service";
 
 @Controller()
 export class MessageController {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly messageCreateService: MessageCreateService,
+    private readonly messageService: MessageService
+  ) {}
 
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.CREATE)
   request(
     @Payload() payload: { message: MessageCreateType },
-    @UserContext() userContext: UserContextType
+    @UserContext() user: UserContextType
   ) {
-    return this.messageService.newMessage(payload, userContext);
+    return this.messageCreateService.create(payload, user);
   }
 
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.UPDATE)

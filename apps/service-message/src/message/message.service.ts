@@ -1,15 +1,17 @@
+import { Permissions } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
+  AUTHORIZATION_MESSAGE_PATTERN,
+  CHANNEL_MESSAGE_PATTERN,
   NOTIFICATION_MESSAGE_PATTERN,
+  SEARCH_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
 import {
   FormatZodResponse,
-  MessageParamsType,
   MessageType,
   MessageCreateType,
-  IdSchema,
   IdType,
   UserContextType,
   MessageCreateSchema,
@@ -33,41 +35,69 @@ export class MessageService {
     @InjectModel("Message") private readonly messageModel,
     private readonly serviceRequest: ServiceRequest,
     @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
-    private readonly clientNotification: ClientProxy
+    private readonly clientNotification: ClientProxy,
+    @Inject(getServiceProperty(Services.AUTHORIZATION, "name"))
+    private readonly clientAuthorization: ClientProxy,
+    @Inject(getServiceProperty(Services.SERVER, "name"))
+    private readonly clientServer: ClientProxy,
+    @Inject(getServiceProperty(Services.SEARCH, "name"))
+    private readonly clientSearch: ClientProxy
   ) {}
 
-  async newMessage(
-    payload: { message: MessageCreateType },
-    user: UserContextType
-  ): Promise<MessageType> {
-    const parse = MessageCreateSchema.safeParse(payload.message);
-    if (parse.success === false) {
-      throw new RpcException(
-        new BadRequestException(FormatZodResponse(parse.error.issues))
-      );
-    }
-
+  private async getServerFromChannel(channelId: IdType) {
     try {
-      const message = await this.messageModel(payload.message);
-      await message.save();
-
-      await this.serviceRequest.send({
-        client: this.clientNotification,
-        pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE,
+      const channel = await this.serviceRequest.send({
+        client: this.clientServer,
+        pattern: CHANNEL_MESSAGE_PATTERN.GET_BY_ID,
         data: {
-          message,
+          id: channelId,
         },
-        promise: true
+        promise: true,
       });
 
-      return message;
+      return channel;
     } catch (error) {
-      console.log(error);
       throw new RpcException(
-        new InternalServerErrorException("Error creating message")
+        new InternalServerErrorException("Error occurred while getting server")
       );
     }
   }
+
+  public async checkPermissions({
+    serverId,
+    channelId,
+    user,
+    permissions,
+  }: {
+    serverId?: IdType;
+    channelId?: IdType;
+    user: UserContextType;
+    permissions: Permissions[];
+  }): Promise<boolean> {
+    let channel = null;
+
+    if (serverId === undefined && channelId) {
+      channel = await this.getServerFromChannel(channelId);
+    }
+
+    try {
+      return await this.serviceRequest.send({
+        client: this.clientAuthorization,
+        pattern: AUTHORIZATION_MESSAGE_PATTERN.HAS_RIGHTS,
+        data: {
+          serverId: serverId ?? channel.server,
+          userId: user.id,
+          permissions,
+        },
+        promise: true,
+      });
+    } catch (error) {
+      return false;
+    }
+  }
+
+
+
 
   async updateMessage(
     payload: {
