@@ -1,9 +1,8 @@
-import { MessageNotification } from "@harmony/notification";
 import { NOTIFICATION_MESSAGE_PATTERN } from "@harmony/service-config";
-import { Controller } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { MessageGateway } from "./message.gateway";
 import { MessagePattern, Payload } from "@nestjs/microservices";
-import { MessageType } from "@harmony/zod";
+import { IdType, MessageType } from "@harmony/zod";
 
 @Controller()
 export class MessageController {
@@ -11,9 +10,27 @@ export class MessageController {
 
   @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE)
   async newMessage(@Payload() payload: { message: MessageType }) {
-    this.messageGateway.newMessage({
+    this.messageGateway.onNewMessage({
       channelId: payload.message.channel,
       message: payload.message,
+    });
+  }
+
+  @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.UPDATE_MESSAGE)
+  async updateMessage(@Payload() payload: { message: MessageType }) {
+    this.messageGateway.onUpdateMessage({
+      channelId: payload.message.channel,
+      message: payload.message,
+    });
+  }
+
+  @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.DELETE_MESSAGE)
+  async deleteMessage(
+    @Payload() payload: { messageId: IdType; channelId: IdType }
+  ) {
+    this.messageGateway.onDeleteMessage({
+      channelId: payload.channelId,
+      messageId: payload.messageId,
     });
   }
 }
