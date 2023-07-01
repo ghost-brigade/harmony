@@ -107,7 +107,6 @@ export class MessageGateway
     message: MessageType;
   }) {
     this.server
-      .of("/message")
       .to(this.getRoomName(channelId))
       .emit(MessageNotification.UPDATE_MESSAGE, message);
   }
@@ -121,7 +120,6 @@ export class MessageGateway
     messageId: IdType;
   }) {
     this.server
-      .of("/message")
       .to(this.getRoomName(channelId))
       .emit(MessageNotification.DELETE_MESSAGE, messageId);
   }
