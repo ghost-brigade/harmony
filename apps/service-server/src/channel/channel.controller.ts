@@ -31,6 +31,11 @@ export class ChannelController {
     return this.channelService.getById(payload, user, authorization);
   }
 
+  @MessagePattern(CHANNEL_MESSAGE_PATTERN.GET_BY_IDS)
+  async findAllByIds(@Payload() payload: { ids: IdType[] }) {
+    return await this.channelService.getAllByIds(payload);
+  }
+
   @MessagePattern(CHANNEL_MESSAGE_PATTERN.CREATE)
   async create(
     @Payload() payload: { channel: ChannelCreateType },

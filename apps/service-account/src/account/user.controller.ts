@@ -37,15 +37,14 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS)
-  async findAllByIds(data) {
-    return await this.userService.findAllByIds(data.ids);
+  async findAllByIds(@Payload() payload: { ids: IdType[] }) {
+    return await this.userService.findAllByIds(payload);
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
   async findOne(data: UserType) {
     try {
       let user: UserType;
-
       if (Object.keys(data).length === 1 && "id" in data) {
         user = await this.userService.findOne(data.id);
       } else {
@@ -53,6 +52,54 @@ export class UserController {
       }
 
       return user;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
+    }
+  }
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND)
+  async findOneFriend(data: UserType) {
+    try {
+      const user = await this.userService.findOne(data.id);
+      return user;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
+    }
+  }
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_FRIENDS)
+  async findAllFriends(data) {
+    try {
+      const user = await this.userService.findAllFriends(data);
+      return user;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
+    }
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ALL_FRIEND_REQUEST)
+  async findAllFriendRequest(data) {
+    try {
+      const user = await this.userService.findAllFriendRequest(data);
+      return user;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error getting user")
+      );
+    }
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE_BY_USERNAME)
+  async findOneByUsername(
+    @Payload() payload: { username: string },
+    @UserContext() user
+  ) {
+    try {
+      return await this.userService.findOneByUsername(payload, user);
     } catch (error) {
       throw new RpcException(
         new InternalServerErrorException("Error getting user")

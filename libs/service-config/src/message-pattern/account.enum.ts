@@ -5,6 +5,7 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   FIND_ALL = "account.find",
   FIND_ALL_BY_IDS = "account.findAllByIds",
   FIND_ONE = "account.findOne",
+  FIND_ONE_FRIEND = "account.findOneFriend",
   PROFILE = "account.profile",
   IS_ACTIVE = "account.isActive",
   IS_EXIST = "account.isExist",
@@ -12,4 +13,7 @@ export enum ACCOUNT_MESSAGE_PATTERN {
   CANCEL_BAN_USER = "account.cancelBanUser",
   USERNAME_AVAILABLE = "account.usernameAvailable",
   CHANGE_AVATAR = "account.changeAvatar",
+  FIND_ONE_BY_USERNAME = "account.findOneByUsername",
+  FIND_ALL_FRIENDS = "account.findAllFriends",
+  FIND_ALL_FRIEND_REQUEST = "account.findAllFriendRequest",
 }

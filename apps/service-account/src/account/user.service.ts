@@ -206,10 +206,45 @@ export class UserService {
     }
   }
 
-  async findAllByIds(ids: ObjectId[]) {
+  async findAllByIds(payload: { ids: IdType[] }): Promise<UserPublicType[]> {
     const user = await this.userModel
-      .find({ _id: { $in: ids } }, { username: 1, email: 1, status: 1 })
+      .find({ _id: { $in: payload.ids } }, { username: 1, email: 1, status: 1 })
       .exec();
+    return user;
+  }
+
+  async findAllFriends(ids) {
+    const array = ids.user2Array;
+    const distinctUsers = Array.from(
+      new Set([
+        ...array.map((element) => element.user1),
+        ...array.map((element) => element.user2),
+      ])
+    ).filter((element) => element !== ids._user.id);
+    const user = await this.userModel
+      .find(
+        { _id: { $in: distinctUsers } },
+        { username: 1, email: 1, status: 1 }
+      )
+      .exec();
+    return user;
+  }
+
+  async findAllFriendRequest(ids) {
+    const array = ids.user2Array;
+    const distinctUsers = Array.from(
+      new Set([
+        ...array.map((element) => element.sender),
+        ...array.map((element) => element.receiver),
+      ])
+    ).filter((element) => element !== ids._user.id);
+    const user = await this.userModel
+      .find(
+        { _id: { $in: distinctUsers } },
+        { username: 1, email: 1, status: 1 }
+      )
+      .exec();
+    return user;
   }
 
   async findOne(id: string): Promise<UserType | null> {
@@ -224,6 +259,21 @@ export class UserService {
     }
   }
 
+  async findOneByUsername(
+    payload: { username: string },
+    user: UserType
+  ): Promise<UserPublicType> {
+    try {
+      return await this.userModel
+        .findOne({
+          username: payload.username,
+        })
+        .exec();
+    } catch (error) {
+      return null;
+    }
+  }
+
   /**
    * Checks if the username already exists in the database
    * @param username
@@ -232,7 +282,6 @@ export class UserService {
    */
   async usernameAlreadyExist(username: string): Promise<boolean> {
     const user = await this.findOneBy({ username });
-    console.log(user);
     return user !== null;
   }
 
@@ -383,7 +432,6 @@ export class UserService {
         { $pull: { blockedUsers: userId } },
         { new: true }
       );
-      console.log(userData);
       return true;
     } catch (error) {
       throw new RpcException(

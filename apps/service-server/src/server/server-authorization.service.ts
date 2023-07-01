@@ -35,6 +35,20 @@ export class ServerAuthorizationService {
     });
   }
 
+  public async canUpdateServer({
+    serverId,
+    user,
+  }: {
+    serverId: IdType;
+    user: UserContextType;
+  }): Promise<boolean> {
+    return await this.checkPermissions({
+      serverId,
+      user,
+      permissions: [Permissions.SERVER_MANAGE],
+    });
+  }
+
   private async checkPermissions({
     serverId,
     user,

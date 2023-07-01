@@ -8,13 +8,16 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 
 @Injectable()
 export class FriendService {
@@ -30,33 +33,19 @@ export class FriendService {
     },
     user: UserContextType
   ): Promise<FriendType> {
-    const parse = IdSchema.safeParse(payload.user1);
-    if (parse.success === false) {
-      throw new RpcException(
-        new BadRequestException(FormatZodResponse(parse.error.issues))
-      );
-    }
-
-    const { user1, user2 } = payload;
-
-    const existingFriendRequest = await this.findFriend(
-      { id: payload.user2 },
-      user
-    );
-
-    if (existingFriendRequest) {
-      throw new RpcException(
-        new BadRequestException("FriendRequest already exists.")
-      );
+    const existingFriend = await this.findFriend({ id: payload.user2 }, user);
+    if (existingFriend) {
+      throw new RpcException(new BadRequestException("Friend already exists."));
     }
 
     try {
       const newFriend = new this.friendModel({
-        user1: user.id,
+        user1: payload.user1,
         user2: payload.user2,
       });
       return await newFriend.save();
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error creating friend")
       );
@@ -70,39 +59,29 @@ export class FriendService {
     user: UserContextType
   ): Promise<boolean> {
     try {
-      const friendrequest = await this.friendrequestModel.findFriend({
-        id: payload.id,
-      });
+      const friend = await this.findFriend(
+        {
+          id: payload.id,
+        },
+        user
+      );
 
-      if (!friendrequest) {
-        throw new RpcException(
-          new NotFoundException("FriendRequest request not found.")
-        );
+      if (!friend) {
+        throw new RpcException(new NotFoundException("Friend not found."));
       }
 
-      if (friendrequest.sender !== user.id) {
-        throw new RpcException(
-          new UnauthorizedException(
-            "You are not authorized to delete this friendrequest request."
-          )
-        );
-      }
-
-      await this.friendModel.deleteOne({
-        _id: payload.id,
+      return await this.friendModel.deleteOne({
+        _id: friend.id,
       });
-      return true;
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error deleting friend.")
       );
     }
   }
 
-  public async findAllFriends(
-    payload: { params: FriendParamsType },
-    user: UserContextType
-  ): Promise<FriendType[]> {
+  public async findAllFriends(user: UserContextType): Promise<FriendType[]> {
     try {
       const friends = await this.friendModel
         .find({
@@ -124,16 +103,25 @@ export class FriendService {
       const friend = await this.friendModel
         .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
         .exec();
-
-      if (!friend) {
-        throw new RpcException(
-          new BadRequestException("Friend does not exist.")
-        );
-      }
-
       return friend as FriendType;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
+  public async findFriendWithUser(
+    payload: { id: IdType },
+    user: UserContextType
+  ): Promise<FriendType> {
+    try {
+      const friend = await this.friendModel
+        .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
+        .exec();
+      return { friend, user } as FriendType;
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
 }
+
+// 64995774ed26b6822ff79246, 649958f4ed26b6822ff7924a, 6499a741ed26b6822ff79440, 649a082d2e04423eb6b0b0f8
+

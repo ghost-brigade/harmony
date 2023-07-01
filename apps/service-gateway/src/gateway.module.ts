@@ -21,7 +21,7 @@ import { MessageModule } from "./message/message.module";
     }),
     ThrottlerModule.forRoot({
       ttl: parseInt(process.env?.RATE_LIMIT_TTL || "1"),
-      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "20"),
+      limit: parseInt(process.env?.RATE_LIMIT_COUNT || "200"),
     }),
     DefaultModule,
     AuthenticationModule,

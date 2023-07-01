@@ -13,21 +13,23 @@ export const ServerSchema = z.object({
   emojis: z.array(IdSchema).optional(),
   cover: z.string().optional(),
   banned: z.array(IdSchema).optional(),
+  private: z.boolean().optional(),
 });
 
 export const ServerCreateSchema = ServerSchema.pick({
   name: true,
 });
 
-export const ServerUpdateSchema = z.object({
-  name: z.string().optional(),
-  owner: IdSchema.optional(),
-  members: z.array(IdSchema).optional(),
-  categories: z.array(IdSchema).optional(),
-  channels: z.array(IdSchema).optional(),
-  roles: z.array(IdSchema).optional(),
-  emojis: z.array(IdSchema).optional(),
-  cover: z.string().optional(),
+export const ServerUpdateSchema = ServerSchema.pick({
+  name: true,
+  owner: true,
+  members: true,
+  categories: true,
+  channels: true,
+  roles: true,
+  emojis: true,
+  cover: true,
+  private: true,
 });
 
 export const ServerRemoveSchema = z.object({
