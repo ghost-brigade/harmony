@@ -15,6 +15,7 @@ import {
   ServerMemberRemoveType,
   ServerRemoveType,
   UserContextType,
+  ServerUpdateType,
 } from "@harmony/zod";
 import { Errors } from "@harmony/enums";
 import { IdType } from "@harmony/zod";
@@ -41,15 +42,20 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)
-  async getAllServers() {
-    return await this.serverService.findAll();
+  async getAllServers(@UserContext() user: UserContextType) {
+    return await this.serverService.findAll(user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_BY_ID)
   @UseInterceptors(GlobalServerInterceptor)
-  async getServerById(id: string) {
+  async getServerById(
+    @Payload()
+    payload: {
+      serverId: IdType;
+    }
+  ) {
     try {
-      const server = await this.serverService.findOne(id);
+      const server = await this.serverService.findOne(payload.serverId);
 
       if (!server) {
         throw new RpcException(
@@ -72,19 +78,27 @@ export class ServerController {
     }
   }
 
-  // @MessagePattern(SERVER_MESSAGE_PATTERN.ADD_MEMBER)
-  // async addMemberToServer(addMemberData: ServerMemberAddType) {
-  //   return await this.serverService.addMember(
-  //     addMemberData.serverId,
-  //     addMemberData.memberId
-  //   );
-  // }
-
   @MessagePattern(SERVER_MESSAGE_PATTERN.REMOVE_MEMBER)
   async removeMemberToServer(removeMemberData: ServerMemberRemoveType) {
     return await this.serverService.removeMember(
       removeMemberData.serverId,
       removeMemberData.memberId
+    );
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.UPDATE)
+  async updateServer(
+    @Payload()
+    payload: {
+      serverId: ServerCreateType;
+      server: ServerUpdateType;
+    },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.update(
+      payload.serverId,
+      payload.server,
+      user
     );
   }
 
@@ -128,5 +142,13 @@ export class ServerController {
     @UserContext() user: UserContextType
   ) {
     return await this.serverService.unbanMember(payload, user);
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.SEARCH)
+  async searchServer(
+    @Payload() payload: { queryParams: string },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.search(payload, user);
   }
 }

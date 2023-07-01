@@ -218,7 +218,6 @@ export class UserService {
   }
 
   async findOneBy(params: UserType): Promise<UserType | null> {
-    console.log(params);
     try {
       return await this.userModel.findOne(params).exec();
     } catch (error) {
@@ -249,7 +248,6 @@ export class UserService {
    */
   async usernameAlreadyExist(username: string): Promise<boolean> {
     const user = await this.findOneBy({ username });
-    console.log(user);
     return user !== null;
   }
 
@@ -400,7 +398,6 @@ export class UserService {
         { $pull: { blockedUsers: userId } },
         { new: true }
       );
-      console.log(userData);
       return true;
     } catch (error) {
       throw new RpcException(
