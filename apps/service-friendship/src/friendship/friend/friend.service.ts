@@ -8,13 +8,16 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 
 @Injectable()
 export class FriendService {
@@ -37,11 +40,12 @@ export class FriendService {
 
     try {
       const newFriend = new this.friendModel({
-        user1: user.id,
+        user1: payload.user1,
         user2: payload.user2,
       });
       return await newFriend.save();
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error creating friend")
       );
@@ -77,10 +81,7 @@ export class FriendService {
     }
   }
 
-  public async findAllFriends(
-    payload: { params: FriendParamsType },
-    user: UserContextType
-  ): Promise<FriendType[]> {
+  public async findAllFriends(user: UserContextType): Promise<FriendType[]> {
     try {
       const friends = await this.friendModel
         .find({
@@ -102,10 +103,25 @@ export class FriendService {
       const friend = await this.friendModel
         .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
         .exec();
-
       return friend as FriendType;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
+  public async findFriendWithUser(
+    payload: { id: IdType },
+    user: UserContextType
+  ): Promise<FriendType> {
+    try {
+      const friend = await this.friendModel
+        .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
+        .exec();
+      return { friend, user } as FriendType;
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
 }
+
+// 64995774ed26b6822ff79246, 649958f4ed26b6822ff7924a, 6499a741ed26b6822ff79440, 649a082d2e04423eb6b0b0f8
+

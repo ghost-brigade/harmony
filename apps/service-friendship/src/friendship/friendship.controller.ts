@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, UseInterceptors } from "@nestjs/common";
 
 import { FriendRequestService } from "./friendRequest/friendRequest.service";
 import { MessagePattern, Payload } from "@nestjs/microservices";
@@ -14,6 +14,10 @@ import {
 } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
 import { FriendService } from "./friend/friend.service";
+import { FindFriend } from "./interceptor/findFriend.interceptor";
+import { FindAllFriends } from "./interceptor/findAllFriends.interceptor";
+import { FindAllFriendRequest } from "./interceptor/findAllFriendRequest.interceptor";
+import { FindFriendRequest } from "./interceptor/findFriendRequest.interceptor";
 
 @Controller()
 export class FriendshipController {
@@ -23,20 +27,19 @@ export class FriendshipController {
   ) {}
 
   @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL)
-  async findAll(
-    @Payload() payload: { params: FriendRequestParamsType },
-    @UserContext() user: UserContextType
-  ) {
-    return (await this.friendRequestService.findAll(payload, user)) ?? [];
+  @UseInterceptors(FindAllFriendRequest)
+  async findAll(@UserContext() user: UserContextType) {
+    return (await this.friendRequestService.findAll(user)) ?? [];
   }
 
   @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.FIND_BY_ID)
+  @UseInterceptors(FindFriendRequest)
   async findOneRequestFriend(
     @Payload() payload: { id: IdType },
     @UserContext() user: UserContextType
   ) {
-    return await this.friendRequestService.findOneRequestFriend(
-      payload.id,
+    return await this.friendRequestService.findOneRequestFriendWithUser(
+      payload,
       user
     );
   }
@@ -82,19 +85,18 @@ export class FriendshipController {
   }
 
   @MessagePattern(FRIEND_MESSAGE_PATTERN.FIND_ALL)
-  async findAllFriends(
-    @Payload() payload: { params: FriendParamsType },
-    @UserContext() user: UserContextType
-  ) {
-    return (await this.friendService.findAllFriends(payload, user)) ?? [];
+  @UseInterceptors(FindAllFriends)
+  async findAllFriends(@UserContext() user: UserContextType) {
+    return (await this.friendService.findAllFriends(user)) ?? [];
   }
 
   @MessagePattern(FRIEND_MESSAGE_PATTERN.FIND_BY_ID)
+  @UseInterceptors(FindFriend)
   async findFriend(
     @Payload() payload: { id: IdType },
     @UserContext() user: UserContextType
   ) {
-    return (await this.friendService.findFriend(payload, user)) ?? [];
+    return (await this.friendService.findFriendWithUser(payload, user)) ?? [];
   }
 
   @MessagePattern(FRIEND_MESSAGE_PATTERN.DELETE)

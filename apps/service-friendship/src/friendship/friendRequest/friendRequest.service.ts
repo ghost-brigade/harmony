@@ -90,10 +90,7 @@ export class FriendRequestService {
     }
   }
 
-  public async findAll(
-    payload: { params: FriendRequestParamsType },
-    user: UserContextType
-  ): Promise<FriendRequestType[]> {
+  public async findAll(user: UserContextType): Promise<FriendRequestType[]> {
     try {
       const friendrequests = await this.friendrequestModel
         .find({
@@ -131,6 +128,37 @@ export class FriendRequestService {
       }
 
       return friendrequest;
+    } catch (error) {
+      throw new RpcException(
+        new BadRequestException("Error finding friendrequest.")
+      );
+    }
+  }
+
+  async findOneRequestFriendWithUser(
+    payload: { id: IdType },
+    user: UserContextType
+  ): Promise<FriendRequestType> {
+    console.log("__________________________");
+    console.log("findOneRequestFriend");
+    console.log("__________________________");
+
+    try {
+      const friendrequest = await this.friendrequestModel.findOne({
+        $or: [
+          { sender: payload.id },
+          { receiver: payload.id },
+          { _id: payload.id },
+        ],
+      });
+
+      if (!friendrequest) {
+        throw new RpcException(
+          new NotFoundException("FriendRequest not found.")
+        );
+      }
+
+      return { friendrequest, user } as FriendRequestType;
     } catch (error) {
       throw new RpcException(
         new BadRequestException("Error finding friendrequest.")
