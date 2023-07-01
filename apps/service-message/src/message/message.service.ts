@@ -1,3 +1,9 @@
+import { ServiceRequest } from "@harmony/nest-microservice";
+import {
+  NOTIFICATION_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 import {
   FormatZodResponse,
   MessageParamsType,
@@ -12,17 +18,23 @@ import {
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class MessageService {
-  constructor(@InjectModel("Message") private readonly messageModel) {}
+  constructor(
+    @InjectModel("Message") private readonly messageModel,
+    private readonly serviceRequest: ServiceRequest,
+    @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
+    private readonly clientNotification: ClientProxy
+  ) {}
 
   async newMessage(
     payload: { message: MessageCreateType },
@@ -36,9 +48,21 @@ export class MessageService {
     }
 
     try {
-      const newMessage = new this.messageModel(payload.message);
-      return await newMessage.save();
+      const message = await this.messageModel(payload.message);
+      await message.save();
+
+      await this.serviceRequest.send({
+        client: this.clientNotification,
+        pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE,
+        data: {
+          message,
+        },
+        promise: true
+      });
+
+      return message;
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error creating message")
       );

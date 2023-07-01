@@ -9,8 +9,11 @@ export class MessageController {
   constructor(private readonly messageGateway: MessageGateway) {}
 
   @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE)
-  async newMessage(@Payload() payload: { message: MessageType }) {
-    this.messageGateway.onNewMessage({
+  async newMessage(
+    @Payload() payload: { message: MessageType }
+  ): Promise<boolean> {
+    console.log("newMessage", payload);
+    return this.messageGateway.onNewMessage({
       channelId: payload.message.channel,
       message: payload.message,
     });

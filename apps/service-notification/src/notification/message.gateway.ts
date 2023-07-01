@@ -88,9 +88,14 @@ export class MessageGateway
     channelId: IdType;
     message: MessageType;
   }) {
-    this.server
-      .to(this.getRoomName(channelId))
-      .emit(MessageNotification.NEW_MESSAGE, message);
+    try {
+      this.server
+        .to(this.getRoomName(channelId))
+        .emit(MessageNotification.NEW_MESSAGE, message);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   @SubscribeMessage(MessageNotification.UPDATE_MESSAGE)
@@ -102,6 +107,7 @@ export class MessageGateway
     message: MessageType;
   }) {
     this.server
+      .of("/message")
       .to(this.getRoomName(channelId))
       .emit(MessageNotification.UPDATE_MESSAGE, message);
   }
@@ -115,6 +121,7 @@ export class MessageGateway
     messageId: IdType;
   }) {
     this.server
+      .of("/message")
       .to(this.getRoomName(channelId))
       .emit(MessageNotification.DELETE_MESSAGE, messageId);
   }

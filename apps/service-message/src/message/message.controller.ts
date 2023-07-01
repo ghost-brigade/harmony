@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from "@nestjs/common";
+import { Controller } from "@nestjs/common";
 import { UserContext } from "@harmony/nest-microservice";
 import { MessageService } from "./message.service";
 import { MessagePattern, Payload } from "@nestjs/microservices";
@@ -7,9 +7,7 @@ import {
   IdType,
   UserContextType,
   MessageCreateType,
-  MessageUpdateType,
   UserParamsType,
-  MessageType,
   MessageUpdateDto,
 } from "@harmony/zod";
 

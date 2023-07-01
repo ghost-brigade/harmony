@@ -7,10 +7,14 @@ import { ClientsModule } from "@nestjs/microservices";
 import { MessageSchema } from "@harmony/nest-schemas";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config";
+import { Services, getService } from "@harmony/service-config";
 
 @Module({
   imports: [
     NestMicroserviceModule,
+    ClientsModule.register([
+      getService(Services.NOTIFICATION),
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
