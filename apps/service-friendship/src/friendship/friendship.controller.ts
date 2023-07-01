@@ -32,6 +32,18 @@ export class FriendshipController {
     return (await this.friendRequestService.findAll(user)) ?? [];
   }
 
+  @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL_SENT)
+  @UseInterceptors(FindAllFriendRequest)
+  async findAllSent(@UserContext() user: UserContextType) {
+    return (await this.friendRequestService.findAllSent(user)) ?? [];
+  }
+
+  @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL_RECEIVED)
+  @UseInterceptors(FindAllFriendRequest)
+  async findAllReceived(@UserContext() user: UserContextType) {
+    return (await this.friendRequestService.findAllReceived(user)) ?? [];
+  }
+
   @MessagePattern(FRIENDREQUEST_MESSAGE_PATTERN.FIND_BY_ID)
   @UseInterceptors(FindFriendRequest)
   async findOneRequestFriend(

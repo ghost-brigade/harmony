@@ -103,6 +103,38 @@ export class FriendRequestService {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
+  public async findAllSent(
+    user: UserContextType
+  ): Promise<FriendRequestType[]> {
+    try {
+      const friendrequests = await this.friendrequestModel
+        .find({
+          $or: [{ sender: user.id }],
+        })
+        .exec();
+      console.log("___________friendrequest_______________");
+      console.log(friendrequests);
+      console.log("___________friendrequest_______________");
+      return friendrequests as FriendRequestType[];
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
+  public async findAllReceived(
+    user: UserContextType
+  ): Promise<FriendRequestType[]> {
+    try {
+      const friendrequests = await this.friendrequestModel
+        .find({
+          $or: [{ receiver: user.id }],
+        })
+        .exec();
+
+      return friendrequests as FriendRequestType[];
+    } catch (error) {
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
 
   async findOneRequestFriend(
     friendrequestId: IdType,
