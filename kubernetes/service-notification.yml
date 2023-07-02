@@ -30,7 +30,10 @@ spec:
                   name: api-config
                   key: NODE_ENV
             - name: PORT
-              value: "3001"
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: NOTIFICATION_PORT
           resources:
             requests:
               cpu: 100m
@@ -50,7 +53,9 @@ spec:
     kind: Deployment
     name: service-notification
   minReplicas: 1
-  maxReplicas: 5
+
+  # TODO
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:

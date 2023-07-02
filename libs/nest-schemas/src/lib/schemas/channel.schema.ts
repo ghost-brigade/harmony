@@ -33,8 +33,8 @@ export class Channel {
   @Prop({ type: Number, required: true })
   order: number;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: "Message" }] })
-  messages: Message[];
+  // @Prop({ type: [{ type: Types.ObjectId, ref: "Message" }] })
+  // messages: Message[];
 }
 
 export const ChannelSchema = SchemaFactory.createForClass(Channel);

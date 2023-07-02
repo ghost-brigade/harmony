@@ -1,8 +1,11 @@
 export const PostEndpoint = {
   Login: "/login",
   Register: "/user",
+  CreateServer: "/server",
+  JoinServer: "/server/join/:serverId",
+  AddFriend: "/friend-request/send/:username",
 } as const;
-import { LoginType, UserCreateType } from "@harmony/zod";
+import { LoginType, ServerCreateType, UserCreateType } from "@harmony/zod";
 
 export type PostEndpointValue =
   (typeof PostEndpoint)[keyof typeof PostEndpoint];
@@ -17,6 +20,24 @@ export type PostEndpointMap = {
   "/user": {
     response: object;
     body: UserCreateType;
+  };
+  "/server": {
+    response: object;
+    body: ServerCreateType;
+  };
+  "/server/join/:serverId": {
+    response: object;
+    params: {
+      serverId: string;
+    };
+    body: undefined;
+  };
+  "/friend-request/send/:username": {
+    response: object;
+    params: {
+      username: string;
+    };
+    body: undefined;
   };
 };
 

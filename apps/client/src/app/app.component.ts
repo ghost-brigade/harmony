@@ -14,7 +14,6 @@ import { SplashScreen } from "@capacitor/splash-screen";
 import { BottomNavComponent } from "./shared/components/application/bottom-nav/bottom-nav.component";
 import { ROUTE_TRANSITIONS } from "./route-transitions.animation";
 import { AuthService } from "./core/services/auth.service";
-
 @Component({
   selector: "harmony-root",
   templateUrl: "./app.component.html",

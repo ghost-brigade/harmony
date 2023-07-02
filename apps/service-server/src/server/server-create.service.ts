@@ -33,12 +33,13 @@ export class ServerCreateService {
   ) {}
 
   private async createServer(
-    server: { name?: string },
+    server: { name?: string; private?: boolean },
     user: UserContextType
   ): Promise<ServerType> {
     try {
       const newServer = await this.serverModel({
         name: server.name,
+        private: server.private,
         owner: user.id,
       });
 

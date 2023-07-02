@@ -58,4 +58,12 @@ export default [
       ).then((m) => m.SettingsAppearanceComponent),
     data: { animation: "SettingsSubpage" },
   },
+  {
+    path: "new/server",
+    loadComponent: () =>
+      import("./new/new-server/new-server.component").then(
+        (m) => m.NewServerComponent
+      ),
+    data: { animation: "NewSubpage" },
+  },
 ] as Route[];

@@ -18,6 +18,7 @@ export const ServerSchema = z.object({
 
 export const ServerCreateSchema = ServerSchema.pick({
   name: true,
+  private: true,
 });
 
 export const ServerUpdateSchema = ServerSchema.pick({

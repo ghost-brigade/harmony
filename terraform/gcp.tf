@@ -22,8 +22,8 @@ resource "google_compute_global_address" "gateway_ip" {
   name = "${var.app_name}-gateway-ip"
 }
 
-resource "google_compute_global_address" "gateway_ws_ip" {
-  name = "${var.app_name}-gateway-ws-ip"
+resource "google_compute_global_address" "notification_ip" {
+  name = "${var.app_name}-notification-ip"
 }
 
 module "google_compute_network" {

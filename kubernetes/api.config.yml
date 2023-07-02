@@ -5,3 +5,4 @@ metadata:
 data:
   NODE_ENV: production
   PORT: "3000"
+  NOTIFICATION_PORT: "3001"
