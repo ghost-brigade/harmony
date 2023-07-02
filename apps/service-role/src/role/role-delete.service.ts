@@ -72,4 +72,18 @@ export class RoleDeleteService {
       );
     }
   }
+
+  async deleteAllRoles(payload: { serverId: string }): Promise<boolean> {
+    try {
+      await this.roleModel.deleteMany({
+        server: payload.serverId,
+      });
+
+      return true;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error deleting role")
+      );
+    }
+  }
 }

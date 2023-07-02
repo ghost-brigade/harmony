@@ -55,15 +55,18 @@ export class ChannelController {
   @MessagePattern(CHANNEL_MESSAGE_PATTERN.DELETE)
   async delete(
     @Payload() payload: { id: IdType },
-    @UserContext() user: UserContextType
+    @UserContext() user: UserContextType,
+    authorization: boolean = true
   ) {
-    return this.channelService.delete(payload, user);
+    return this.channelService.delete(payload, user, authorization);
   }
 
+  @MessagePattern(CHANNEL_MESSAGE_PATTERN.DELETE_BY_SERVER_ID)
   async deleteByServerId(
     @Payload() payload: { serverId: IdType },
-    @UserContext() user: UserContextType
+    @UserContext() user: UserContextType,
+    authorization: boolean = true
   ) {
-    return this.channelService.deleteByServerId(payload, user);
+    return this.channelService.deleteByServerId(payload, user, authorization);
   }
 }

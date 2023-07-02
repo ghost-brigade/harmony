@@ -1,19 +1,10 @@
 import { SERVER_MESSAGE_PATTERN } from "@harmony/service-config";
-import {
-  Controller,
-  InternalServerErrorException,
-  NotFoundException,
-  UnprocessableEntityException,
-  UseInterceptors,
-} from "@nestjs/common";
+import { Controller, NotFoundException, UseInterceptors } from "@nestjs/common";
 import { ServerService } from "./server.service";
 import { MessagePattern, Payload, RpcException } from "@nestjs/microservices";
 import {
-  ServerMemberAddType,
   ServerCreateType,
-  ServerSchema,
   ServerMemberRemoveType,
-  ServerRemoveType,
   UserContextType,
   ServerUpdateType,
 } from "@harmony/zod";
@@ -22,16 +13,18 @@ import { IdType } from "@harmony/zod";
 import { UserContext } from "@harmony/nest-microservice";
 import { ServerCreateService } from "./server-create.service";
 import { GlobalServerInterceptor } from "./interceptors/global-server.interceptor";
+import { ServerDeleteService } from "./server-delete.service";
 
 @Controller("server")
 export class ServerController {
   constructor(
     private readonly serverService: ServerService,
-    private readonly serverCreateService: ServerCreateService
+    private readonly serverCreateService: ServerCreateService,
+    private readonly serverDeleteService: ServerDeleteService
   ) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
-  async createServer(
+  async create(
     @Payload()
     payload: {
       server: ServerCreateType;
@@ -103,11 +96,11 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.DELETE)
-  async deleteServer(removeServerData: ServerRemoveType) {
-    return await this.serverService.removeServer(
-      removeServerData.serverId,
-      removeServerData.user
-    );
+  async remove(
+    @Payload() payload: { serverId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverDeleteService.remove(payload, user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_MEMBERS_OF_SERVER)

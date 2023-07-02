@@ -308,7 +308,11 @@ export class ChannelService {
     }
   }
 
-  async delete(payload: { id: IdType }, user: UserContextType) {
+  async delete(
+    payload: { id: IdType },
+    user: UserContextType,
+    authorization: boolean
+  ) {
     if (payload.id === undefined) {
       throw new RpcException(
         new BadRequestException("You must provide a channel id.")
@@ -325,18 +329,24 @@ export class ChannelService {
       throw new RpcException(new BadRequestException("Channel not found."));
     }
 
-    const canManage = await this.channelAuthorizationService.canManageChannel({
-      serverId: channel.server,
-      user,
-    });
-
-    if (canManage === false) {
-      throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to create channels for this server."
-        )
+    if (authorization) {
+      const canManage = await this.channelAuthorizationService.canManageChannel(
+        {
+          serverId: channel.server,
+          user,
+        }
       );
+
+      if (canManage === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to create channels for this server."
+          )
+        );
+      }
     }
+
+    // TODO - delete all messages in the channel
 
     try {
       await this.channelModel.deleteOne({
@@ -359,7 +369,11 @@ export class ChannelService {
     }
   }
 
-  async deleteByServerId(payload: { serverId: IdType }, user: UserContextType) {
+  async deleteByServerId(
+    payload: { serverId: IdType },
+    user: UserContextType,
+    authorization: boolean
+  ) {
     if (payload.serverId === undefined) {
       throw new RpcException(
         new BadRequestException("You must provide a server id.")
@@ -374,18 +388,24 @@ export class ChannelService {
       throw new RpcException(new BadRequestException("No channels found."));
     }
 
-    const canManage = await this.channelAuthorizationService.canManageChannel({
-      serverId: payload.serverId,
-      user,
-    });
-
-    if (canManage === false) {
-      throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to delete channels for this server."
-        )
+    if (authorization) {
+      const canManage = await this.channelAuthorizationService.canManageChannel(
+        {
+          serverId: payload.serverId,
+          user,
+        }
       );
+
+      if (canManage === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to delete channels for this server."
+          )
+        );
+      }
     }
+
+    // TODO - delete all messages in the channel
 
     try {
       await this.channelModel.deleteMany({

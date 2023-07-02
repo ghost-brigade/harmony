@@ -23,6 +23,7 @@ import {
   ServerDto,
   ServerUpdateDto,
   UserPublicDto,
+  UserType,
 } from "@harmony/zod";
 import {
   ApiBody,
@@ -36,7 +37,7 @@ import {
   RequestWithUser,
   getUserFromRequest,
 } from "../core/utils/get-user-from-request";
-import { ServiceRequest } from "@harmony/nest-microservice";
+import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
 
 @Controller("server")
 export class ServerController {
@@ -141,13 +142,12 @@ export class ServerController {
   })
   @ApiResponse({ status: 404, description: "Server not found" })
   @Delete(":id")
-  async deleteServer(
-    @Param("id") serverId: string,
-    @Req() request: RequestWithUser
-  ) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.DELETE, {
-      serverId,
-      user: await getUserFromRequest(request),
+  async delete(@Param("id") serverId: IdType) {
+    console.log("delete server", serverId);
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.DELETE,
+      data: { serverId },
     });
   }
 

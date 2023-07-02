@@ -11,6 +11,7 @@ import { ServerCreateService } from "./server-create.service";
 import { ChannelService } from "../channel/channel.service";
 import { ChannelAuthorizationService } from "../channel/channel-authorization.service";
 import { ServerAuthorizationService } from "./server-authorization.service";
+import { ServerDeleteService } from "./server-delete.service";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ServerAuthorizationService } from "./server-authorization.service";
       getService(Services.AUTHORIZATION),
       getService(Services.ACCOUNT),
       getService(Services.AUTHORIZATION),
+      getService(Services.FILE),
     ]),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     MongooseModule.forFeature([
@@ -37,6 +39,7 @@ import { ServerAuthorizationService } from "./server-authorization.service";
     ChannelService,
     ChannelAuthorizationService,
     ServerAuthorizationService,
+    ServerDeleteService,
   ],
   exports: [],
 })
