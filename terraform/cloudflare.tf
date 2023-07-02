@@ -28,8 +28,8 @@ resource "cloudflare_record" "api" {
 
 resource "cloudflare_record" "ws" {
   zone_id = var.cloudflare_zone_id
-  name    = "ws.api"
+  name    = "ws"
   type    = "A"
-  value   = google_compute_global_address.gateway_ws_ip.address
+  value   = google_compute_global_address.notification_ip.address
   proxied = true
 }
