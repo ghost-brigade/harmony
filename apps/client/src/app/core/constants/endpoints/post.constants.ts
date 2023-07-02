@@ -1,6 +1,7 @@
 export const PostEndpoint = {
   Login: "/login",
   Register: "/user",
+  CreateServer: "/server",
 } as const;
 import { LoginType, UserCreateType } from "@harmony/zod";
 
@@ -17,6 +18,12 @@ export type PostEndpointMap = {
   "/user": {
     response: object;
     body: UserCreateType;
+  };
+  "/server": {
+    response: object;
+    body: {
+      name: string;
+    };
   };
 };
 

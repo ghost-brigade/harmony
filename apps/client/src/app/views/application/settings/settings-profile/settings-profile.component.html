@@ -16,7 +16,9 @@
       </h5>
       <div
         class="flex w-full flex-col items-center gap-4 font-normal text-gray-700 dark:text-gray-400">
-        <harmony-avatar size="h-16 w-16" />
+        <harmony-avatar
+          [image]="profile.avatar || ''"
+          size="h-16 w-16" />
         <button
           (click)="selectAvatar()"
           class="c-button flex w-min flex-col justify-center gap-2 whitespace-nowrap transition-all duration-300">
@@ -64,4 +66,4 @@
   </div>
 </div>
 
-<harmony-update-password />
+<harmony-update-password [profile]="profile" />

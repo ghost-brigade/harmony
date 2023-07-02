@@ -19,7 +19,7 @@
       <textarea
         #messageBox
         type="text"
-        (keyup.enter)="sendMessage()"
+        (keyup.enter)="enterPressed()"
         (focus)="setInputFocused(true)"
         (blur)="setInputFocused(false)"
         placeholder="Your message..."

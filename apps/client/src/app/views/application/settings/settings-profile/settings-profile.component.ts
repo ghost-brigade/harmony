@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SettingsNavbarComponent } from "apps/client/src/app/shared/components/application/settings/settings-navbar/settings-navbar.component";
 import { LoaderService } from "apps/client/src/app/core/components/loader/loader.service";
@@ -11,9 +11,12 @@ import { FilePicker } from "@capawesome/capacitor-file-picker";
 import { FormsModule } from "@angular/forms";
 import { UpdatePasswordComponent } from "./update-password/update-password.component";
 import { UpdatePasswordService } from "./update-password/update-password.service";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpEventType } from "@angular/common/http";
 import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.constants";
 import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
+import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
+import { API_BASE_URL } from "apps/client/src/app/core/constants/api.constants";
+import { AuthService } from "apps/client/src/app/core/services/auth.service";
 
 @Component({
   selector: "harmony-settings-profile",
@@ -28,9 +31,11 @@ import { AlertService } from "apps/client/src/app/core/components/alert/alert.se
   templateUrl: "./settings-profile.component.html",
   styleUrls: ["./settings-profile.component.css"],
 })
-export class SettingsProfileComponent implements OnInit {
+export class SettingsProfileComponent implements OnInit, OnDestroy {
   loaderService = inject(LoaderService);
+  authService = inject(AuthService);
   requestService = inject(RequestService);
+  toastService = inject(ToastService);
   alertService = inject(AlertService);
   http = inject(HttpClient);
   updatePasswordService = inject(UpdatePasswordService);
@@ -59,6 +64,11 @@ export class SettingsProfileComponent implements OnInit {
       });
   }
 
+  ngOnDestroy() {
+    this.loaderService.hide();
+    this.alertService.dismiss();
+  }
+
   async selectAvatar() {
     try {
       const file = (
@@ -66,6 +76,34 @@ export class SettingsProfileComponent implements OnInit {
           multiple: false,
         })
       ).files[0];
+
+      const formData = new FormData();
+      formData.append("file", file.blob as Blob);
+
+      this.http
+        .post(API_BASE_URL + "/user/avatar", formData, {
+          headers: {
+            Authorization: `Bearer ${this.authService.$token()}`,
+          },
+          reportProgress: true,
+          observe: "events",
+        })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress) {
+              const progress = Math.round(
+                (event.loaded / (event?.total || 1)) * 100
+              );
+              console.log(progress);
+            }
+          },
+          error: (err) => {
+            this.alertService.show({
+              message: err.error.message,
+              type: "error",
+            });
+          },
+        });
 
       console.log(file);
     } catch {}
@@ -83,11 +121,14 @@ export class SettingsProfileComponent implements OnInit {
           email: this.profile?.email,
           username: this.profile?.username,
         },
+        params: {
+          id: this.profile?.id as string,
+        },
       })
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: () => {
-          this.alertService.show({
+          this.toastService.show({
             message: "PROFILE_UPDATE_SUCCESS",
             type: "success",
           });

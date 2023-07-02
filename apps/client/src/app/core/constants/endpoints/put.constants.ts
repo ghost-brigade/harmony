@@ -1,15 +1,16 @@
 import { UserUpdateType } from "@harmony/zod";
 
 export const PutEndpoint = {
-  UpdateUser: "/user",
+  UpdateUser: "/user/:id",
 } as const;
 
 export type PutEndpointValue = (typeof PutEndpoint)[keyof typeof PutEndpoint];
 
 export type PutEndpointMap = {
-  "/user": {
+  "/user/:id": {
     response: object;
     body: UserUpdateType;
+    params: { id: string };
   };
 };
 

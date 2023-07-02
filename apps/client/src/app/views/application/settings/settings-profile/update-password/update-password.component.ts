@@ -1,4 +1,11 @@
-import { Component, OnDestroy, computed, inject, signal } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnDestroy,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { UpdatePasswordService } from "./update-password.service";
 import { UPDATE_PASSWORD_ANIMATION } from "./update-password.animation";
@@ -8,6 +15,8 @@ import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.co
 import { finalize } from "rxjs";
 import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { UserType } from "@harmony/zod";
+import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
 
 @Component({
   selector: "harmony-update-password",
@@ -18,9 +27,11 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
   animations: UPDATE_PASSWORD_ANIMATION,
 })
 export class UpdatePasswordComponent implements OnDestroy {
+  @Input() profile: UserType | null = null;
   requestService = inject(RequestService);
   updatePasswordService = inject(UpdatePasswordService);
   alertService = inject(AlertService);
+  toastService = inject(ToastService);
   $open = computed(() => this.updatePasswordService.$open());
   $password = signal("");
   $confirmPassword = signal("");
@@ -53,11 +64,14 @@ export class UpdatePasswordComponent implements OnDestroy {
         body: {
           password: this.$password(),
         },
+        params: {
+          id: this.profile?.id as string,
+        },
       })
       .pipe(finalize(() => this.$loading.set(false)))
       .subscribe({
         next: () => {
-          this.alertService.show({
+          this.toastService.show({
             message: "PASSWORD_UPDATE_SUCCESS",
             type: "success",
           });
