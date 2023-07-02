@@ -12,9 +12,9 @@
       <div class="w-full">
         <label
           for="server-name"
-          class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-          >New Server</label
-        >
+          class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+          New Server
+        </label>
         <input
           type="text"
           name="server-name"
@@ -24,6 +24,28 @@
           (ngModelChange)="$serverName.set($event)"
           (keyup.enter)="createServer()"
           class="c-input" />
+      </div>
+      <div
+        class="mt-2 flex w-full flex-row"
+        *ngIf="$serverName()">
+        <div class="flex h-5 items-center">
+          <input
+            id="private"
+            aria-describedby="private"
+            type="checkbox"
+            name="private"
+            [ngModel]="$isPublic()"
+            (ngModelChange)="$isPublic.set($event)"
+            class="c-checkbox"
+            required="" />
+        </div>
+        <div class="ml-3 text-sm">
+          <label
+            for="private"
+            class="text-gray-500 dark:text-gray-300"
+            >{{ "IS_PRIVATE_SERVER" | i18n }}</label
+          >
+        </div>
       </div>
       <button
         (click)="createServer()"
