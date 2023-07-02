@@ -311,7 +311,7 @@ export const I18N_CONSTANTS = {
     SERVER_CREATE_SUCCESS: "We've made a new server, yarrr!",
     SERVER_JOIN_SUCCESS: "Welcome aboard the server, matey!",
     IS_PRIVATE_SERVER: "This be a secret server",
-    "en-US": "Pirate's lingo",
+    "en-US": "English, yarrr!",
     "fr-FR": "French, oui oui!",
     "es-ES": "Spanish, sí sí!",
     "en-PI": "Pirate's lingo",
