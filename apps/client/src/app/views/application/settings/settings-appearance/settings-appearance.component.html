@@ -12,7 +12,7 @@
         Theme
       </h5>
       <p class="font-normal text-gray-700 dark:text-gray-400">
-        Pick a theme for the application.
+        {{ "SETTINGS_THEME_PICK" | i18n }}
       </p>
       <div>
         <select
@@ -20,9 +20,11 @@
           (change)="onThemeChange()"
           [(ngModel)]="selectedTheme"
           class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-          <option value="system">System preference</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
+          <option value="system">
+            {{ "SETTINGS_SYSTEM_PREFRENCE" | i18n }}
+          </option>
+          <option value="light">{{ "SETTINGS_THEME_LIGHT" | i18n }}</option>
+          <option value="dark">{{ "SETTINGS_THEME_DARK" | i18n }}</option>
         </select>
       </div>
     </div>
@@ -31,18 +33,18 @@
       class="flex w-full min-w-full flex-col gap-2 rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800">
       <h5
         class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        Language
+        {{ "SETTINGS_LANGUAGE" | i18n }}
       </h5>
       <p class="font-normal text-gray-700 dark:text-gray-400">
-        Select the interface language.
+        {{ "SETTINGS_LANGUAGE_PICK" | i18n }}
       </p>
       <div>
         <select
           id="theme"
           class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-          <option selected>English</option>
-          <option value="US">French</option>
-          <option value="CA">Spanish</option>
+          <option selected>{{ "SETTINGS_ENGLISH" | i18n }}</option>
+          <option value="US">{{ "SETTINGS_FRENCH" | i18n }}</option>
+          <option value="CA">{{ "SETTINGS_SPANISH" | i18n }}</option>
         </select>
       </div>
     </div>

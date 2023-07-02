@@ -17,11 +17,12 @@ import { AlertService } from "apps/client/src/app/core/components/alert/alert.se
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { UserType } from "@harmony/zod";
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
+import { I18nPipe } from "../../../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-update-password",
   standalone: true,
-  imports: [CommonModule, FormsModule, NgAutoAnimateDirective],
+  imports: [CommonModule, FormsModule, NgAutoAnimateDirective, I18nPipe],
   templateUrl: "./update-password.component.html",
   styleUrls: ["./update-password.component.css"],
   animations: UPDATE_PASSWORD_ANIMATION,

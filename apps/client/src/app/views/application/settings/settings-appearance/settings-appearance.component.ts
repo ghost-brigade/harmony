@@ -3,11 +3,12 @@ import { CommonModule } from "@angular/common";
 import { SettingsNavbarComponent } from "apps/client/src/app/shared/components/application/settings/settings-navbar/settings-navbar.component";
 import { PreferenceService } from "apps/client/src/app/shared/services/preference.service";
 import { FormsModule } from "@angular/forms";
+import { I18nPipe } from "../../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-settings-appearance",
   standalone: true,
-  imports: [CommonModule, SettingsNavbarComponent, FormsModule],
+  imports: [CommonModule, SettingsNavbarComponent, FormsModule, I18nPipe],
   templateUrl: "./settings-appearance.component.html",
   styleUrls: ["./settings-appearance.component.css"],
 })
