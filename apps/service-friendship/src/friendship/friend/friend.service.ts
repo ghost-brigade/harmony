@@ -122,6 +122,3 @@ export class FriendService {
     }
   }
 }
-
-// 64995774ed26b6822ff79246, 649958f4ed26b6822ff7924a, 6499a741ed26b6822ff79440, 649a082d2e04423eb6b0b0f8
-

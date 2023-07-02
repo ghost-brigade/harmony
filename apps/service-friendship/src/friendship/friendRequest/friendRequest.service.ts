@@ -55,8 +55,8 @@ export class FriendRequestService {
       );
     }
     const friendExists = await this.friendService.findFriend(
-      { id: user.id },
-      receiver
+      { id: receiver },
+      user
     );
     if (friendExists) {
       throw new RpcException(
