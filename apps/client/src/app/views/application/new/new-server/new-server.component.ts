@@ -11,6 +11,7 @@ import { NEW_SERVER_ANIMATION } from "./new-server.animation";
 import { PostEndpoint } from "apps/client/src/app/core/constants/endpoints/post.constants";
 import { finalize } from "rxjs";
 import { Router } from "@angular/router";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-new-server",
@@ -20,6 +21,7 @@ import { Router } from "@angular/router";
     SettingsNavbarComponent,
     NgAutoAnimateDirective,
     FormsModule,
+    I18nPipe,
   ],
   templateUrl: "./new-server.component.html",
   styleUrls: ["./new-server.component.css"],
@@ -32,6 +34,7 @@ export class NewServerComponent implements OnDestroy {
   alertService = inject(AlertService);
   toastService = inject(ToastService);
   router = inject(Router);
+  $isPrivate = signal(false);
   $open = computed(() => this.newServerService.$open());
   $loading = signal(false);
 
@@ -51,6 +54,7 @@ export class NewServerComponent implements OnDestroy {
         endpoint: PostEndpoint.CreateServer,
         body: {
           name: this.$serverName(),
+          private: this.$isPrivate(),
         },
       })
       .pipe(finalize(() => this.$loading.set(false)))

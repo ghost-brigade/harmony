@@ -1,4 +1,5 @@
-<div class="flex w-full justify-center p-4">
+<div
+  class="mb-[calc(env(safe-area-inset-bottom)+80px)] flex w-full justify-center p-4">
   <div class="flex w-full max-w-md flex-col gap-4 px-2 py-4">
     <div
       class="flex w-full gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
@@ -47,8 +48,10 @@
         Friends
 
         <div
+          @badge
+          *ngIf="$friendRequests().length > 0"
           class="absolute -right-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-gray-900">
-          20
+          {{ $friendRequests().length }}
         </div>
       </button>
     </div>
@@ -57,7 +60,7 @@
       auto-animate>
       <div
         *ngIf="$selectedTab() === 'servers'"
-        class="pb-[calc(env(safe-area-inset-bottom) + 80px)] flex flex-col gap-2"
+        class="flex flex-col gap-2"
         auto-animate>
         <div
           class="flex flex-col"
@@ -101,7 +104,7 @@
       <div
         *ngIf="$selectedTab() === 'friends'"
         auto-animate>
-        Friends
+        <h2 class="text-lg font-semibold">Pending friend requests</h2>
       </div>
     </div>
   </div>

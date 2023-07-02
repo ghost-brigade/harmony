@@ -58,5 +58,6 @@ export const I18N_CONSTANTS = {
     PASSWORD_UPDATE_SUCCESS: "Password updated successfully",
     SERVER_CREATE_SUCCESS: "Server created successfully",
     SERVER_JOIN_SUCCESS: "Server joined successfully",
+    IS_PRIVATE_SERVER: "This is a private server",
   },
 };

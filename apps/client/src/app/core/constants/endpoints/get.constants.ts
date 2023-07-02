@@ -5,6 +5,7 @@ export const GetEndpoint = {
   Servers: "/server",
   ReceivedFriendRequests: "/friend-request/received",
   Friends: "/friends",
+  SearchServers: "/server/search",
 } as const;
 
 export type GetEndpointValue = (typeof GetEndpoint)[keyof typeof GetEndpoint];
@@ -21,6 +22,12 @@ export type GetEndpointMap = {
   };
   "/friends": {
     response: UserType[];
+  };
+  "/server/search": {
+    response: ServerType[];
+    queryParams: {
+      name: string;
+    };
   };
 };
 

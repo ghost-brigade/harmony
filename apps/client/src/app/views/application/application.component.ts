@@ -11,7 +11,8 @@ import { RouterModule } from "@angular/router";
 import { RequestService } from "../../core/services/request.service";
 import { GetEndpoint } from "../../core/constants/endpoints/get.constants";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
-import { ServerType } from "@harmony/zod";
+import { FriendRequestType, ServerType, UserType } from "@harmony/zod";
+import { BADGE_ANIMATION } from "./badge.animation";
 
 @Component({
   selector: "harmony-application",
@@ -24,11 +25,14 @@ import { ServerType } from "@harmony/zod";
   ],
   templateUrl: "./application.component.html",
   styleUrls: ["./application.component.css"],
+  animations: BADGE_ANIMATION,
 })
 export class ApplicationComponent implements OnInit {
   requestService = inject(RequestService);
   $selectedTab = signal("servers");
   $loading = signal(false);
+  $friendRequests: WritableSignal<FriendRequestType[]> = signal([]);
+  $friends: WritableSignal<UserType[]> = signal([]);
   $servers: WritableSignal<ServerType[]> = signal([]);
   ngOnInit(): void {
     this.getServers();
@@ -58,6 +62,7 @@ export class ApplicationComponent implements OnInit {
       .subscribe({
         next: (friendRequests) => {
           console.log(friendRequests);
+          this.$friendRequests.set(friendRequests);
         },
       });
   }
@@ -70,6 +75,7 @@ export class ApplicationComponent implements OnInit {
       .subscribe({
         next: (friends) => {
           console.log(friends);
+          this.$friends.set(friends);
         },
       });
   }
