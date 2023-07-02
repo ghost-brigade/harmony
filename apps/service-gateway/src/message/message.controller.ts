@@ -128,7 +128,7 @@ export class MessageController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: MESSENGER_MESSAGE_PATTERN.FIND_BY_CHANNEL_ID,
-      data: { channelId, limit, page },
+      data: { channelId, params: { limit, page } },
     });
   }
 
