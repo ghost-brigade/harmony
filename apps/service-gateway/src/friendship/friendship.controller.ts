@@ -59,8 +59,8 @@ export class FriendshipController {
       pattern: FRIENDREQUEST_MESSAGE_PATTERN.FIND_ALL,
     });
   }
-  @ApiOperation({ summary: "Get all friendrequests" })
-  @ApiOkResponse({ status: 200, description: "Return all friend requests" })
+  @ApiOperation({ summary: "Get all friendrequests sent" })
+  @ApiOkResponse({ status: 200, description: "Return all friend request sent" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @Get("/friend-request/sent")

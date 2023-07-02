@@ -48,6 +48,18 @@ export class UserController {
     private readonly serviceRequest: ServiceRequest
   ) {}
 
+  @ApiOperation({ summary: "find all banned users" })
+  @ApiOkResponse({ description: "Users banned displayed", type: User })
+  @ApiNotFoundResponse({ description: "Ban user not found" })
+  @Get("/blocked")
+  public findAllBannedUsers() {
+    console.log("findAllBannedUser controller sdsfgateway");
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: ACCOUNT_MESSAGE_PATTERN.BANNED_USERS,
+    });
+  }
+
   @ApiOperation({ summary: "Check if username is available" })
   @ApiOkResponse({
     description: "Username status",
@@ -119,7 +131,7 @@ export class UserController {
   @ApiOperation({ summary: "Ban user" })
   @ApiOkResponse({ description: "Banned User added", type: User })
   @ApiNotFoundResponse({ description: "User not found" })
-  @Post("/ban/:id")
+  @Post("/block/:id")
   public banUser(@Param("id") id: string) {
     return this.serviceRequest.send({
       client: this.client,
@@ -128,10 +140,10 @@ export class UserController {
     });
   }
 
-  @ApiOperation({ summary: "Canel ban user" })
+  @ApiOperation({ summary: "Cancel ban user" })
   @ApiOkResponse({ description: "Banned User canceled", type: User })
   @ApiNotFoundResponse({ description: "User not found" })
-  @Post("/unban/:id")
+  @Post("/unblock/:id")
   public cancelBanUser(@Param("id") id: string) {
     return this.serviceRequest.send({
       client: this.client,

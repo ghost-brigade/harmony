@@ -229,6 +229,17 @@ export class UserService {
       .exec();
     return user;
   }
+  async findAllBannedUsers(userContext: UserContextType) {
+    console.log(userContext.id);
+    const users = await this.userModel
+      .findById(userContext.id, { blockedUsers: 1 })
+      .exec();
+    const blockedUsers = await this.userModel.find(
+      { _id: { $in: users.blockedUsers } },
+      { username: 1, email: 1, status: 1 }
+    );
+    return blockedUsers;
+  }
 
   async findAllFriendRequest(ids) {
     const array = ids.user2Array;
@@ -241,7 +252,7 @@ export class UserService {
     const user = await this.userModel
       .find(
         { _id: { $in: distinctUsers } },
-        { username: 1, email: 1, status: 1 }
+        { username: 1, email: 1, status: 1, blockedUsers: 1 }
       )
       .exec();
     return user;
