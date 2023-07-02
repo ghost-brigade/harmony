@@ -18,6 +18,7 @@ import { ToastService } from "apps/client/src/app/core/components/toast/toast.se
 import { API_BASE_URL } from "apps/client/src/app/core/constants/api.constants";
 import { AuthService } from "apps/client/src/app/core/services/auth.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { I18nPipe } from "../../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-settings-profile",
@@ -29,6 +30,7 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
     FormsModule,
     UpdatePasswordComponent,
     NgAutoAnimateDirective,
+    I18nPipe,
   ],
   templateUrl: "./settings-profile.component.html",
   styleUrls: ["./settings-profile.component.css"],
