@@ -56,5 +56,7 @@ export const I18N_CONSTANTS = {
     ERROR_USERNAME_ALREADY_EXISTS: "Username already exists",
     PROFILE_UPDATE_SUCCESS: "Profile updated successfully",
     PASSWORD_UPDATE_SUCCESS: "Password updated successfully",
+    SERVER_CREATE_SUCCESS: "Server created successfully",
+    SERVER_JOIN_SUCCESS: "Server joined successfully",
   },
 };

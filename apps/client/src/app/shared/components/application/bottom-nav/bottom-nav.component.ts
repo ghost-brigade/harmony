@@ -16,6 +16,7 @@ import { ImagePickerComponent } from "./image-picker/image-picker.component";
 import { HapticsService } from "../../../services/haptics.service";
 import { ChatService } from "apps/client/src/app/views/application/direct-messages/chat/chat.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { Capacitor } from "@capacitor/core";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -37,8 +38,14 @@ export class BottomNavComponent {
   bottomNavService = inject(BottomNavService);
   hapticsService = inject(HapticsService);
   chatService = inject(ChatService);
-  $isEmojiPickerOpen = signal(false);
-  $isAddFilesOpen = signal(false);
+  $isEmojiPickerOpen = computed(
+    () => this.$emojiOpen() && this.bottomNavService.$isTextChannel()
+  );
+  $isAddFilesOpen = computed(
+    () => this.$addFilesOpen() && this.bottomNavService.$isTextChannel()
+  );
+  $emojiOpen = signal(false);
+  $addFilesOpen = signal(false);
   $isInTextChannel = computed(() => this.bottomNavService.$isTextChannel());
   $isBottomNavOpen = computed(() => this.bottomNavService.$showBottomNav());
   $currentRoute = computed(() => this.bottomNavService.$currentRoute());
@@ -46,22 +53,28 @@ export class BottomNavComponent {
   $inputFocused = signal(false);
 
   toggleEmojiPicker() {
-    this.$isAddFilesOpen.set(false);
-    this.$isEmojiPickerOpen.set(!this.$isEmojiPickerOpen());
+    this.$addFilesOpen.set(false);
+    this.$emojiOpen.set(!this.$isEmojiPickerOpen());
   }
 
   async vibrate() {
     await this.hapticsService.haptics();
   }
 
+  isMobile() {
+    return (
+      Capacitor.getPlatform() === "ios" || Capacitor.getPlatform() === "android"
+    );
+  }
+
   toggleAddFiles() {
-    this.$isEmojiPickerOpen.set(false);
-    this.$isAddFilesOpen.set(!this.$isAddFilesOpen());
+    this.$emojiOpen.set(false);
+    this.$addFilesOpen.set(!this.$isAddFilesOpen());
   }
 
   addEmoji(emoji: string) {
     this.$message.set(this.$message() + emoji);
-    this.$isEmojiPickerOpen.set(false);
+    this.$emojiOpen.set(false);
     if (this.messageBox) {
       this.messageBox.nativeElement.focus();
     }
@@ -69,6 +82,12 @@ export class BottomNavComponent {
 
   setInputFocused(isFocused: boolean) {
     this.$inputFocused.set(isFocused);
+  }
+
+  enterPressed() {
+    if (!this.isMobile()) {
+      this.sendMessage();
+    }
   }
 
   async sendMessage() {

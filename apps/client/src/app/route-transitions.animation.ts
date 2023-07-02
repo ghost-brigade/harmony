@@ -15,10 +15,10 @@ export const ROUTE_TRANSITIONS = [
         query(
           ":enter",
           style({
-            position: "fixed",
+            position: "absolute",
             width: "100%",
             left: 0,
-            transform: "translateY(100vh)",
+            transform: "translateY(calc(100vh))",
           }),
           { optional: true }
         ),
@@ -76,7 +76,7 @@ export const ROUTE_TRANSITIONS = [
       ]),
     ]),
     transition(
-      "ChatPage => DirectMessagesPage, * => HomePage, NewPage => DirectMessagesPage, SearchPage => DirectMessagesPage, SearchPage => NewPage, SettingsSubpage => SettingsPage",
+      "ChatPage => DirectMessagesPage, * => HomePage, NewPage => DirectMessagesPage, SearchPage => DirectMessagesPage, SearchPage => NewPage, SettingsSubpage => SettingsPage, NewSubpage => NewPage",
       [
         style({ position: "relative" }),
         query(":enter, :leave", [
@@ -102,7 +102,7 @@ export const ROUTE_TRANSITIONS = [
     ),
 
     transition(
-      "HomePage => DirectMessagesPage, HomePage => NewPage, HomePage => SearchPage, DirectMessagesPage => NewPage, DirectMessagesPage => SearchPage, NewPage => SearchPage",
+      "HomePage => DirectMessagesPage, HomePage => NewPage, HomePage => SearchPage, DirectMessagesPage => NewPage, DirectMessagesPage => SearchPage, NewPage => SearchPage, SettingsPage => SettingsSubpage",
       [
         style({ position: "relative" }),
         query(":enter, :leave", [
@@ -113,37 +113,20 @@ export const ROUTE_TRANSITIONS = [
             width: "100%",
           }),
         ]),
-        query(":enter", [style({ right: "-100vw" })]),
+        query(":enter", [style({ transform: "translateX(100%)" })]),
         group([
           query(":leave", [animate("300ms ease-out", style({ opacity: 0 }))], {
             optional: true,
           }),
-          query(":enter", [animate("300ms ease-in", style({ right: 0 }))], {
-            optional: true,
-          }),
+          query(
+            ":enter",
+            [animate("300ms ease-in", style({ transform: "translateX(0)" }))],
+            {
+              optional: true,
+            }
+          ),
         ]),
       ]
     ),
-
-    transition("SettingsPage => SettingsSubpage", [
-      style({ position: "relative" }),
-      query(":enter, :leave", [
-        style({
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: "100%",
-        }),
-      ]),
-      query(":enter", [style({ right: "-100vw" })]),
-      group([
-        query(":leave", [animate("300ms ease-out", style({ opacity: 0 }))], {
-          optional: true,
-        }),
-        query(":enter", [animate("300ms ease-in", style({ right: 0 }))], {
-          optional: true,
-        }),
-      ]),
-    ]),
   ]),
 ];
