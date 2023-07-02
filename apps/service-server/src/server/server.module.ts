@@ -25,6 +25,7 @@ import { ServerDeleteService } from "./server-delete.service";
       getService(Services.ACCOUNT),
       getService(Services.AUTHORIZATION),
       getService(Services.FILE),
+      getService(Services.MESSAGE),
     ]),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     MongooseModule.forFeature([

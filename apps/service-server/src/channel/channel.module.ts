@@ -15,6 +15,7 @@ import { ChannelService } from "./channel.service";
     ClientsModule.register([
       getService(Services.ACCOUNT),
       getService(Services.AUTHORIZATION),
+      getService(Services.MESSAGE),
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
