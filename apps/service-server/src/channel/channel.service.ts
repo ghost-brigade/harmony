@@ -445,6 +445,16 @@ export class ChannelService {
     }
   }
 
+  async getAllByIds(payload: { ids: IdType[] }): Promise<ChannelType[]> {
+    const user = await this.channelModel
+      .find(
+        { _id: { $in: payload.ids } },
+        { id: 1, name: 1, type: 1, order: 1 }
+      )
+      .exec();
+    return user;
+  }
+
   private verifyOrder({ order }: { order: number }): void {
     if (order === undefined) {
       throw new RpcException(

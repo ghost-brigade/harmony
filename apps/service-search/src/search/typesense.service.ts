@@ -13,8 +13,8 @@ export class TypesenseService {
     this.client = new Client({
       nodes: [
         {
-          host: "typesense",
-          port: 8108,
+          host: process.env.TYPESENSE_HOST,
+          port: Number(process.env.TYPESENSE_PORT),
           protocol: "http",
         },
       ],

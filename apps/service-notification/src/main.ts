@@ -11,6 +11,8 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.listen(port);
+
+  console.log(`🚀 Application is running port ${port}`);
 }
 
 bootstrap();
