@@ -40,7 +40,7 @@ export class UserController {
   async findAllByIds(@Payload() payload: { ids: IdType[] }) {
     return await this.userService.findAllByIds(payload);
   }
-
+  
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
   async findOne(data: UserType) {
     try {
@@ -126,6 +126,12 @@ export class UserController {
     @UserContext() user: UserContextType
   ): Promise<Boolean> {
     return await this.userService.banUser(payload, user);
+  }
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.BANNED_USERS)
+  async findAllBannedUsers(@UserContext() user: UserContextType) {
+    console.log("findAllBannedUser controller service");
+    return await this.userService.findAllBannedUsers(user);
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.CANCEL_BAN_USER)

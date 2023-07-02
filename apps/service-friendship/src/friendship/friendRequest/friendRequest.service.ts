@@ -108,9 +108,7 @@ export class FriendRequestService {
   ): Promise<FriendRequestType[]> {
     try {
       const friendrequests = await this.friendrequestModel
-        .find({
-          $or: [{ sender: user.id }],
-        })
+        .find({ sender: user.id })
         .exec();
       console.log("___________friendrequest_______________");
       console.log(friendrequests);

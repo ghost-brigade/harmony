@@ -133,26 +133,21 @@
         "colId": "history",
         "containerId": "",
         "name": "http://localhost:3000/friendship/request",
-        "url": "localhost:3000/friendship/reject/64962d41c0e727d0ada0300e",
-        "method": "POST",
+        "url": "localhost:3000/user/blocked",
+        "method": "GET",
         "sortNum": 0,
         "created": "2023-06-21T17:20:31.159Z",
-        "modified": "2023-06-23T23:40:18.778Z",
-        "url": "localhost:3000/newFriend/",
-        "method": "POST",
-        "sortNum": 0,
-        "created": "2023-06-21T17:20:31.159Z",
-        "modified": "2023-06-28T22:52:33.984Z",
+        "modified": "2023-07-02T17:08:31.734Z",
         "headers": [],
         "params": [],
         "body": {
             "type": "json",
-            "raw": "{\n  \"sender\": \"64456ca89684a2566d8686ee\",\n  \"receiver\": \"646633f9e0d2720f7e75f603\"\n}",
+            "raw": "{\n  \"email\": \"julien@test.fr\",\n  \"password\": \"password\"\n}",
             "form": []
         },
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5MzMwOTRhYTY0MjkyN2JiNjA5NWVjIiwiaWF0IjoxNjg3NTU1MzA3LCJleHAiOjE2ODc2NDE3MDd9.fusk9_-6EIuJR8bHMhPZFP-wuMvkr-9L56ouajsXSqk"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg4MzA1NjIyLCJleHAiOjE2ODgzOTIwMjJ9.PZRegdwX8rQgEKIacEeE6b5n6Szq3iGfOsukPVp2ba8"
         },
         "tests": []
     },
@@ -318,11 +313,11 @@
         "colId": "history",
         "containerId": "",
         "name": "localhost:3000/message/649b202e73935057808f3b9f",
-        "url": "localhost:3000/message/649b202e73935057808f3b9f",
-        "method": "PUT",
+        "url": "localhost:3000/friend-request",
+        "method": "GET",
         "sortNum": 0,
         "created": "2023-06-28T16:26:55.607Z",
-        "modified": "2023-06-28T17:42:39.737Z",
+        "modified": "2023-07-02T14:18:45.652Z",
         "headers": [],
         "params": [],
         "body": {
@@ -332,7 +327,7 @@
         },
         "auth": {
             "type": "bearer",
-            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg3OTYyMzgyLCJleHAiOjE2ODgwNDg3ODJ9.R3WEhiz4ZxNycN9aVQ44pgB1urusMeIH21eu0v5C8gA"
+            "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGllbkB0ZXN0LmZyIiwic3ViIjoiNjQ5OWE4MGFjMTVlOGMxZDYxNzJjNTEyIiwiaWF0IjoxNjg4MzA1NjIyLCJleHAiOjE2ODgzOTIwMjJ9.PZRegdwX8rQgEKIacEeE6b5n6Szq3iGfOsukPVp2ba8"
         },
         "tests": []
     }
