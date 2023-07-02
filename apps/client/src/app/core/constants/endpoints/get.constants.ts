@@ -1,4 +1,4 @@
-import { FriendRequestType, ServerType, UserType } from "@harmony/zod";
+import { ServerType, UserType } from "@harmony/zod";
 
 export const GetEndpoint = {
   Profile: "/profile",
@@ -6,6 +6,7 @@ export const GetEndpoint = {
   ReceivedFriendRequests: "/friend-request/received",
   Friends: "/friends",
   SearchServers: "/server/search",
+  BlockedUsers: "/user/blocked",
 } as const;
 
 export type GetEndpointValue = (typeof GetEndpoint)[keyof typeof GetEndpoint];
@@ -18,7 +19,7 @@ export type GetEndpointMap = {
     response: ServerType[];
   };
   "/friend-request/received": {
-    response: FriendRequestType[];
+    response: UserType[];
   };
   "/friends": {
     response: UserType[];
@@ -28,6 +29,9 @@ export type GetEndpointMap = {
     queryParams: {
       name: string;
     };
+  };
+  "/user/blocked": {
+    response: UserType[];
   };
 };
 

@@ -11,8 +11,11 @@ import { RouterModule } from "@angular/router";
 import { RequestService } from "../../core/services/request.service";
 import { GetEndpoint } from "../../core/constants/endpoints/get.constants";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
-import { FriendRequestType, ServerType, UserType } from "@harmony/zod";
+import { ServerType, UserType } from "@harmony/zod";
 import { BADGE_ANIMATION } from "./badge.animation";
+import { AvatarComponent } from "../../shared/components/application/avatar/avatar.component";
+import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
+import { DeleteEndpoint } from "../../core/constants/endpoints/delete.constants";
 
 @Component({
   selector: "harmony-application",
@@ -22,6 +25,7 @@ import { BADGE_ANIMATION } from "./badge.animation";
     BottomNavComponent,
     RouterModule,
     NgAutoAnimateDirective,
+    AvatarComponent,
   ],
   templateUrl: "./application.component.html",
   styleUrls: ["./application.component.css"],
@@ -31,13 +35,15 @@ export class ApplicationComponent implements OnInit {
   requestService = inject(RequestService);
   $selectedTab = signal("servers");
   $loading = signal(false);
-  $friendRequests: WritableSignal<FriendRequestType[]> = signal([]);
+  $friendRequests: WritableSignal<UserType[]> = signal([]);
   $friends: WritableSignal<UserType[]> = signal([]);
+  $blockedUsers: WritableSignal<UserType[]> = signal([]);
   $servers: WritableSignal<ServerType[]> = signal([]);
   ngOnInit(): void {
     this.getServers();
     this.getFriendRequests();
     this.getFriends();
+    this.getBlockedUsers();
   }
 
   getServers() {
@@ -80,7 +86,102 @@ export class ApplicationComponent implements OnInit {
       });
   }
 
+  getBlockedUsers() {
+    this.requestService
+      .get({
+        endpoint: GetEndpoint.BlockedUsers,
+      })
+      .subscribe({
+        next: (blockedUsers) => {
+          console.log(blockedUsers);
+          this.$blockedUsers.set(blockedUsers);
+        },
+      });
+  }
+
   selectTab(tab: "servers" | "friends") {
     this.$selectedTab.set(tab);
+  }
+
+  acceptFriendRequest(friendId: string) {
+    this.requestService
+      .post({
+        endpoint: PostEndpoint.AcceptFriendRequest,
+        params: {
+          friendId,
+        },
+        body: undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.getFriendRequests();
+          this.getFriends();
+        },
+      });
+  }
+
+  declineFriendRequest(friendId: string) {
+    this.requestService
+      .post({
+        endpoint: PostEndpoint.DeclineFriendRequest,
+        params: {
+          friendId,
+        },
+        body: undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.getFriendRequests();
+        },
+      });
+  }
+
+  unfriendUser(id: string) {
+    this.requestService
+      .delete({
+        endpoint: DeleteEndpoint.DeleteFriend,
+        params: {
+          id,
+        },
+      })
+      .subscribe({
+        next: () => {
+          this.getFriends();
+        },
+      });
+  }
+
+  blockUser(id: string) {
+    this.requestService
+      .post({
+        endpoint: PostEndpoint.BlockUser,
+        params: {
+          id,
+        },
+        body: undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.getFriends();
+          this.getBlockedUsers();
+        },
+      });
+  }
+
+  unblockUser(id: string) {
+    this.requestService
+      .post({
+        endpoint: PostEndpoint.UnblockUser,
+        params: {
+          id,
+        },
+        body: undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.getBlockedUsers();
+          this.getFriends();
+        },
+      });
   }
 }

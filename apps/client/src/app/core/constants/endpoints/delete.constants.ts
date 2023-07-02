@@ -1,41 +1,13 @@
 export const DeleteEndpoint = {
-  Login: "/login",
-  Register: "/register",
-  ServerMembers: "/server/:id/members",
-  ServerEmoji: "/server/:id/emoji",
+  DeleteFriend: "/friend/delete/:id",
 } as const;
 
 export type DeleteEndpointValue =
   (typeof DeleteEndpoint)[keyof typeof DeleteEndpoint];
 
 export type DeleteEndpointMap = {
-  "/login": {
-    response: {
-      success: boolean;
-      token: string;
-    };
-  };
-  "/register": {
-    response: {
-      success: boolean;
-      token: string;
-    };
-  };
-  "/server/:id/emoji": {
-    response: {
-      success: boolean;
-      members: string[];
-      w: string;
-    };
-    params: {
-      emoji: string;
-    };
-  };
-  "/server/:id/members": {
-    response: {
-      success: boolean;
-      members: string[];
-    };
+  "/friend/delete/:id": {
+    response: object;
     params: {
       id: string;
     };

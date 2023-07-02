@@ -104,7 +104,157 @@
       <div
         *ngIf="$selectedTab() === 'friends'"
         auto-animate>
-        <h2 class="text-lg font-semibold">Pending friend requests</h2>
+        <div *ngIf="$friendRequests().length">
+          <h2 class="mb-2 text-lg font-semibold">Pending friend requests</h2>
+
+          <div
+            class="flex flex-col"
+            *ngFor="let fr of $friendRequests()">
+            <div
+              class="relative flex h-16 w-full items-center gap-2 rounded-lg bg-gray-100 px-4 shadow dark:bg-gray-700">
+              <harmony-avatar
+                [image]="fr.avatar"
+                [status]="fr.status!"
+                class="h-10 w-10" />
+
+              <span
+                class="ml-2 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold"
+                >{{ fr.username }}</span
+              >
+
+              <button
+                (click)="acceptFriendRequest(fr.id!)"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-green-200/50 hover:stroke-green-500">
+                <svg
+                  fill="none"
+                  stroke-width="3"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"></path>
+                </svg>
+              </button>
+              <button
+                (click)="declineFriendRequest(fr.id!)"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
+                <svg
+                  fill="none"
+                  stroke-width="3"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="$selectedTab() === 'friends'"
+        auto-animate>
+        <div *ngIf="$friends().length">
+          <h2 class="mb-2 text-lg font-semibold">Friends</h2>
+
+          <div
+            class="flex flex-col"
+            *ngFor="let friend of $friends()">
+            <div
+              class="relative flex h-16 w-full items-center gap-2 rounded-lg bg-gray-100 px-4 shadow dark:bg-gray-700">
+              <harmony-avatar
+                [image]="friend.avatar"
+                [status]="friend.status!"
+                class="h-10 w-10" />
+
+              <span
+                class="ml-2 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold"
+                >{{ friend.username }}</span
+              >
+
+              <button
+                (click)="unfriendUser(friend.id!)"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-blue-200/50 hover:stroke-blue-500">
+                <svg
+                  fill="none"
+                  stroke-width="3"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+              <button
+                (click)="blockUser(friend.id!)"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
+                <svg
+                  fill="none"
+                  stroke-width="3"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="$selectedTab() === 'friends'"
+        auto-animate>
+        <div *ngIf="$blockedUsers().length">
+          <h2 class="mb-2 text-lg font-semibold">Blocked Users</h2>
+
+          <div
+            class="flex flex-col"
+            *ngFor="let friend of $blockedUsers()">
+            <div
+              class="relative flex h-16 w-full items-center gap-2 rounded-lg bg-gray-100 px-4 shadow dark:bg-gray-700">
+              <harmony-avatar
+                [image]="friend.avatar"
+                [status]="friend.status!"
+                class="h-10 w-10" />
+
+              <span
+                class="ml-2 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold"
+                >{{ friend.username }}
+              </span>
+
+              <button
+                (click)="unblockUser(friend.id!)"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
+                <svg
+                  fill="none"
+                  stroke-width="3"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
