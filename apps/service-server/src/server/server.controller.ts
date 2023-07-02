@@ -14,13 +14,15 @@ import { UserContext } from "@harmony/nest-microservice";
 import { ServerCreateService } from "./server-create.service";
 import { GlobalServerInterceptor } from "./interceptors/global-server.interceptor";
 import { ServerDeleteService } from "./server-delete.service";
+import { ServerUpdateService } from "./server-update.service";
 
 @Controller("server")
 export class ServerController {
   constructor(
     private readonly serverService: ServerService,
     private readonly serverCreateService: ServerCreateService,
-    private readonly serverDeleteService: ServerDeleteService
+    private readonly serverDeleteService: ServerDeleteService,
+    private readonly serverUpdateService: ServerUpdateService
   ) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
@@ -56,15 +58,6 @@ export class ServerController {
         );
       }
 
-      // const result = ServerSchema.safeParse(server);
-
-      // if (result.success === false) {
-      //   console.log(result.error.issues);
-      //   throw new RpcException(
-      //     new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
-      //   );
-      // }
-
       return server;
     } catch (error) {
       throw new RpcException(error.message);
@@ -80,19 +73,15 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.UPDATE)
-  async updateServer(
+  async update(
     @Payload()
     payload: {
-      serverId: ServerCreateType;
+      serverId: IdType;
       server: ServerUpdateType;
     },
     @UserContext() user: UserContextType
   ) {
-    return await this.serverService.update(
-      payload.serverId,
-      payload.server,
-      user
-    );
+    return await this.serverUpdateService.update(payload, user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.DELETE)
@@ -138,8 +127,8 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.SEARCH)
-  async searchServer(
-    @Payload() payload: { queryParams: string },
+  async search(
+    @Payload() payload: { search: { name: string } },
     @UserContext() user: UserContextType
   ) {
     return await this.serverService.search(payload, user);
