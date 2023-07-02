@@ -40,11 +40,15 @@
       </p>
       <div>
         <select
+          [(ngModel)]="selectedLanguage"
+          (change)="onLanguageChange()"
           id="theme"
           class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-          <option selected>{{ "SETTINGS_ENGLISH" | i18n }}</option>
-          <option value="US">{{ "SETTINGS_FRENCH" | i18n }}</option>
-          <option value="CA">{{ "SETTINGS_SPANISH" | i18n }}</option>
+          <option
+            *ngFor="let lang of languages"
+            [value]="lang">
+            {{ lang | i18n }}
+          </option>
         </select>
       </div>
     </div>

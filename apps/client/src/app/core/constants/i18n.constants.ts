@@ -79,6 +79,9 @@ export const I18N_CONSTANTS = {
     SERVER_CREATE_SUCCESS: "Server created successfully",
     SERVER_JOIN_SUCCESS: "Server joined successfully",
     IS_PRIVATE_SERVER: "This is a private server",
+    "en-US": "English",
+    "fr-FR": "French",
+    "es-ES": "Spanish",
   },
   "fr-FR": {
     USERNAME: "Nom d'utilisateur",
@@ -93,7 +96,8 @@ export const I18N_CONSTANTS = {
     HOME_CONTACT: "Contact",
     HOME_HERO_SUBTITLE:
       "Harmony est le moyen le plus facile de communiquer par la voix, la vidéo et le texte, que vous fassiez partie d'un club scolaire, d'un groupe de jeu nocturne, d'une communauté artistique mondiale ou simplement d'un groupe d'amis qui veulent passer du temps ensemble.",
-    HOME_HERO_TITLE: "Une nouvelle façon de discuter avec vos communautés et amis.",
+    HOME_HERO_TITLE:
+      "Une nouvelle façon de discuter avec vos communautés et amis.",
     HOME_LOGIN: "Connexion",
     HOME_LOGOUT: "Déconnexion",
     HOME_PRIVACY_POLICY: "Politique de confidentialité",
@@ -152,6 +156,9 @@ export const I18N_CONSTANTS = {
     SERVER_CREATE_SUCCESS: "Serveur créé avec succès",
     SERVER_JOIN_SUCCESS: "Rejoindre le serveur avec succès",
     IS_PRIVATE_SERVER: "Ceci est un serveur privé",
+    "en-US": "Anglais",
+    "fr-FR": "Français",
+    "es-ES": "Espagnol",
   },
   "es-ES": {
     USERNAME: "Nombre de usuario",
@@ -225,5 +232,8 @@ export const I18N_CONSTANTS = {
     SERVER_CREATE_SUCCESS: "Servidor creado correctamente",
     SERVER_JOIN_SUCCESS: "Unido al servidor correctamente",
     IS_PRIVATE_SERVER: "Este es un servidor privado",
+    "en-US": "Inglés",
+    "fr-FR": "Francés",
+    "es-ES": "Español",
   },
 };
