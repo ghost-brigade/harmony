@@ -23,6 +23,10 @@ export class I18nService {
   }
 
   getTranslation(key: string) {
-    return (I18N_CONSTANTS as I18nConstants)[this.language()][key] || key;
+    return (
+      (I18N_CONSTANTS as I18nConstants)[this.language()][key] ||
+      (I18N_CONSTANTS as I18nConstants)["en-US"][key] ||
+      key
+    );
   }
 }
