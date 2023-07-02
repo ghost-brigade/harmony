@@ -2,6 +2,8 @@ export const PostEndpoint = {
   Login: "/login",
   Register: "/user",
   CreateServer: "/server",
+  JoinServer: "/server/join/:serverId",
+  AddFriend: "/friend-request/send/:username",
 } as const;
 import { LoginType, UserCreateType } from "@harmony/zod";
 
@@ -24,6 +26,20 @@ export type PostEndpointMap = {
     body: {
       name: string;
     };
+  };
+  "/server/join/:serverId": {
+    response: object;
+    params: {
+      serverId: string;
+    };
+    body: undefined;
+  };
+  "/friend-request/send/:username": {
+    response: object;
+    params: {
+      username: string;
+    };
+    body: undefined;
   };
 };
 

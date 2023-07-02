@@ -3,17 +3,16 @@ import { CommonModule } from "@angular/common";
 import { SettingsNavbarComponent } from "apps/client/src/app/shared/components/application/settings/settings-navbar/settings-navbar.component";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { RequestService } from "apps/client/src/app/core/services/request.service";
-import { NewServerService } from "./new-server.service";
+import { AddFriendService } from "./add-friend.service";
 import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
 import { FormsModule } from "@angular/forms";
-import { NEW_SERVER_ANIMATION } from "./new-server.animation";
+import { ADD_FRIEND_ANIMATION } from "./add-friend.animation";
 import { PostEndpoint } from "apps/client/src/app/core/constants/endpoints/post.constants";
 import { finalize } from "rxjs";
-import { Router } from "@angular/router";
 
 @Component({
-  selector: "harmony-new-server",
+  selector: "harmony-add-friend",
   standalone: true,
   imports: [
     CommonModule,
@@ -21,36 +20,36 @@ import { Router } from "@angular/router";
     NgAutoAnimateDirective,
     FormsModule,
   ],
-  templateUrl: "./new-server.component.html",
-  styleUrls: ["./new-server.component.css"],
-  animations: NEW_SERVER_ANIMATION,
+  templateUrl: "./add-friend.component.html",
+  styleUrls: ["./add-friend.component.css"],
+  animations: ADD_FRIEND_ANIMATION,
 })
-export class NewServerComponent implements OnDestroy {
-  $serverName = signal("");
+export class AddFriendComponent implements OnDestroy {
+  $username = signal("");
   requestService = inject(RequestService);
-  newServerService = inject(NewServerService);
+  addFriendService = inject(AddFriendService);
   alertService = inject(AlertService);
   toastService = inject(ToastService);
-  router = inject(Router);
-  $open = computed(() => this.newServerService.$open());
+  $open = computed(() => this.addFriendService.$open());
   $loading = signal(false);
 
   ngOnDestroy() {
-    this.newServerService.close();
+    this.addFriendService.close();
   }
 
   close() {
-    this.newServerService.close();
+    this.addFriendService.close();
   }
 
   createServer() {
-    if (this.$serverName().length === 0) return;
+    if (this.$username().length === 0) return;
     this.$loading.set(true);
     this.requestService
       .post({
-        endpoint: PostEndpoint.CreateServer,
-        body: {
-          name: this.$serverName(),
+        endpoint: PostEndpoint.AddFriend,
+        body: undefined,
+        params: {
+          username: this.$username(),
         },
       })
       .pipe(finalize(() => this.$loading.set(false)))
@@ -60,8 +59,7 @@ export class NewServerComponent implements OnDestroy {
             message: "SERVER_CREATE_SUCCESS",
             type: "success",
           });
-          this.router.navigate(["/app"]);
-          this.newServerService.close();
+          this.addFriendService.close();
         },
         error: (err) => {
           this.alertService.show({ message: err.message, type: "error" });

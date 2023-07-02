@@ -1,10 +1,10 @@
 <div
   @toast
-  class="fixed bottom-0 right-0 mb-[calc(env(safe-area-inset-bottom)+1.25rem)] px-5"
+  class="fixed right-0 top-0 z-[90] mt-[calc(env(safe-area-inset-top)+1.25rem)] px-5"
   *ngIf="$visible()">
   <div
     id="toast-default"
-    class="flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400"
+    class="flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow-lg dark:bg-gray-800 dark:text-gray-400"
     role="alert">
     <div
       *ngIf="$type() === 'info'"

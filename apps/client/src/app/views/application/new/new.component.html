@@ -37,6 +37,7 @@
     </div>
 
     <div
+      (click)="openAddFriend()"
       class="flex h-16 w-full cursor-pointer items-center gap-4 rounded-lg bg-gray-100 px-4 shadow transition-all duration-200 hover:scale-[1.02] hover:shadow-lg dark:bg-gray-700">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -75,6 +76,7 @@
         class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
     </div>
     <div
+      (click)="openJoinServer()"
       class="flex h-16 w-full cursor-pointer items-center gap-4 rounded-lg bg-gray-100 px-4 shadow transition-all duration-200 hover:scale-[1.02] hover:shadow-lg dark:bg-gray-700">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -108,3 +110,5 @@
   </div>
 </div>
 <harmony-new-server />
+<harmony-join-server />
+<harmony-add-friend />

@@ -11,12 +11,13 @@ import { FilePicker } from "@capawesome/capacitor-file-picker";
 import { FormsModule } from "@angular/forms";
 import { UpdatePasswordComponent } from "./update-password/update-password.component";
 import { UpdatePasswordService } from "./update-password/update-password.service";
-import { HttpClient, HttpEventType } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.constants";
 import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
 import { API_BASE_URL } from "apps/client/src/app/core/constants/api.constants";
 import { AuthService } from "apps/client/src/app/core/services/auth.service";
+import { NgAutoAnimateDirective } from "ng-auto-animate";
 
 @Component({
   selector: "harmony-settings-profile",
@@ -27,6 +28,7 @@ import { AuthService } from "apps/client/src/app/core/services/auth.service";
     AvatarComponent,
     FormsModule,
     UpdatePasswordComponent,
+    NgAutoAnimateDirective,
   ],
   templateUrl: "./settings-profile.component.html",
   styleUrls: ["./settings-profile.component.css"],
@@ -40,8 +42,18 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
   http = inject(HttpClient);
   updatePasswordService = inject(UpdatePasswordService);
   profile: UserType | null = null;
+  isUploading = false;
 
   ngOnInit() {
+    this.getProfile();
+  }
+
+  ngOnDestroy() {
+    this.loaderService.hide();
+    this.alertService.dismiss();
+  }
+
+  getProfile() {
     const t = window.setTimeout(() => {
       this.loaderService.show();
     }, 1000);
@@ -59,14 +71,8 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.loaderService.hide();
           this.profile = response;
-          console.log(response);
         },
       });
-  }
-
-  ngOnDestroy() {
-    this.loaderService.hide();
-    this.alertService.dismiss();
   }
 
   async selectAvatar() {
@@ -80,22 +86,22 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
       const formData = new FormData();
       formData.append("file", file.blob as Blob);
 
+      this.isUploading = true;
+
       this.http
         .post(API_BASE_URL + "/user/avatar", formData, {
           headers: {
             Authorization: `Bearer ${this.authService.$token()}`,
           },
-          reportProgress: true,
-          observe: "events",
         })
+        .pipe(finalize(() => (this.isUploading = false)))
         .subscribe({
-          next: (event) => {
-            if (event.type === HttpEventType.UploadProgress) {
-              const progress = Math.round(
-                (event.loaded / (event?.total || 1)) * 100
-              );
-              console.log(progress);
-            }
+          next: () => {
+            this.toastService.show({
+              message: "PROFILE_UPDATE_SUCCESS",
+              type: "success",
+            });
+            this.getProfile();
           },
           error: (err) => {
             this.alertService.show({
