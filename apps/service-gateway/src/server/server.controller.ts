@@ -23,6 +23,7 @@ import {
   ServerDto,
   ServerUpdateDto,
   UserPublicDto,
+  UserType,
 } from "@harmony/zod";
 import {
   ApiBody,
@@ -36,9 +37,10 @@ import {
   RequestWithUser,
   getUserFromRequest,
 } from "../core/utils/get-user-from-request";
-import { ServiceRequest } from "@harmony/nest-microservice";
+import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
 
 @Controller("server")
+@ApiTags("Server")
 export class ServerController {
   constructor(
     @Inject(getServiceProperty(Services.SERVER, "name"))
@@ -46,17 +48,15 @@ export class ServerController {
     private readonly serviceRequest: ServiceRequest
   ) {}
 
-  @ApiTags("Server")
   @Get("search")
-  async searchServers(@Query() queryParams): Promise<any[]> {
+  async searchServers(@Query() search: { name: string }): Promise<any[]> {
     return this.serviceRequest.send({
       client: this.client,
       pattern: SERVER_MESSAGE_PATTERN.SEARCH,
-      data: { queryParams },
+      data: { search },
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Create a new server" })
   @ApiResponse({
     status: 201,
@@ -72,7 +72,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Get a server by ID" })
   @ApiOkResponse({
     description: "Server",
@@ -93,7 +92,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Get all servers" })
   @ApiOkResponse({
     description: "Server",
@@ -113,7 +111,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Update a server" })
   @ApiResponse({
     status: 200,
@@ -133,7 +130,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Delete a server" })
   @ApiResponse({
     status: 200,
@@ -141,17 +137,15 @@ export class ServerController {
   })
   @ApiResponse({ status: 404, description: "Server not found" })
   @Delete(":id")
-  async deleteServer(
-    @Param("id") serverId: string,
-    @Req() request: RequestWithUser
-  ) {
-    return this.client.send(SERVER_MESSAGE_PATTERN.DELETE, {
-      serverId,
-      user: await getUserFromRequest(request),
+  async delete(@Param("id") serverId: IdType) {
+    console.log("delete server", serverId);
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.DELETE,
+      data: { serverId },
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Remove a member from a server" })
   @ApiResponse({
     status: 200,
@@ -169,7 +163,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Get all members of a server" })
   @ApiResponse({
     status: 200,
@@ -184,7 +177,6 @@ export class ServerController {
     );
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Get all servers of a member" })
   @ApiResponse({
     status: 200,
@@ -204,7 +196,6 @@ export class ServerController {
     );
   }
 
-  @ApiTags("Server")
   @ApiOperation({ summary: "Join a server" })
   @ApiResponse({
     status: 200,
@@ -220,7 +211,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @Post(":id/members/:memberId/ban")
   async banMember(
     @Param("id") serverId: string,
@@ -233,7 +223,6 @@ export class ServerController {
     });
   }
 
-  @ApiTags("Server")
   @Post(":id/members/:memberId/unban")
   async unbanMember(
     @Param("id") serverId: string,

@@ -38,6 +38,14 @@ export class MessageController {
     return this.messageDeleteService.delete(payload, user);
   }
 
+  @MessagePattern(MESSENGER_MESSAGE_PATTERN.DELETE_BY_CHANNEL_ID)
+  deleteByChannelId(
+    @Payload() payload: { channelId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return this.messageDeleteService.deleteByChannelId(payload);
+  }
+
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.UPDATE)
   update(
     @Payload() payload: { message: MessageUpdateType },

@@ -5,4 +5,5 @@ export enum MESSENGER_MESSAGE_PATTERN {
   UPDATE = "message.update",
   CREATE = "message.create",
   DELETE = "message.delete",
+  DELETE_BY_CHANNEL_ID = "message.delete.by.channel.id",
 }

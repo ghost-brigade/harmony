@@ -92,6 +92,24 @@ export class MessageDeleteService {
     }
   }
 
+  async deleteByChannelId({
+    channelId,
+  }: {
+    channelId: IdType;
+  }): Promise<boolean> {
+    try {
+      await this.messageModel.deleteMany({
+        channel: channelId,
+      });
+
+      return true;
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error while deleting messages")
+      );
+    }
+  }
+
   async sendToSearch(message: MessageType): Promise<void> {
     try {
       await this.serviceRequest.send({

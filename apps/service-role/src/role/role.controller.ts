@@ -68,6 +68,14 @@ export class RoleController {
     return await this.roleDeleteService.deleteRole(payload, user);
   }
 
+  @MessagePattern(ROLE_MESSAGE_PATTERN.DELETE_ALL_BY_SERVER_ID)
+  async deleteAllByServerId(
+    @Payload() payload: { serverId: IdType },
+    @UserContext() user: UserContextType
+  ): Promise<boolean> {
+    return await this.roleDeleteService.deleteAllRoles(payload);
+  }
+
   @MessagePattern(ROLE_MESSAGE_PATTERN.ADD_USER)
   async addUserToRole(
     @Payload() payload: { id: IdType; userId: IdType; authorization?: boolean },
