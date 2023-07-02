@@ -12,7 +12,7 @@ kind: Ingress
 metadata:
   name: service-notification-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: harmony-notification-ip
+    kubernetes.io/ingress.global-static-ip-name: harmony-gateway-ws-ip
     networking.gke.io/managed-certificates: service-notification-cert
 spec:
   rules:
@@ -24,4 +24,4 @@ spec:
               service:
                 name: service-notification-svc
                 port:
-                  number: 3001
+                  number: 60001
