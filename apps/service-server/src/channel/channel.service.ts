@@ -404,7 +404,7 @@ export class ChannelService {
       );
     }
 
-    const channels = (await this.channelModel.findMany({
+    const channels = (await this.channelModel.find({
       server: payload.serverId,
     })) as ChannelType[];
 
@@ -430,10 +430,6 @@ export class ChannelService {
     }
 
     try {
-      const channels = await this.channelModel.findMany({
-        server: payload.serverId,
-      });
-
       channels.forEach(async (channel: ChannelType) => {
         await this.serviceRequest.send({
           client: this.messageClient,
