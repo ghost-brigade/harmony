@@ -10,19 +10,29 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { ChannelAuthorizationService } from "./channel-authorization.service";
 import { ChannelType as ChannelTypeEnum } from "@harmony/enums";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import {
+  MESSENGER_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 
 @Injectable()
 export class ChannelService {
   constructor(
     @InjectModel("Channel") private readonly channelModel,
-    private readonly channelAuthorizationService: ChannelAuthorizationService
+    private readonly channelAuthorizationService: ChannelAuthorizationService,
+    private readonly serviceRequest: ServiceRequest,
+    @Inject(getServiceProperty(Services.MESSAGE, "name"))
+    private readonly messageClient: ClientProxy
   ) {}
 
   async getAllByServerId(payload: { serverId: IdType }, user: UserContextType) {
@@ -346,7 +356,21 @@ export class ChannelService {
       }
     }
 
-    // TODO - delete all messages in the channel
+    try {
+      await this.serviceRequest.send({
+        client: this.messageClient,
+        pattern: MESSENGER_MESSAGE_PATTERN.DELETE_BY_CHANNEL_ID,
+        data: {
+          channel: channel.id,
+        },
+      });
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occurred while deleting the channel."
+        )
+      );
+    }
 
     try {
       await this.channelModel.deleteOne({
@@ -405,7 +429,27 @@ export class ChannelService {
       }
     }
 
-    // TODO - delete all messages in the channel
+    try {
+      const channels = await this.channelModel.findMany({
+        server: payload.serverId,
+      });
+
+      channels.forEach(async (channel: ChannelType) => {
+        await this.serviceRequest.send({
+          client: this.messageClient,
+          pattern: MESSENGER_MESSAGE_PATTERN.DELETE_BY_CHANNEL_ID,
+          data: {
+            channel: channel.id,
+          },
+        });
+      });
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException(
+          "An error occurred while deleting the channel."
+        )
+      );
+    }
 
     try {
       await this.channelModel.deleteMany({
