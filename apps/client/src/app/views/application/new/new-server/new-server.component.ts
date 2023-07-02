@@ -34,7 +34,7 @@ export class NewServerComponent implements OnDestroy {
   alertService = inject(AlertService);
   toastService = inject(ToastService);
   router = inject(Router);
-  $isPublic = signal(true);
+  $isPrivate = signal(false);
   $open = computed(() => this.newServerService.$open());
   $loading = signal(false);
 
@@ -54,6 +54,7 @@ export class NewServerComponent implements OnDestroy {
         endpoint: PostEndpoint.CreateServer,
         body: {
           name: this.$serverName(),
+          private: this.$isPrivate(),
         },
       })
       .pipe(finalize(() => this.$loading.set(false)))
