@@ -60,7 +60,7 @@
       auto-animate>
       <div
         *ngIf="$selectedTab() === 'servers'"
-        class="flex flex-col gap-2"
+        class="mt-4 flex flex-col gap-2"
         auto-animate>
         <div
           class="flex flex-col"
@@ -105,7 +105,9 @@
         *ngIf="$selectedTab() === 'friends'"
         auto-animate>
         <div *ngIf="$friendRequests().length">
-          <h2 class="mb-2 text-lg font-semibold">Pending friend requests</h2>
+          <h2 class="mb-2 mt-4 text-lg font-semibold">
+            Pending friend requests
+          </h2>
 
           <div
             class="flex flex-col"
@@ -124,6 +126,7 @@
 
               <button
                 (click)="acceptFriendRequest(fr.id!)"
+                title="Accept request"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-green-200/50 hover:stroke-green-500">
                 <svg
                   fill="none"
@@ -140,6 +143,7 @@
               </button>
               <button
                 (click)="declineFriendRequest(fr.id!)"
+                title="Decline request"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
                 <svg
                   fill="none"
@@ -181,6 +185,7 @@
 
               <button
                 (click)="unfriendUser(friend.id!)"
+                title="Unfriend user"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-blue-200/50 hover:stroke-blue-500">
                 <svg
                   fill="none"
@@ -197,6 +202,7 @@
               </button>
               <button
                 (click)="blockUser(friend.id!)"
+                title="Block user"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
                 <svg
                   fill="none"
@@ -219,7 +225,7 @@
         *ngIf="$selectedTab() === 'friends'"
         auto-animate>
         <div *ngIf="$blockedUsers().length">
-          <h2 class="mb-2 text-lg font-semibold">Blocked Users</h2>
+          <h2 class="mb-2 mt-4 text-lg font-semibold">Blocked Users</h2>
 
           <div
             class="flex flex-col"
@@ -238,6 +244,7 @@
 
               <button
                 (click)="unblockUser(friend.id!)"
+                title="Unblock User"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
                 <svg
                   fill="none"
