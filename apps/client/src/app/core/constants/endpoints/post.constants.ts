@@ -4,6 +4,10 @@ export const PostEndpoint = {
   CreateServer: "/server",
   JoinServer: "/server/join/:serverId",
   AddFriend: "/friend-request/send/:username",
+  AcceptFriendRequest: "/friend-request/accept/:friendId",
+  DeclineFriendRequest: "/friend-request/decline/:friendId",
+  BlockUser: "/user/block/:id",
+  UnblockUser: "/user/unblock/:id",
 } as const;
 import { LoginType, ServerCreateType, UserCreateType } from "@harmony/zod";
 
@@ -36,6 +40,34 @@ export type PostEndpointMap = {
     response: object;
     params: {
       username: string;
+    };
+    body: undefined;
+  };
+  "/friend-request/accept/:friendId": {
+    response: object;
+    params: {
+      friendId: string;
+    };
+    body: undefined;
+  };
+  "/friend-request/decline/:friendId": {
+    response: object;
+    params: {
+      friendId: string;
+    };
+    body: undefined;
+  };
+  "/user/block/:id": {
+    response: object;
+    params: {
+      id: string;
+    };
+    body: undefined;
+  };
+  "/user/unblock/:id": {
+    response: object;
+    params: {
+      id: string;
     };
     body: undefined;
   };
