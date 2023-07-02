@@ -157,7 +157,7 @@ export class MessageService {
           channel: payload.channelId,
         })
         .limit(payload.params?.limit ?? 10)
-        .skip((payload.params?.page ?? 1) * (payload.params?.limit ?? 10))
+        .skip((payload.params?.page - 1 ?? 0) * (payload.params?.limit ?? 10))
         .sort({ createdAt: -1 })
         .exec();
 
