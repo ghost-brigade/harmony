@@ -66,7 +66,10 @@ export class MessageCreateService {
       );
     }
 
-    const message = await this.messageModel(payload.message);
+    const message = await this.messageModel({
+      ...payload.message,
+      author: user.id,
+    });
 
     await this.sendToSearch(message);
     await this.emitNotification(message);
