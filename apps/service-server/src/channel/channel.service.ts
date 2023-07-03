@@ -10,19 +10,29 @@ import {
 } from "@harmony/zod";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { ChannelAuthorizationService } from "./channel-authorization.service";
 import { ChannelType as ChannelTypeEnum } from "@harmony/enums";
+import { ServiceRequest } from "@harmony/nest-microservice";
+import {
+  MESSENGER_MESSAGE_PATTERN,
+  Services,
+  getServiceProperty,
+} from "@harmony/service-config";
 
 @Injectable()
 export class ChannelService {
   constructor(
     @InjectModel("Channel") private readonly channelModel,
-    private readonly channelAuthorizationService: ChannelAuthorizationService
+    private readonly channelAuthorizationService: ChannelAuthorizationService,
+    private readonly serviceRequest: ServiceRequest,
+    @Inject(getServiceProperty(Services.MESSAGE, "name"))
+    private readonly messageClient: ClientProxy
   ) {}
 
   async getAllByServerId(payload: { serverId: IdType }, user: UserContextType) {
@@ -308,7 +318,11 @@ export class ChannelService {
     }
   }
 
-  async delete(payload: { id: IdType }, user: UserContextType) {
+  async delete(
+    payload: { id: IdType },
+    user: UserContextType,
+    authorization: boolean
+  ) {
     if (payload.id === undefined) {
       throw new RpcException(
         new BadRequestException("You must provide a channel id.")
@@ -325,15 +339,35 @@ export class ChannelService {
       throw new RpcException(new BadRequestException("Channel not found."));
     }
 
-    const canManage = await this.channelAuthorizationService.canManageChannel({
-      serverId: channel.server,
-      user,
-    });
+    if (authorization) {
+      const canManage = await this.channelAuthorizationService.canManageChannel(
+        {
+          serverId: channel.server,
+          user,
+        }
+      );
 
-    if (canManage === false) {
+      if (canManage === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to create channels for this server."
+          )
+        );
+      }
+    }
+
+    try {
+      await this.serviceRequest.send({
+        client: this.messageClient,
+        pattern: MESSENGER_MESSAGE_PATTERN.DELETE_BY_CHANNEL_ID,
+        data: {
+          channel: channel.id,
+        },
+      });
+    } catch (error) {
       throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to create channels for this server."
+        new InternalServerErrorException(
+          "An error occurred while deleting the channel."
         )
       );
     }
@@ -359,14 +393,18 @@ export class ChannelService {
     }
   }
 
-  async deleteByServerId(payload: { serverId: IdType }, user: UserContextType) {
+  async deleteByServerId(
+    payload: { serverId: IdType },
+    user: UserContextType,
+    authorization: boolean
+  ) {
     if (payload.serverId === undefined) {
       throw new RpcException(
         new BadRequestException("You must provide a server id.")
       );
     }
 
-    const channels = (await this.channelModel.findMany({
+    const channels = (await this.channelModel.find({
       server: payload.serverId,
     })) as ChannelType[];
 
@@ -374,15 +412,37 @@ export class ChannelService {
       throw new RpcException(new BadRequestException("No channels found."));
     }
 
-    const canManage = await this.channelAuthorizationService.canManageChannel({
-      serverId: payload.serverId,
-      user,
-    });
+    if (authorization) {
+      const canManage = await this.channelAuthorizationService.canManageChannel(
+        {
+          serverId: payload.serverId,
+          user,
+        }
+      );
 
-    if (canManage === false) {
+      if (canManage === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to delete channels for this server."
+          )
+        );
+      }
+    }
+
+    try {
+      channels.forEach(async (channel: ChannelType) => {
+        await this.serviceRequest.send({
+          client: this.messageClient,
+          pattern: MESSENGER_MESSAGE_PATTERN.DELETE_BY_CHANNEL_ID,
+          data: {
+            channel: channel.id,
+          },
+        });
+      });
+    } catch (error) {
       throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to delete channels for this server."
+        new InternalServerErrorException(
+          "An error occurred while deleting the channel."
         )
       );
     }

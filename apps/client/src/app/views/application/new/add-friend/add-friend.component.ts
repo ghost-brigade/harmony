@@ -56,7 +56,7 @@ export class AddFriendComponent implements OnDestroy {
       .subscribe({
         next: () => {
           this.toastService.show({
-            message: "SERVER_CREATE_SUCCESS",
+            message: "FRIEND_ADD_SUCCESS",
             type: "success",
           });
           this.addFriendService.close();

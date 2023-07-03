@@ -13,6 +13,7 @@ import {
   ServerCreateSchema,
   ServerCreateType,
   ServerType,
+  UserContextType,
   UserType,
 } from "@harmony/zod";
 import { InjectModel } from "@nestjs/mongoose";
@@ -39,106 +40,6 @@ export class ServerService {
     @Inject(getServiceProperty(Services.ROLE, "name"))
     private readonly roleService: ClientProxy
   ) {}
-
-  async create(createServer: ServerCreateType, user): Promise<ServerType> {
-    try {
-      const loggedUser = await firstValueFrom(
-        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
-          email: user.email,
-        })
-      );
-
-      const result = ServerCreateSchema.safeParse(createServer);
-
-      if (result.success === false) {
-        throw new RpcException(
-          new UnprocessableEntityException(
-            FormatZodResponse(result.error.issues)
-          )
-        );
-      }
-
-      const isUnique = (await this.serverModel
-        .findOne()
-        .or([{ name: createServer.name }])
-        .exec()) as ServerType;
-
-      if (isUnique) {
-        throw new RpcException(
-          new UnprocessableEntityException(
-            isUnique.name === createServer.name
-              ? Errors.ERROR_SERVER_NAME_ALREADY_EXISTS
-              : null
-          )
-        );
-      }
-
-      const createdServer = new this.serverModel({
-        ...createServer,
-        owner: loggedUser._id,
-      });
-
-      return createdServer.save();
-    } catch (error) {
-      throw new RpcException(new UnprocessableEntityException(error.message));
-    }
-  }
-
-  async update(serverId, serverUpdated, user): Promise<ServerType> {
-    try {
-      const server = await this.findOne(serverId);
-
-      if (!server) {
-        throw new RpcException(
-          new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
-        );
-      }
-
-      const canUpdate = await this.serverAuthorizationService.canUpdateServer({
-        serverId: serverId,
-        user,
-      });
-
-      if (canUpdate === false) {
-        throw new RpcException(
-          new UnauthorizedException(Errors.ERROR_USER_NOT_SERVER_OWNER)
-        );
-      }
-
-      const result = ServerCreateSchema.safeParse(server);
-
-      if (result.success === false) {
-        throw new RpcException(
-          new UnprocessableEntityException(
-            FormatZodResponse(result.error.issues)
-          )
-        );
-      }
-
-      const isUnique = (await this.serverModel
-        .findOne()
-        .or([{ name: serverUpdated.name }])
-        .exec()) as ServerType;
-
-      if (isUnique) {
-        throw new RpcException(
-          new UnprocessableEntityException(
-            isUnique.name === serverUpdated.name
-              ? Errors.ERROR_SERVER_NAME_ALREADY_EXISTS
-              : null
-          )
-        );
-      }
-
-      const updatedServer = await this.serverModel
-        .findByIdAndUpdate(serverId, serverUpdated, { new: true })
-        .exec();
-
-      return updatedServer;
-    } catch (error) {
-      throw new RpcException(new UnprocessableEntityException(error.message));
-    }
-  }
 
   async findAll(user): Promise<ServerType[]> {
     return await this.serverModel
@@ -285,40 +186,6 @@ export class ServerService {
     return updatedServer;
   }
 
-  async removeServer(serverId: string, user) {
-    const server = await this.findOne(serverId);
-
-    if (!server) {
-      throw new RpcException(
-        new NotFoundException(Errors.ERROR_SERVER_NOT_FOUND)
-      );
-    }
-
-    const loggedUser = await firstValueFrom(
-      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
-        email: user.email,
-      })
-    );
-
-    if (!loggedUser) {
-      throw new RpcException(
-        new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
-      );
-    }
-
-    if (server.owner.toString() !== loggedUser._id.toString()) {
-      throw new RpcException(
-        new UnauthorizedException(Errors.ERROR_ONLY_SERVER_OWNER_CAN_REMOVE)
-      );
-    }
-
-    const deletedServer = await this.serverModel
-      .findByIdAndDelete(serverId)
-      .exec();
-
-    return deletedServer;
-  }
-
   async getMembersOfServer(serverId: string): Promise<UserType[]> {
     const server = await this.findOne(serverId);
     if (!server) {
@@ -435,19 +302,22 @@ export class ServerService {
     return updatedServer;
   }
 
-  async search(payload: { queryParams: any }, user): Promise<any[]> {
+  async search(
+    payload: { search: { name: string } },
+    user: UserContextType
+  ): Promise<any[]> {
     const query = {
       private: false,
     };
 
-    if (Object.keys(payload.queryParams).length === 0) {
+    if (Object.keys(payload.search).length === 0) {
       throw new RpcException(
         new UnprocessableEntityException(Errors.ERROR_QUERY_PARAMS_NOT_FOUND)
       );
     }
 
-    if (payload.queryParams.name) {
-      query["name"] = { $regex: payload.queryParams.name, $options: "i" };
+    if (payload.search.name) {
+      query["name"] = { $regex: payload.search.name, $options: "i" };
     }
 
     const servers = await this.serverModel.find(query).exec();
