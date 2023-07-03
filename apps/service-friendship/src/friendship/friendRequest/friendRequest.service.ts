@@ -82,6 +82,21 @@ export class FriendRequestService {
       );
     }
 
+    const alreadyFriendRequest = await this.friendrequestModel.findOne({
+      sender: receiver,
+      receiver: user.id,
+    });
+
+    if (alreadyFriendRequest) {
+      return await this.friendService.newFriend(
+        {
+          user1: user.id,
+          user2: receiver,
+        },
+        user
+      );
+    }
+
     try {
       const newRequest = new this.friendrequestModel({
         sender: user.id,
