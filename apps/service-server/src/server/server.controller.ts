@@ -1,3 +1,4 @@
+import { ServerIconService } from "./server-icon.service";
 import { SERVER_MESSAGE_PATTERN } from "@harmony/service-config";
 import { Controller, NotFoundException, UseInterceptors } from "@nestjs/common";
 import { ServerService } from "./server.service";
@@ -22,7 +23,8 @@ export class ServerController {
     private readonly serverService: ServerService,
     private readonly serverCreateService: ServerCreateService,
     private readonly serverDeleteService: ServerDeleteService,
-    private readonly serverUpdateService: ServerUpdateService
+    private readonly serverUpdateService: ServerUpdateService,
+    private readonly ServerIconService: ServerIconService
   ) {}
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.CREATE)
@@ -34,6 +36,18 @@ export class ServerController {
     @UserContext() user: UserContextType
   ) {
     return await this.serverCreateService.create(payload, user);
+  }
+
+  @MessagePattern(SERVER_MESSAGE_PATTERN.UPLOAD_ICON)
+  async uploadIcon(
+    @Payload()
+    payload: {
+      serverId: IdType;
+      icon: any;
+    },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.ServerIconService.icon(payload, user);
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)

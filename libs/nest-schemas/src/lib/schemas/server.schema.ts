@@ -42,7 +42,7 @@ export class Server {
   emojis: Emoji[];
 
   @Prop({ type: { type: Types.ObjectId, ref: "File" } })
-  cover: File;
+  icon: File;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
   banned: User[];

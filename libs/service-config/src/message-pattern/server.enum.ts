@@ -11,4 +11,5 @@ export enum SERVER_MESSAGE_PATTERN {
   BAN_MEMBER = "server.ban_member",
   UNBAN_MEMBER = "server.unban_member",
   SEARCH = "server.search",
+  UPLOAD_ICON = "server.upload_icon",
 }

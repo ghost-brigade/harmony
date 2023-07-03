@@ -11,7 +11,7 @@ export const ServerSchema = z.object({
   channels: z.array(IdSchema).optional(),
   roles: z.array(IdSchema).optional(),
   emojis: z.array(IdSchema).optional(),
-  cover: z.string().optional(),
+  icon: z.string().optional(),
   banned: z.array(IdSchema).optional(),
   private: z.boolean().optional(),
 });
@@ -29,8 +29,12 @@ export const ServerUpdateSchema = ServerSchema.pick({
   channels: true,
   roles: true,
   emojis: true,
-  cover: true,
   private: true,
+});
+
+export const ServerIconSchema = z.object({
+  serverId: z.string(),
+  file: z.any(),
 });
 
 export const ServerRemoveSchema = z.object({
@@ -49,6 +53,7 @@ export const ServerMemberRemoveSchema = z.object({
 });
 
 export type ServerType = z.infer<typeof ServerSchema>;
+export type ServerIconType = z.infer<typeof ServerIconSchema>;
 export type ServerCreateType = z.infer<typeof ServerCreateSchema>;
 export type ServerUpdateType = z.infer<typeof ServerUpdateSchema>;
 export type ServerRemoveType = z.infer<typeof ServerRemoveSchema>;

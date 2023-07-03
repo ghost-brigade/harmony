@@ -34,6 +34,17 @@ export class FileService {
     throw new Error("Invalid file type");
   };
 
+  private getPath = (file: FileType, filename?: string, fileId?: IdType) => {
+    const folder = this.getDestinationFolder(file);
+
+    const folderIsNotUserOrServer =
+      [Folders.SERVER, Folders.USER].includes(folder) === false;
+
+    return `${folder}/${
+      folderIsNotUserOrServer ? `${fileId ?? file.id}/` : ""
+    }${filename ?? file.filename}`;
+  };
+
   private storage = new Storage({
     projectId: process.env.PROJECT_ID,
     credentials: {
@@ -45,11 +56,7 @@ export class FileService {
   private async getSignedUrl(file: FileType): Promise<string | null> {
     const url = await this.storage
       .bucket(this.bucketName)
-      .file(
-        `${this.getDestinationFolder(file)}/${
-          this.getDestinationFolder(file) !== Folders.USER ? `${file.id}/` : ""
-        }${file.filename}`
-      )
+      .file(this.getPath(file))
 
       .getSignedUrl({
         action: "read",
@@ -147,15 +154,9 @@ export class FileService {
 
       const newFile = new this.fileModel(fileObject);
 
-      const destinationFolder = this.getDestinationFolder(payload);
-      const path =
-        `${destinationFolder}/` +
-        (destinationFolder !== Folders.USER ? `${newFile._id}/` : "") +
-        `${filename}.${extension}`;
-
       await this.storage
         .bucket(this.bucketName)
-        .file(path)
+        .file(this.getPath(payload, fileObject.filename, newFile._id))
         .save(Buffer.from(payload.file.buffer));
 
       return await newFile.save();
@@ -184,7 +185,7 @@ export class FileService {
 
       await this.storage
         .bucket(this.bucketName)
-        .file(`${this.getDestinationFolder(file)}/${file.id}/${file.filename}`)
+        .file(this.getPath(file))
         .delete();
 
       return true;
