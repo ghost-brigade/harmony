@@ -8,6 +8,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Inject,
   Param,
   Patch,
@@ -213,11 +214,12 @@ export class ServerController {
 
   @ApiOperation({ summary: "Leave a server" })
   @ApiResponse({
-    status: 201,
+    status: 204,
     description: "Successfully leaved the server.",
   })
+  @HttpCode(204)
   @ApiResponse({ status: 404, description: "Server not found" })
-  @Post("leave/:serverId")
+  @Delete("leave/:serverId")
   async leaveServer(@Param("serverId") serverId: IdType) {
     return this.serviceRequest.send({
       client: this.client,

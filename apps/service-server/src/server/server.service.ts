@@ -183,16 +183,21 @@ export class ServerService {
         new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
       );
     }
-
-    const updatedServer = await this.serverModel
-      .findByIdAndUpdate(
-        payload.serverId,
-        { $pull: { members: userId } },
-        { new: true }
-      )
-      .exec();
-
-    return updatedServer;
+    try {
+      const updatedServer = await this.serverModel
+        .findByIdAndUpdate(
+          payload.serverId,
+          { $pull: { members: userId } },
+          { new: true }
+        )
+        .exec();
+        return true;
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
+      );
+    }
   }
 
   async removeMember(serverId: string, memberId: string) {
