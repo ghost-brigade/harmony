@@ -221,13 +221,20 @@ export class UserService {
         ...array.map((element) => element.user2),
       ])
     ).filter((element) => element !== ids._user.id);
-    const user = await this.userModel
+
+    const blockedUserIds = ids._user.blockedUsers;
+    const users = await this.userModel
       .find(
         { _id: { $in: distinctUsers } },
-        { username: 1, email: 1, status: 1 }
+        { username: 1, email: 1, status: 1, blockedUsers: 1 }
       )
       .exec();
-    return user;
+
+    const filteredUsers = users.filter(
+      (user) => !blockedUserIds.includes(user.id)
+    );
+    console.log(ids._user.id);
+    return filteredUsers;
   }
   async findAllBannedUsers(userContext: UserContextType) {
     console.log(userContext.id);
