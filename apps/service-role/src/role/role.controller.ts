@@ -132,4 +132,12 @@ export class RoleController {
   ): Promise<boolean> {
     return await this.roleService.isUserInRole(payload, user);
   }
+
+  @MessagePattern(ROLE_MESSAGE_PATTERN.INTERNAL_REMOVE_ROLES_OF_USER)
+  async internalRemoveRolesOfUser(
+    @Payload() payload: { userId: IdType; serverId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.roleService.removeRolesOfUser(payload, user);
+  }
 }

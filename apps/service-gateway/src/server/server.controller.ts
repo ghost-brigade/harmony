@@ -198,7 +198,7 @@ export class ServerController {
 
   @ApiOperation({ summary: "Join a server" })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: "Successfully joined the server.",
   })
   @ApiResponse({ status: 404, description: "Server not found" })
@@ -207,6 +207,21 @@ export class ServerController {
     return this.serviceRequest.send({
       client: this.client,
       pattern: SERVER_MESSAGE_PATTERN.JOIN_SERVER,
+      data: { serverId },
+    });
+  }
+
+  @ApiOperation({ summary: "Leave a server" })
+  @ApiResponse({
+    status: 201,
+    description: "Successfully leaved the server.",
+  })
+  @ApiResponse({ status: 404, description: "Server not found" })
+  @Post("leave/:serverId")
+  async leaveServer(@Param("serverId") serverId: IdType) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.LEAVE_SERVER,
       data: { serverId },
     });
   }

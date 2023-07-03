@@ -110,6 +110,14 @@ export class ServerController {
     return await this.serverService.addMember(payload, user.id);
   }
 
+  @MessagePattern(SERVER_MESSAGE_PATTERN.LEAVE_SERVER)
+  async leaveServer(
+    @Payload() payload: { serverId: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return await this.serverService.leaveServer(payload, user.id);
+  }
+
   @MessagePattern(SERVER_MESSAGE_PATTERN.BAN_MEMBER)
   async banMemberFromServer(
     @Payload() payload: { serverId: IdType; memberId: IdType },
