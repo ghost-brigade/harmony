@@ -61,7 +61,7 @@ export class JoinServerComponent implements OnDestroy {
             message: "SERVER_JOIN_SUCCESS",
             type: "success",
           });
-          this.router.navigate(["/app"]);
+          this.router.navigate(["/app/server", this.$serverId()]);
           this.joinServerService.close();
         },
         error: (err) => {
