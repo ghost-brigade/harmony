@@ -13,6 +13,7 @@ import { ChannelAuthorizationService } from "../channel/channel-authorization.se
 import { ServerAuthorizationService } from "./server-authorization.service";
 import { ServerDeleteService } from "./server-delete.service";
 import { ServerUpdateService } from "./server-update.service";
+import { ServerIconService } from "./server-icon.service";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ServerUpdateService } from "./server-update.service";
     ServerAuthorizationService,
     ServerDeleteService,
     ServerUpdateService,
+    ServerIconService
   ],
   exports: [],
 })

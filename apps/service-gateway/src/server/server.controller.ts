@@ -16,6 +16,8 @@ import {
   Put,
   Query,
   Req,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import {
   IdType,
@@ -34,11 +36,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { ClientProxy } from "@nestjs/microservices";
-import {
-  RequestWithUser,
-  getUserFromRequest,
-} from "../core/utils/get-user-from-request";
 import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("server")
 @ApiTags("Server")
@@ -70,6 +69,19 @@ export class ServerController {
       client: this.client,
       pattern: SERVER_MESSAGE_PATTERN.CREATE,
       data: { server: ServerCreateType },
+    });
+  }
+
+  @UseInterceptors(FileInterceptor("file"))
+  @Post(":id/icon")
+  async uploadServerIcon(
+    @Param("id") id: string,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: SERVER_MESSAGE_PATTERN.UPLOAD_ICON,
+      data: { serverId: id, file },
     });
   }
 

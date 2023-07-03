@@ -91,19 +91,19 @@ export class ServerDeleteService {
       );
     }
 
-    // remove cover
-    if (server.cover) {
+    // remove icon
+    if (server.icon) {
       try {
         await this.serviceRequest.send({
           client: this.fileClient,
           pattern: FILE_MESSAGE_PATTERN.DELETE,
           data: {
-            id: server.cover,
+            id: server.icon,
           },
         });
       } catch (error) {
         throw new RpcException(
-          new InternalServerErrorException("Failed to delete cover")
+          new InternalServerErrorException("Failed to delete icon")
         );
       }
     }
