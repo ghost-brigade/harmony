@@ -33,8 +33,15 @@ export class FriendService {
     },
     user: UserContextType
   ): Promise<FriendType> {
-    const existingFriend = await this.findFriend({ id: payload.user2 }, user);
-    if (existingFriend) {
+    const existingFriend = await this.friendModel.find({
+      $or: [
+        { user1: payload.user1, user2: payload.user2 },
+        { user1: payload.user2, user2: payload.user1 },
+      ],
+    });
+
+    console.log(existingFriend);
+    if (existingFriend.length > 0) {
       throw new RpcException(new BadRequestException("Friend already exists."));
     }
 
