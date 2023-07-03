@@ -54,11 +54,16 @@ export class FriendRequestService {
         new BadRequestException("You cannot send a friend request to yourself.")
       );
     }
-    const friendExists = await this.friendService.findFriend(
-      { id: receiver },
-      user
-    );
-    if (friendExists) {
+    const friendExists = await this.friendModel.find({
+      $or: [
+        { user1: user.id, user2: receiver },
+        { user1: receiver, user2: user.id },
+      ],
+    });
+    console.log("___________friendExists_______________");
+    console.log(friendExists);
+    console.log("___________friendExists_______________");
+    if (friendExists.length > 0) {
       throw new RpcException(
         new BadRequestException("You are already friend with this user.")
       );
