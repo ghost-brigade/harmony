@@ -11,4 +11,5 @@ export enum ROLE_MESSAGE_PATTERN {
   REMOVE_PERMISSION = "role.remove.permission",
   INTERNAL_IS_USER_IN_ROLE = "role.user.in.role",
   DELETE_ALL_BY_SERVER_ID = "role.remove.all.by.server.id",
+  INTERNAL_REMOVE_ROLES_OF_USER = "role.remove.roles.of.user"
 }

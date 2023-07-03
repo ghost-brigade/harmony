@@ -227,4 +227,12 @@ export class RoleService {
 
     return result ? true : false;
   }
+
+  public async removeRolesOfUser({ userId, serverId }, user) {
+    await this.roleModel.updateMany(
+      { server: serverId },
+      { $pull: { users: userId } }
+    );
+    return true;
+  }
 }

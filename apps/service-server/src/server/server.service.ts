@@ -151,6 +151,55 @@ export class ServerService {
     }
   }
 
+  async leaveServer(payload: { serverId: IdType }, userId) {
+    const server = await this.findOne(payload.serverId);
+    if (!server) {
+      throw new NotFoundException(
+        `Server with ID ${payload.serverId} not found`
+      );
+    }
+
+    const isUserAlreadyMember = server.members.includes(userId);
+    if (!isUserAlreadyMember) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_USER_NOT_IN_SERVER)
+      );
+    }
+
+    // delete roles attached to this user
+    try {
+      await this.serviceRequest.send({
+        client: this.roleService,
+        pattern: ROLE_MESSAGE_PATTERN.INTERNAL_REMOVE_ROLES_OF_USER,
+        data: {
+          userId: userId,
+          serverId: payload.serverId,
+        },
+        promise: true,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
+      );
+    }
+    try {
+      const updatedServer = await this.serverModel
+        .findByIdAndUpdate(
+          payload.serverId,
+          { $pull: { members: userId } },
+          { new: true }
+        )
+        .exec();
+        return true;
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException(Errors.ERROR_INTERNAL_SERVER_ERROR)
+      );
+    }
+  }
+
   async removeMember(serverId: string, memberId: string) {
     const server = await this.findOne(serverId);
     if (!server) {
