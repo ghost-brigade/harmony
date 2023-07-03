@@ -88,6 +88,10 @@ export class FriendRequestService {
     });
 
     if (alreadyFriendRequest) {
+      await this.friendrequestModel.deleteOne({
+        sender: receiver,
+        receiver: user.id,
+      });
       return await this.friendService.newFriend(
         {
           user1: user.id,
