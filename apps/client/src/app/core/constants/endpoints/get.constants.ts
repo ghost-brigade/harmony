@@ -1,4 +1,4 @@
-import { ServerType, UserType } from "@harmony/zod";
+import { ServerGetType, ServerType, UserType } from "@harmony/zod";
 
 export const GetEndpoint = {
   Profile: "/profile",
@@ -7,6 +7,7 @@ export const GetEndpoint = {
   Friends: "/friends",
   SearchServers: "/server/search",
   BlockedUsers: "/user/blocked",
+  Server: "/server/:serverId",
 } as const;
 
 export type GetEndpointValue = (typeof GetEndpoint)[keyof typeof GetEndpoint];
@@ -32,6 +33,12 @@ export type GetEndpointMap = {
   };
   "/user/blocked": {
     response: UserType[];
+  };
+  "/server/:serverId": {
+    response: ServerGetType;
+    params: {
+      serverId: string;
+    };
   };
 };
 

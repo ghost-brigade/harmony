@@ -1,0 +1,6 @@
+<div
+  class="hidden h-full min-w-[250px] flex-col items-center border-l border-gray-100 lg:flex">
+  <div *ngFor="let channel of $server()?.channels">
+    <span>#{{ channel?.name }}</span>
+  </div>
+</div>

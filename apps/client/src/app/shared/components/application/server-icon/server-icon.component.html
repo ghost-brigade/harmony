@@ -1,0 +1,25 @@
+<div class="relative {{ size }}">
+  <img
+    *ngIf="image"
+    class="{{ size }} rounded-full"
+    [src]="image"
+    alt="" />
+  <svg
+    *ngIf="!image"
+    class="rounded-full {{ size }}"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect
+      width="100%"
+      height="100%"
+      fill="grey" />
+    <text
+      x="50%"
+      y="56%"
+      dominant-baseline="middle"
+      text-anchor="middle"
+      font-size="20"
+      fill="white">
+      {{ title.split("")[0].toUpperCase() }}
+    </text>
+  </svg>
+</div>

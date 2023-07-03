@@ -102,7 +102,7 @@ export const ROUTE_TRANSITIONS = [
     ),
 
     transition(
-      "HomePage => DirectMessagesPage, HomePage => NewPage, HomePage => SearchPage, DirectMessagesPage => NewPage, DirectMessagesPage => SearchPage, NewPage => SearchPage, SettingsPage => SettingsSubpage",
+      "HomePage => DirectMessagesPage, HomePage => ServerPage, HomePage => NewPage, HomePage => SearchPage, DirectMessagesPage => NewPage, DirectMessagesPage => SearchPage, NewPage => SearchPage, SettingsPage => SettingsSubpage",
       [
         style({ position: "relative" }),
         query(":enter, :leave", [
