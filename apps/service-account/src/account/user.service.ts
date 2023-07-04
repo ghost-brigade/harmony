@@ -226,26 +226,74 @@ export class UserService {
     const users = await this.userModel
       .find(
         { _id: { $in: distinctUsers } },
-        { username: 1, email: 1, status: 1, blockedUsers: 1 }
+        { username: 1, email: 1, status: 1, blockedUsers: 1, avatar: 1 }
       )
       .exec();
 
-    const filteredUsers = users.filter(
+    const filteredUsers: UserType[] = users.filter(
       (user) => !blockedUserIds.includes(user.id)
     );
-    console.log(ids._user.id);
-    return filteredUsers;
+    return Promise.all(
+      filteredUsers.map(async (user) => {
+        user.blockedUsers = undefined;
+
+        let avatar;
+
+        if (user.avatar) {
+          avatar = await this.userAvatarService.getAvatar({
+            id: user.avatar,
+            object: false,
+          });
+        }
+
+        return {
+          id: user.id,
+          username: user.username,
+          status: user.status,
+          avatar,
+        };
+      })
+    );
   }
   async findAllBannedUsers(userContext: UserContextType) {
-    console.log(userContext.id);
     const users = await this.userModel
       .findById(userContext.id, { blockedUsers: 1 })
       .exec();
+
     const blockedUsers = await this.userModel.find(
       { _id: { $in: users.blockedUsers } },
-      { username: 1, email: 1, status: 1 }
+      { username: 1, email: 1, status: 1, avatar: 1 }
     );
-    return blockedUsers;
+
+    const usersAndAvatar = await Promise.all(
+      blockedUsers.map(async (user) => {
+        const uObj = user.toObject();
+        uObj.id = uObj._id.toString();
+
+        let avatar;
+
+        if (uObj.avatar) {
+          const avatar = await this.userAvatarService.getAvatar({
+            id: uObj.avatar,
+            object: false,
+          });
+
+          if (avatar) {
+            uObj.avatar = avatar;
+          } else {
+            delete uObj.avatar;
+          }
+        }
+
+        return {
+          id: user.id,
+          username: user.username,
+          status: user.status,
+          avatar,
+        };
+      })
+    );
+    return usersAndAvatar;
   }
 
   async findAllFriendRequest(ids) {
@@ -260,13 +308,33 @@ export class UserService {
     const users = await this.userModel
       .find(
         { _id: { $in: distinctUsers } },
-        { username: 1, email: 1, status: 1, blockedUsers: 1 }
+        { username: 1, email: 1, status: 1, blockedUsers: 1, avatar: 1 }
       )
       .exec();
     const filteredUsers = users.filter(
       (user) => !blockedUserIds.includes(user.id)
     );
-    return filteredUsers;
+
+    return Promise.all(
+      filteredUsers.map(async (user) => {
+        user.blockedUsers = undefined;
+        let avatar = undefined;
+
+        if (user.avatar) {
+          avatar = await this.userAvatarService.getAvatar({
+            id: user.avatar,
+            object: false,
+          });
+        }
+
+        return {
+          id: user.id,
+          username: user.username,
+          status: user.status,
+          avatar: avatar ?? undefined,
+        };
+      })
+    );
   }
 
   async findOne(id: string): Promise<UserType | null> {
@@ -421,7 +489,7 @@ export class UserService {
       id: IdType;
     },
     user: UserContextType
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     const userId = payload.id;
 
     try {
@@ -445,7 +513,7 @@ export class UserService {
       id: IdType;
     },
     user: UserContextType
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     const userId = payload.id;
 
     try {
