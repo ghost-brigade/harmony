@@ -16,6 +16,7 @@ import { ServerCreateService } from "./server-create.service";
 import { GlobalServerInterceptor } from "./interceptors/global-server.interceptor";
 import { ServerDeleteService } from "./server-delete.service";
 import { ServerUpdateService } from "./server-update.service";
+import { GlobalAllServerInterceptor } from "./interceptors/global-all-server.interceptor";
 
 @Controller("server")
 export class ServerController {
@@ -51,6 +52,7 @@ export class ServerController {
   }
 
   @MessagePattern(SERVER_MESSAGE_PATTERN.GET_ALL)
+  @UseInterceptors(GlobalAllServerInterceptor)
   async getAllServers(@UserContext() user: UserContextType) {
     return await this.serverService.findAll(user);
   }
