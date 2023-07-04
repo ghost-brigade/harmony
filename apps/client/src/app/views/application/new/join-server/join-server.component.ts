@@ -11,6 +11,7 @@ import { JOIN_SERVER_ANIMATION } from "./join-server.animation";
 import { PostEndpoint } from "apps/client/src/app/core/constants/endpoints/post.constants";
 import { finalize } from "rxjs";
 import { Router } from "@angular/router";
+import { I18nPipe } from "../../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-join-server",
@@ -20,6 +21,7 @@ import { Router } from "@angular/router";
     SettingsNavbarComponent,
     NgAutoAnimateDirective,
     FormsModule,
+    I18nPipe,
   ],
   templateUrl: "./join-server.component.html",
   styleUrls: ["./join-server.component.css"],
