@@ -5,7 +5,7 @@ export const PostEndpoint = {
   JoinServer: "/server/join/:serverId",
   AddFriend: "/friend-request/send/:username",
   AcceptFriendRequest: "/friend-request/accept/:friendId",
-  DeclineFriendRequest: "/friend-request/decline/:friendId",
+  DeclineFriendRequest: "/friend-request/reject/:friendId",
   BlockUser: "/user/block/:id",
   UnblockUser: "/user/unblock/:id",
 } as const;
@@ -50,7 +50,7 @@ export type PostEndpointMap = {
     };
     body: undefined;
   };
-  "/friend-request/decline/:friendId": {
+  "/friend-request/reject/:friendId": {
     response: object;
     params: {
       friendId: string;

@@ -1,0 +1,74 @@
+<div
+  class="hidden h-full min-w-[250px] flex-col items-center gap-2 border-l border-gray-100 pt-4 dark:border-gray-700 lg:flex">
+  <div class="flex w-full flex-row items-center gap-2">
+    <span
+      class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+    <span class="font-semibold">OWNER</span>
+    <span
+      class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+  </div>
+  <div class="flex w-full items-center gap-4 px-4">
+    <harmony-avatar
+      [image]="server?.owner?.avatar"
+      [status]="server?.owner?.status || ''"></harmony-avatar>
+    <span class="font-semibold">{{ server?.owner?.username }}</span>
+  </div>
+  <ng-container *ngIf="server?.members?.length">
+    <div class="flex w-full flex-row items-center gap-2">
+      <span
+        class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+      <span class="font-semibold">MEMBERS</span>
+      <span
+        class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+    </div>
+    <div
+      class="flex w-full items-center gap-4 px-4"
+      *ngFor="let member of server?.members">
+      <harmony-avatar
+        [image]="member.avatar"
+        [status]="member.status || ''"></harmony-avatar>
+      <span class="font-semibold">{{ member.username }}</span>
+    </div>
+  </ng-container>
+</div>
+
+<div
+  *ngIf="isOpen"
+  @backdrop
+  class="absolute right-0 top-0 z-[100] h-screen w-screen backdrop-blur lg:hidden"
+  (click)="closeUserList()"></div>
+<div
+  @userList
+  *ngIf="isOpen"
+  class="absolute right-0 top-0 z-[110] flex min-h-screen min-w-[250px] flex-col gap-2 border-l border-gray-100 bg-white pt-[calc(env(safe-area-inset-top)+1rem)] dark:border-gray-700 dark:bg-gray-800 lg:hidden">
+  <div class="flex w-full flex-row items-center gap-2">
+    <span
+      class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+    <span class="font-semibold">OWNER</span>
+    <span
+      class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+  </div>
+  <div class="flex w-full items-center gap-4 px-4">
+    <harmony-avatar
+      [image]="server?.owner?.avatar"
+      [status]="server?.owner?.status || ''"></harmony-avatar>
+    <span class="font-semibold">{{ server?.owner?.username }}</span>
+  </div>
+  <ng-container *ngIf="server?.members?.length">
+    <div class="flex w-full flex-row items-center gap-2">
+      <span
+        class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+      <span class="font-semibold">MEMBERS</span>
+      <span
+        class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
+    </div>
+    <div
+      class="flex w-full items-center gap-4 px-4"
+      *ngFor="let member of server?.members">
+      <harmony-avatar
+        [image]="member.avatar"
+        [status]="member.status || ''"></harmony-avatar>
+      <span class="font-semibold">{{ member.username }}</span>
+    </div>
+  </ng-container>
+</div>

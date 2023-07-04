@@ -1,0 +1,23 @@
+<div class="relative {{ size }}">
+  <img
+    *ngIf="image"
+    class="{{ size }} rounded-full"
+    [src]="image"
+    alt="" />
+  <svg
+    *ngIf="!image"
+    class="absolute {{ size }} rounded-full bg-gray-200 text-gray-400"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+      fill-rule="evenodd"
+      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+      clip-rule="evenodd"></path>
+  </svg>
+  <span
+    *ngIf="status"
+    class="absolute left-7 top-0 h-3.5 w-3.5 rounded-full border-2 border-white {{
+      status === 'ONLINE' ? 'bg-green-400' : 'bg-red-400'
+    }} dark:border-gray-800"></span>
+</div>

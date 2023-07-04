@@ -16,6 +16,7 @@ import { BADGE_ANIMATION } from "./badge.animation";
 import { AvatarComponent } from "../../shared/components/application/avatar/avatar.component";
 import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
 import { DeleteEndpoint } from "../../core/constants/endpoints/delete.constants";
+import { ServerIconComponent } from "../../shared/components/application/server-icon/server-icon.component";
 
 @Component({
   selector: "harmony-application",
@@ -26,6 +27,8 @@ import { DeleteEndpoint } from "../../core/constants/endpoints/delete.constants"
     RouterModule,
     NgAutoAnimateDirective,
     AvatarComponent,
+    ServerIconComponent,
+    RouterModule,
   ],
   templateUrl: "./application.component.html",
   styleUrls: ["./application.component.css"],

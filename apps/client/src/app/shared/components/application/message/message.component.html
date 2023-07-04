@@ -1,14 +1,15 @@
 <div class="flex min-h-[40px] w-full min-w-max max-w-full flex-row gap-2">
   <harmony-avatar
+    [image]="message.author.avatar"
     status="red"
     class="mt-1" />
   <div class="flex w-full flex-col">
     <div class="flex w-full justify-between">
       <span class="">
-        {{ message.author }}
+        {{ message.author.username }}
       </span>
       <span>
-        {{ message.date | date : "short" }}
+        {{ message.createdAt | date : "short" }}
       </span>
     </div>
     <markdown

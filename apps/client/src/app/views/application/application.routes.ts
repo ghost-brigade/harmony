@@ -59,11 +59,9 @@ export default [
     data: { animation: "SettingsSubpage" },
   },
   {
-    path: "new/server",
+    path: "server/:serverId",
     loadComponent: () =>
-      import("./new/new-server/new-server.component").then(
-        (m) => m.NewServerComponent
-      ),
-    data: { animation: "NewSubpage" },
+      import("./server/server.component").then((m) => m.ServerComponent),
+    data: { animation: "ServerPage", isText: true, showBottomNav: true },
   },
 ] as Route[];

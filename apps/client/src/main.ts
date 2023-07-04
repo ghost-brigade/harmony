@@ -11,6 +11,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { defineCustomElements } from "@ionic/pwa-elements/loader";
 import { MarkdownModule, MarkedOptions } from "ngx-markdown";
 import { GLOBAL_AUTO_ANIMATE_OPTIONS } from "ng-auto-animate";
+import { SecurityContext } from "@angular/core";
 
 bootstrapApplication(AppComponent, {
   providers: [
