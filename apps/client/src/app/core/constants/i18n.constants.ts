@@ -14,6 +14,8 @@ export const I18N_CONSTANTS = {
     JOIN_SERVER2: "Join a server",
     INVITE_CODE: "Invite code",
     OR: "OR",
+    NEW_SERVER_LABEL: "New Server",
+    CREATE_SERVER: "Create Server",
     NEW_PASSWORD: "New password",
     NEW_SERVER: "Create a server",
     NEW_USER: "Add a friend",
