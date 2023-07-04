@@ -42,6 +42,7 @@ export class GlobalServerInterceptor implements NestInterceptor {
       members: [],
       roles: [],
       icon: null,
+      owner: null,
     };
 
     if (server.channels) {
@@ -56,6 +57,9 @@ export class GlobalServerInterceptor implements NestInterceptor {
     if (server.icon) {
       aggregateObject.icon = await this.iconServer(server);
     }
+    if (server.owner) {
+      aggregateObject.owner = await this.ownerServer(server);
+    }
 
     // @ts-ignore
     return Object.assign(server.toJSON(), aggregateObject);
@@ -63,6 +67,37 @@ export class GlobalServerInterceptor implements NestInterceptor {
 
   private async channelServer(server: ServerType) {
     return await this.channelService.getAllByIds({ ids: server.channels });
+  }
+
+  private async ownerServer(server: ServerType) {
+    try {
+      const owner = await this.serviceRequest.send({
+        client: this.accountService,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
+        data: {
+          id: server.owner,
+        },
+        promise: true,
+      });
+
+      if (owner.avatar) {
+        const icon = await this.serviceRequest.send({
+          client: this.fileService,
+          pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+          data: {
+            id: owner.avatar,
+          },
+          promise: true,
+        });
+        owner.avatar = icon.url;
+      }
+      delete owner.email;
+
+      return owner;
+    } catch (error) {
+      console.log("Error", error);
+      return server.owner;
+    }
   }
 
   private async iconServer(server: ServerType) {
@@ -94,10 +129,25 @@ export class GlobalServerInterceptor implements NestInterceptor {
         promise: true,
       });
 
-      return members.map((member: UserPublicType) => {
+      const updatedMembers = [];
+
+      for (const member of members) {
+        if (member.avatar) {
+          const icon = await this.serviceRequest.send({
+            client: this.fileService,
+            pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+            data: {
+              id: member.avatar,
+            },
+            promise: true,
+          });
+          member.avatar = icon.url;
+        }
         delete member.email;
-        return member;
-      });
+        updatedMembers.push(member);
+      }
+
+      return updatedMembers;
     } catch (error) {
       console.log("Error", error);
       return server.members;
