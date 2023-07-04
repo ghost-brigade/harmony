@@ -18,7 +18,7 @@ PODS:
     - Capacitor
   - CapacitorToast (5.0.4):
     - Capacitor
-  - CapawesomeCapacitorFilePicker (5.0.0):
+  - CapawesomeCapacitorFilePicker (5.1.0):
     - Capacitor
 
 DEPENDENCIES:
@@ -69,7 +69,7 @@ SPEC CHECKSUMS:
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
   CapacitorSplashScreen: 93a389d4f7673c08214ae25bb6f21d867d5305c5
   CapacitorToast: fcc4329f01d06cf02f190f8f5ce7f16509a2263c
-  CapawesomeCapacitorFilePicker: ec211560d209c2efa0e47dad3308bf497e6ce388
+  CapawesomeCapacitorFilePicker: 751291bd23e004aec717755c016b696ba35943a8
 
 PODFILE CHECKSUM: f3fe91f3687d63346f5fbb7b12f4948eeb482818
 

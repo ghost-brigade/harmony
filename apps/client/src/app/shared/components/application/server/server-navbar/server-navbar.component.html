@@ -3,6 +3,7 @@
   <div
     class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-2 p-4">
     <svg
+      (click)="openChannelList()"
       fill="none"
       stroke="currentColor"
       stroke-width="2.5"
@@ -20,6 +21,7 @@
       >{{ channel }}
     </span>
     <svg
+      (click)="openUserList()"
       fill="none"
       stroke="currentColor"
       stroke-width="2.5"

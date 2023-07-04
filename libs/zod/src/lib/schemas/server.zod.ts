@@ -41,7 +41,7 @@ export const ServerIconSchema = z.object({
 export const ServerGetSchema = z.object({
   id: IdSchema,
   name: z.string().min(3).max(50),
-  owner: IdSchema,
+  owner: UserSchema,
   members: z.array(UserSchema),
   channels: z.array(
     z.object({

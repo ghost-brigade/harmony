@@ -1,4 +1,9 @@
-import { ServerGetType, ServerType, UserType } from "@harmony/zod";
+import {
+  MessageGetType,
+  ServerGetType,
+  ServerType,
+  UserType,
+} from "@harmony/zod";
 
 export const GetEndpoint = {
   Profile: "/profile",
@@ -8,6 +13,7 @@ export const GetEndpoint = {
   SearchServers: "/server/search",
   BlockedUsers: "/user/blocked",
   Server: "/server/:serverId",
+  ChannelMessages: "/message/channel/:channelId",
 } as const;
 
 export type GetEndpointValue = (typeof GetEndpoint)[keyof typeof GetEndpoint];
@@ -38,6 +44,21 @@ export type GetEndpointMap = {
     response: ServerGetType;
     params: {
       serverId: string;
+    };
+  };
+  "/message/channel/:channelId": {
+    response: {
+      count: number;
+      currentPage: number;
+      lastPage: number;
+      messages: MessageGetType[];
+    };
+    params: {
+      channelId: string;
+    };
+    queryParams: {
+      limit: number;
+      page: number;
     };
   };
 };
