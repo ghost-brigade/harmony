@@ -127,38 +127,51 @@ export class MessageCreateService {
           attachment: attachments,
         });
 
-        const author = await firstValueFrom(
-          this.clientAccount.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
-            id: updatedMessage.author,
-          })
-        );
+        const authors = await this.serviceRequest.send({
+          client: this.clientAccount,
+          pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS,
+          data: {
+            ids: [updatedMessage.author],
+          },
+          promise: true,
+        });
 
-        return {
+        const message = {
           id: updatedMessage.id,
           content: updatedMessage.content,
           channel: updatedMessage.channel,
-          // @ts-ignore
-          author: {
-            id: author.id,
-            username: author.username,
-            avatar: (
-              await this.serviceRequest.send({
-                client: this.clientFile,
-                pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
-                data: {
-                  id: author.avatar,
-                },
-                promise: true,
-              })
-            ).url,
-          },
           attachment: attachmentsUrl ?? [],
+          author: updatedMessage.author,
           createdAt: updatedMessage.createdAt,
           updatedAt: updatedMessage.updatedAt,
         };
-      }
 
-      return newMessage;
+        console.log(authors[0]);
+
+        if (authors.length > 0) {
+          const author = authors[0];
+          console.log(author);
+
+          const avatarUrl = await this.serviceRequest.send({
+            client: this.clientFile,
+            pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+            data: {
+              id: author.avatar,
+            },
+            promise: true,
+          });
+
+          message.author = {
+            id: author.id,
+            username: author.username,
+            avatar: avatarUrl.url,
+          };
+        }
+
+        return message;
+      } else {
+        return newMessage;
+      }
     } catch (error) {
       console.log(error);
       throw new RpcException(
