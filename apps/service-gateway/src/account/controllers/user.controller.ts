@@ -76,20 +76,20 @@ export class UserController {
     });
   }
 
-  @ApiOperation({ summary: "Get all users" })
-  @ApiOkResponse({
-    description: "User",
-    type: UserPublicDto,
-  })
-  @ApiNotFoundResponse({ description: "Users not found" })
-  @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
-  @ApiInternalServerErrorResponse({ description: "Internal server error" })
-  @Get()
-  findAll(
-    @Query() params?: UserParamsType | undefined
-  ): Observable<UserPublicType[]> {
-    return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ALL, params);
-  }
+  // @ApiOperation({ summary: "Get all users" })
+  // @ApiOkResponse({
+  //   description: "User",
+  //   type: UserPublicDto,
+  // })
+  // @ApiNotFoundResponse({ description: "Users not found" })
+  // @ApiUnprocessableEntityResponse({ description: "Invalid parameters" })
+  // @ApiInternalServerErrorResponse({ description: "Internal server error" })
+  // @Get()
+  // findAll(
+  //   @Query() params?: UserParamsType | undefined
+  // ): Observable<UserPublicType[]> {
+  //   return this.client.send(ACCOUNT_MESSAGE_PATTERN.FIND_ALL, params);
+  // }
 
   @ApiOperation({ summary: "Get a user by id" })
   @ApiOkResponse({
