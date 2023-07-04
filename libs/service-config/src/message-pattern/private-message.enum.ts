@@ -1,0 +1,2 @@
+export enum PRIVATE_MESSAGE_MESSAGE_PATTERN {
+}
