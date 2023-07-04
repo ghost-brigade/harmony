@@ -81,11 +81,15 @@ export class ServerService {
       );
     }
 
-    const user: UserType = await firstValueFrom(
-      this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+    const user = await this.serviceRequest.send({
+      client: this.accountService,
+      pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
+      data: {
         id: memberId,
-      })
-    );
+      },
+      promise: true,
+    });
+
     if (!user) {
       throw new RpcException(
         new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
@@ -191,7 +195,7 @@ export class ServerService {
           { new: true }
         )
         .exec();
-        return true;
+      return true;
     } catch (error) {
       console.log(error);
       throw new RpcException(

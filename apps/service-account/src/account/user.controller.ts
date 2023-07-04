@@ -58,6 +58,7 @@ export class UserController {
       );
     }
   }
+
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND)
   async findOneFriend(data: UserType) {
     try {
