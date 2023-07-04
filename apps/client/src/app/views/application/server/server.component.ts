@@ -13,7 +13,7 @@ import { ChannelListComponent } from "../../../shared/components/application/ser
 import { RequestService } from "../../../core/services/request.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GetEndpoint } from "../../../core/constants/endpoints/get.constants";
-import { ServerGetType } from "@harmony/zod";
+import { MessageGetType, ServerGetType } from "@harmony/zod";
 import { ServerNavbarComponent } from "../../../shared/components/application/server/server-navbar/server-navbar.component";
 import { SocketService } from "../../../shared/services/socket.service";
 import { MessageNotification } from "@harmony/notification";
@@ -63,8 +63,9 @@ export class ServerComponent implements OnInit {
   constructor(private route: ActivatedRoute) {
     this.socketService.messageSocket.on(
       MessageNotification.NEW_MESSAGE,
-      (message) => {
-        console.log(message);
+      (message: MessageGetType) => {
+        this.serverService.addMessage(message);
+        this.scrollToBottom();
       }
     );
   }

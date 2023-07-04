@@ -17,6 +17,7 @@ import { HapticsService } from "../../../services/haptics.service";
 import { ChatService } from "apps/client/src/app/views/application/direct-messages/chat/chat.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { Capacitor } from "@capacitor/core";
+import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -37,7 +38,7 @@ export class BottomNavComponent {
   @ViewChild("messageBox") messageBox: ElementRef<HTMLInputElement> | undefined;
   bottomNavService = inject(BottomNavService);
   hapticsService = inject(HapticsService);
-  chatService = inject(ChatService);
+  serverService = inject(ServerService);
   $isEmojiPickerOpen = computed(
     () => this.$emojiOpen() && this.bottomNavService.$isTextChannel()
   );
@@ -91,11 +92,7 @@ export class BottomNavComponent {
   }
 
   async sendMessage() {
-    this.chatService.addMessage({
-      author: "Alexis",
-      content: this.$message(),
-      date: new Date(),
-    });
+    this.serverService.sendMessage(this.$message());
     this.$message.set("");
     await this.vibrate();
   }
