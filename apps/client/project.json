@@ -122,7 +122,6 @@
         "buildArgs": {},
         "metadata": {
           "images": [
-            "ghcr.io/ghost-brigade/harmony-client",
             "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-client"
           ],
           "load": true,

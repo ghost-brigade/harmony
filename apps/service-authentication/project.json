@@ -71,7 +71,6 @@
         },
         "metadata": {
           "images": [
-            "ghcr.io/ghost-brigade/harmony-service-authentication",
             "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-authentication"
           ],
           "load": true,

@@ -69,7 +69,6 @@
         },
         "metadata": {
           "images": [
-            "ghcr.io/ghost-brigade/harmony-service-notification",
             "europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-service-notification"
           ],
           "load": true,
