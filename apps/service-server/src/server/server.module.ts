@@ -44,7 +44,7 @@ import { ServerIconService } from "./server-icon.service";
     ServerAuthorizationService,
     ServerDeleteService,
     ServerUpdateService,
-    ServerIconService
+    ServerIconService,
   ],
   exports: [],
 })

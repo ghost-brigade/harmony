@@ -208,7 +208,10 @@ export class UserService {
 
   async findAllByIds(payload: { ids: IdType[] }): Promise<UserPublicType[]> {
     const user = await this.userModel
-      .find({ _id: { $in: payload.ids } }, { username: 1, email: 1, status: 1 })
+      .find(
+        { _id: { $in: payload.ids } },
+        { username: 1, email: 1, status: 1, avatar: 1 }
+      )
       .exec();
     return user;
   }
@@ -338,7 +341,9 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<UserType | null> {
-    return await this.userModel.findById(id).exec();
+    return await this.userModel
+      .findById(id, { username: 1, email: 1, status: 1, avatar: 1 })
+      .exec();
   }
 
   async findOneBy(params: UserType): Promise<UserType | null> {

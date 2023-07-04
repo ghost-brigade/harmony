@@ -1,6 +1,7 @@
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
   ACCOUNT_MESSAGE_PATTERN,
+  FILE_MESSAGE_PATTERN,
   ROLE_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
@@ -25,6 +26,8 @@ export class GlobalServerInterceptor implements NestInterceptor {
     private readonly accountService: ClientProxy,
     @Inject(getServiceProperty(Services.ROLE, "name"))
     private readonly roleService: ClientProxy,
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly fileService: ClientProxy,
     private readonly serviceRequest: ServiceRequest,
     private readonly channelService: ChannelService
   ) {}
@@ -38,6 +41,8 @@ export class GlobalServerInterceptor implements NestInterceptor {
       channels: [],
       members: [],
       roles: [],
+      icon: null,
+      owner: null,
     };
 
     if (server.channels) {
@@ -49,6 +54,12 @@ export class GlobalServerInterceptor implements NestInterceptor {
     if (server.roles) {
       aggregateObject.roles = await this.roleServer(server);
     }
+    if (server.icon) {
+      aggregateObject.icon = await this.iconServer(server);
+    }
+    if (server.owner) {
+      aggregateObject.owner = await this.ownerServer(server);
+    }
 
     // @ts-ignore
     return Object.assign(server.toJSON(), aggregateObject);
@@ -56,6 +67,55 @@ export class GlobalServerInterceptor implements NestInterceptor {
 
   private async channelServer(server: ServerType) {
     return await this.channelService.getAllByIds({ ids: server.channels });
+  }
+
+  private async ownerServer(server: ServerType) {
+    try {
+      const owner = await this.serviceRequest.send({
+        client: this.accountService,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
+        data: {
+          id: server.owner,
+        },
+        promise: true,
+      });
+
+      if (owner.avatar) {
+        const icon = await this.serviceRequest.send({
+          client: this.fileService,
+          pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+          data: {
+            id: owner.avatar,
+          },
+          promise: true,
+        });
+        owner.avatar = icon.url;
+      }
+      delete owner.email;
+
+      return owner;
+    } catch (error) {
+      console.log("Error", error);
+      return server.owner;
+    }
+  }
+
+  private async iconServer(server: ServerType) {
+    try {
+      const icon = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: server.icon,
+        },
+        promise: true,
+      });
+
+      return icon.url;
+    } catch (error) {
+      console.log("Error", error);
+      return server.icon;
+    }
   }
 
   private async memberServer(server: ServerType) {
@@ -69,10 +129,25 @@ export class GlobalServerInterceptor implements NestInterceptor {
         promise: true,
       });
 
-      return members.map((member: UserPublicType) => {
+      const updatedMembers = [];
+
+      for (const member of members) {
+        if (member.avatar) {
+          const icon = await this.serviceRequest.send({
+            client: this.fileService,
+            pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+            data: {
+              id: member.avatar,
+            },
+            promise: true,
+          });
+          member.avatar = icon.url;
+        }
         delete member.email;
-        return member;
-      });
+        updatedMembers.push(member);
+      }
+
+      return updatedMembers;
     } catch (error) {
       console.log("Error", error);
       return server.members;

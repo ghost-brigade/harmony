@@ -40,12 +40,12 @@ export class UserController {
   async findAllByIds(@Payload() payload: { ids: IdType[] }) {
     return await this.userService.findAllByIds(payload);
   }
-  
+
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
   async findOne(data: UserType) {
     try {
       let user: UserType;
-      if (Object.keys(data).length === 1 && "id" in data) {
+      if (Object.keys(data).length === 2 && "id" in data) {
         user = await this.userService.findOne(data.id);
       } else {
         user = await this.userService.findOneBy(data);
