@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types, model } from "mongoose";
 import { User } from "./user.schema";
-import { PrivateGroup } from "./privateGroup.schema";
 
 export type PrivateMessageDocument = HydratedDocument<PrivateMessage>;
 
@@ -15,9 +14,6 @@ export class PrivateMessage {
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   receiver: User;
-
-  @Prop({ type: Types.ObjectId, ref: "PrivateGroup", required: false })
-  privateGroup: PrivateGroup;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: "File" }] })
   attachment: File[];

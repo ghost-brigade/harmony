@@ -10,11 +10,6 @@ export {
 } from "./friendRequest.schema";
 export { Message, MessageSchema, MessageModel } from "./message.schema";
 export {
-  PrivateGroup,
-  PrivateGroupSchema,
-  PrivateGroupModel,
-} from "./privateGroup.schema";
-export {
   PrivateMessage,
   PrivateMessageSchema,
   PrivateMessageModel,
