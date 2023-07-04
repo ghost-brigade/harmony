@@ -67,7 +67,6 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
 
-      - name: "Deploy to Kubernetes"
+      - name: "Rollout restart deployment"
         run: |
-          kubectl set image deployment/${{ matrix.service }} ${{ matrix.service }}=europe-west9-docker.pkg.dev/harmony-383520/harmony/harmony-${{ matrix.service }}:stable
-          kubectl rollout status deployment/${{ matrix.service }}
+          kubectl rollout restart deployment/${{ matrix.service }}
