@@ -1,6 +1,6 @@
 import { getService, Services } from "@harmony/service-config";
 import { NestFactory } from "@nestjs/core";
-import { MessageModule } from "./notification/message.module";
+import { MessageModule } from "./message/message.module";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {

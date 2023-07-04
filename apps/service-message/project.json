@@ -14,7 +14,6 @@
         "outputPath": "dist/apps/service-message",
         "main": "apps/service-message/src/main.ts",
         "tsConfig": "apps/service-message/tsconfig.app.json",
-        "assets": ["apps/service-message/src/assets"],
         "isolatedConfig": true,
         "webpackConfig": "apps/service-message/webpack.config.js",
         "generatePackageJson": true

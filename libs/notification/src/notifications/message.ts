@@ -3,4 +3,5 @@ export const enum MessageNotification {
   UPDATE_MESSAGE = "message_update",
   DELETE_MESSAGE = "message_delete",
   JOIN_CHANNEL = "join_channel",
+  LEAVE_ALL_ROOMS = "leave_all_rooms",
 }

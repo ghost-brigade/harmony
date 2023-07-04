@@ -1,8 +1,9 @@
+import { firstValueFrom } from "rxjs";
 import { Permissions } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
-  AUTHORIZATION_MESSAGE_PATTERN,
-  CHANNEL_MESSAGE_PATTERN,
+  ACCOUNT_MESSAGE_PATTERN,
+  FILE_MESSAGE_PATTERN,
   NOTIFICATION_MESSAGE_PATTERN,
   SEARCH_MESSAGE_PATTERN,
   Services,
@@ -12,23 +13,22 @@ import {
   FormatZodResponse,
   MessageType,
   MessageCreateType,
-  IdType,
   UserContextType,
   MessageCreateSchema,
-  MessageUpdateType,
+  IdType,
 } from "@harmony/zod";
 import {
   BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { MessageService } from "./message.service";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Multer } from "multer";
 
 @Injectable()
 export class MessageCreateService {
@@ -39,11 +39,15 @@ export class MessageCreateService {
     @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
     private readonly clientNotification: ClientProxy,
     @Inject(getServiceProperty(Services.SEARCH, "name"))
-    private readonly clientSearch: ClientProxy
+    private readonly clientSearch: ClientProxy,
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly clientFile: ClientProxy,
+    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
+    private readonly clientAccount: ClientProxy
   ) {}
 
   async create(
-    payload: { message: MessageCreateType },
+    payload: { message: MessageCreateType; attachments: Multer[] },
     user: UserContextType
   ): Promise<MessageType> {
     const parse = MessageCreateSchema.safeParse(payload.message);
@@ -57,7 +61,9 @@ export class MessageCreateService {
     const authorization = await this.messageService.checkPermissions({
       channelId: payload.message.channel,
       user,
-      permissions: [Permissions.MESSAGE_CREATE],
+      permissions: payload.attachments
+        ? [Permissions.MESSAGE_CREATE, Permissions.MESSAGE_FILE_UPLOAD]
+        : [Permissions.MESSAGE_CREATE],
     });
 
     if (!authorization) {
@@ -66,16 +72,93 @@ export class MessageCreateService {
       );
     }
 
-    const message = await this.messageModel({
-      ...payload.message,
+    const newMessage = await this.messageModel.create({
+      content: payload.message.content,
+      channel: payload.message.channel,
       author: user.id,
     });
 
-    await this.sendToSearch(message);
-    await this.emitNotification(message);
+    const attachmentsIds = [];
 
+    if (payload.attachments) {
+      for (const attachment of payload.attachments) {
+        const attachmentId = await this.serviceRequest.send({
+          client: this.clientFile,
+          pattern: FILE_MESSAGE_PATTERN.CREATE,
+          data: {
+            file: attachment,
+            message: newMessage.id,
+          },
+          promise: true,
+        });
+
+        attachmentsIds.push(attachmentId.id);
+      }
+    }
+
+    const insertedMessage = await this.insertMessage(
+      newMessage,
+      attachmentsIds
+    );
+
+    await this.sendToSearch(insertedMessage);
+    await this.emitNotification(insertedMessage);
+
+    return insertedMessage;
+  }
+
+  async insertMessage(
+    message: MessageType,
+    attachments?: IdType[]
+  ): Promise<MessageType & { createdAt: string; updatedAt: string }> {
     try {
-      return await message.save();
+      const newMessage = await this.messageModel.create(message);
+
+      if (attachments) {
+        const updatedMessage = await this.messageModel.findByIdAndUpdate(
+          newMessage.id,
+          {
+            attachments,
+          },
+          { new: true }
+        );
+
+        const attachmentsUrl = await this.messageService.getAttachments({
+          attachment: attachments,
+        });
+
+        const author = await firstValueFrom(
+          this.clientAccount.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+            id: updatedMessage.author,
+          })
+        );
+
+        return {
+          id: updatedMessage.id,
+          content: updatedMessage.content,
+          channel: updatedMessage.channel,
+          // @ts-ignore
+          author: {
+            id: author.id,
+            username: author.username,
+            avatar: (
+              await this.serviceRequest.send({
+                client: this.clientFile,
+                pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+                data: {
+                  id: author.avatar,
+                },
+                promise: true,
+              })
+            ).url,
+          },
+          attachment: attachmentsUrl ?? [],
+          createdAt: updatedMessage.createdAt,
+          updatedAt: updatedMessage.updatedAt,
+        };
+      }
+
+      return newMessage;
     } catch (error) {
       console.log(error);
       throw new RpcException(
@@ -84,13 +167,13 @@ export class MessageCreateService {
     }
   }
 
-  async sendToSearch(message: MessageType & { _id: any }): Promise<void> {
+  async sendToSearch(message: MessageType): Promise<void> {
     try {
       await this.serviceRequest.send({
         client: this.clientSearch,
         pattern: SEARCH_MESSAGE_PATTERN.CREATE,
         data: {
-          id: message._id.toString(),
+          id: message.id,
           channelId: message.channel,
           content: message.content,
         },
@@ -110,6 +193,24 @@ export class MessageCreateService {
       await this.serviceRequest.send({
         client: this.clientNotification,
         pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE,
+        data: {
+          message,
+        },
+        promise: true,
+      });
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error emitting message notification")
+      );
+    }
+  }
+
+  //TODO
+  async emitGlobalNotification(message: MessageType): Promise<void> {
+    try {
+      await this.serviceRequest.send({
+        client: this.clientNotification,
+        pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_SERVER_MESSAGE,
         data: {
           message,
         },

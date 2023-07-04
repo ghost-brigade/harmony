@@ -38,7 +38,8 @@ import {
 import { ClientProxy } from "@nestjs/microservices";
 import { ServiceRequest, UserContext } from "@harmony/nest-microservice";
 import { FileInterceptor } from "@nestjs/platform-express";
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { Multer } from "multer";
 @Controller("server")
 @ApiTags("Server")
 export class ServerController {

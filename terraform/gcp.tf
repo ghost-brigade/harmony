@@ -7,6 +7,12 @@ data "google_storage_bucket_object" "terraform_bucket" {
   bucket = "harmony-terraform-bucket"
 }
 
+module "google_project_service" {
+  source     = "./modules/google_project_service"
+  project_id = var.google_project_id
+  services   = ["iam", "iamcredentials", "logging", "secretmanager", "storage", "compute", "container", "artifactregistry"]
+}
+
 resource "google_artifact_registry_repository" "registry" {
   location      = var.google_region
   repository_id = var.app_name
@@ -14,16 +20,10 @@ resource "google_artifact_registry_repository" "registry" {
   format        = "DOCKER"
 }
 
-resource "google_compute_global_address" "client_ip" {
-  name = "${var.app_name}-client-ip"
-}
-
-resource "google_compute_global_address" "gateway_ip" {
-  name = "${var.app_name}-gateway-ip"
-}
-
-resource "google_compute_global_address" "notification_ip" {
-  name = "${var.app_name}-notification-ip"
+module "google_compute_global_address" {
+  source        = "./modules/google_compute_global_address"
+  app_name      = var.app_name
+  address_names = ["client-ip", "gateway-ip", "notification-ip"]
 }
 
 module "google_compute_network" {

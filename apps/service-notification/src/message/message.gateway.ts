@@ -49,6 +49,17 @@ export class MessageGateway
     return `channel:${channelId}`;
   }
 
+  @SubscribeMessage(MessageNotification.LEAVE_ALL_ROOMS)
+  async onLeaveAllRooms(
+    @ConnectedSocket() client: Socket & { request: { user: UserType } }
+  ) {
+    client.rooms.forEach((room) => {
+      if (room !== client.id) {
+        client.leave(room);
+      }
+    });
+  }
+
   @SubscribeMessage(MessageNotification.JOIN_CHANNEL)
   async onJoinChannel(
     @ConnectedSocket() client: Socket & { request: { user: UserType } },
@@ -70,6 +81,8 @@ export class MessageGateway
 
     if (isAuthorized) {
       console.log("join", channelId);
+
+      await this.onLeaveAllRooms(client);
       await client.join(this.getRoomName(channelId));
     } else {
       client.emit("error", {

@@ -6,7 +6,7 @@ resource "cloudflare_record" "root" {
   zone_id = var.cloudflare_zone_id
   name    = "@"
   type    = "A"
-  value   = google_compute_global_address.client_ip.address
+  value   = module.google_compute_global_address.address_name[0].address
   proxied = true
 }
 
@@ -22,7 +22,7 @@ resource "cloudflare_record" "api" {
   zone_id = var.cloudflare_zone_id
   name    = "api"
   type    = "A"
-  value   = google_compute_global_address.gateway_ip.address
+  value   = module.google_compute_global_address.address_name[1].address
   proxied = true
 }
 
@@ -30,6 +30,6 @@ resource "cloudflare_record" "ws" {
   zone_id = var.cloudflare_zone_id
   name    = "ws"
   type    = "A"
-  value   = google_compute_global_address.notification_ip.address
+  value   = module.google_compute_global_address.address_name[2].address
   proxied = true
 }

@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Multer } from 'multer';
 import { Controller } from "@nestjs/common";
 import { UserContext } from "@harmony/nest-microservice";
 import { MessageService } from "./message.service";
@@ -24,7 +26,7 @@ export class MessageController {
 
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.CREATE)
   create(
-    @Payload() payload: { message: MessageCreateType },
+    @Payload() payload: { message: MessageCreateType, attachments: Multer[] },
     @UserContext() user: UserContextType
   ) {
     return this.messageCreateService.create(payload, user);
