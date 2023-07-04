@@ -63,6 +63,8 @@ export const I18N_CONSTANTS = {
     CONTACT_TECHNICAL_ISSUE:
       "Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.",
     CONTACT_SUBJECT: "Subject",
+    CONTACT_PLACEHOLDER: "Let us know how we can help you",
+    CONTACT_COMMENT: "Leave a comment...",
     CONTACT_MESSAGE: "Your message",
     CONTACT_SEND: "Send message",
     CONTACT_US: "Contact us",
