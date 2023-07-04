@@ -7,6 +7,7 @@ import { JoinServerService } from "./join-server/join-server.service";
 import { JoinServerComponent } from "./join-server/join-server.component";
 import { AddFriendComponent } from "./add-friend/add-friend.component";
 import { AddFriendService } from "./add-friend/add-friend.service";
+import { I18nPipe } from "../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-new",
@@ -17,6 +18,7 @@ import { AddFriendService } from "./add-friend/add-friend.service";
     NewServerComponent,
     JoinServerComponent,
     AddFriendComponent,
+    I18nPipe,
   ],
   templateUrl: "./new.component.html",
   styleUrls: ["./new.component.css"],

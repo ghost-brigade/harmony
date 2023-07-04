@@ -10,6 +10,7 @@ import { FormsModule } from "@angular/forms";
 import { ADD_FRIEND_ANIMATION } from "./add-friend.animation";
 import { PostEndpoint } from "apps/client/src/app/core/constants/endpoints/post.constants";
 import { finalize } from "rxjs";
+import { I18nPipe } from "../../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-add-friend",
@@ -19,6 +20,7 @@ import { finalize } from "rxjs";
     SettingsNavbarComponent,
     NgAutoAnimateDirective,
     FormsModule,
+    I18nPipe,
   ],
   templateUrl: "./add-friend.component.html",
   styleUrls: ["./add-friend.component.css"],
