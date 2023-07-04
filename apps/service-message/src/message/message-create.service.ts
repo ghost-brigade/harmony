@@ -1,8 +1,7 @@
 import { Permissions } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
-  AUTHORIZATION_MESSAGE_PATTERN,
-  CHANNEL_MESSAGE_PATTERN,
+  FILE_MESSAGE_PATTERN,
   NOTIFICATION_MESSAGE_PATTERN,
   SEARCH_MESSAGE_PATTERN,
   Services,
@@ -12,23 +11,21 @@ import {
   FormatZodResponse,
   MessageType,
   MessageCreateType,
-  IdType,
   UserContextType,
   MessageCreateSchema,
-  MessageUpdateType,
 } from "@harmony/zod";
 import {
   BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { MessageService } from "./message.service";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Multer } from "multer";
 
 @Injectable()
 export class MessageCreateService {
@@ -39,11 +36,13 @@ export class MessageCreateService {
     @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
     private readonly clientNotification: ClientProxy,
     @Inject(getServiceProperty(Services.SEARCH, "name"))
-    private readonly clientSearch: ClientProxy
+    private readonly clientSearch: ClientProxy,
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly clientFile: ClientProxy
   ) {}
 
   async create(
-    payload: { message: MessageCreateType },
+    payload: { message: MessageCreateType; attachments: Multer[] },
     user: UserContextType
   ): Promise<MessageType> {
     const parse = MessageCreateSchema.safeParse(payload.message);
@@ -57,7 +56,9 @@ export class MessageCreateService {
     const authorization = await this.messageService.checkPermissions({
       channelId: payload.message.channel,
       user,
-      permissions: [Permissions.MESSAGE_CREATE],
+      permissions: payload.attachments
+        ? [Permissions.MESSAGE_CREATE, Permissions.MESSAGE_FILE_UPLOAD]
+        : [Permissions.MESSAGE_CREATE],
     });
 
     if (!authorization) {
@@ -67,14 +68,35 @@ export class MessageCreateService {
     }
 
     const message = await this.messageModel({
-      ...payload.message,
+      content: payload.message.content,
+      channel: payload.message.channel,
       author: user.id,
     });
+
+    if (payload.attachments) {
+      const attachmentsIds = [];
+
+      for (const attachment of payload.attachments) {
+        const attachmentId = await this.serviceRequest.send({
+          client: this.clientFile,
+          pattern: FILE_MESSAGE_PATTERN.CREATE,
+          data: {
+            file: attachment,
+            message: message.id,
+          },
+        });
+
+        attachmentsIds.push(attachmentId);
+      }
+
+      message.attachments = await Promise.all(attachmentsIds);
+    }
 
     await this.sendToSearch(message);
     await this.emitNotification(message);
 
     try {
+      console.log("message", this.messageService.getAttachments(message));
       return await message.save();
     } catch (error) {
       console.log(error);
@@ -110,6 +132,24 @@ export class MessageCreateService {
       await this.serviceRequest.send({
         client: this.clientNotification,
         pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_MESSAGE,
+        data: {
+          message,
+        },
+        promise: true,
+      });
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Error emitting message notification")
+      );
+    }
+  }
+
+  //TODO
+  async emitGlobalNotification(message: MessageType): Promise<void> {
+    try {
+      await this.serviceRequest.send({
+        client: this.clientNotification,
+        pattern: NOTIFICATION_MESSAGE_PATTERN.NEW_SERVER_MESSAGE,
         data: {
           message,
         },

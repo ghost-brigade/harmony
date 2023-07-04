@@ -20,6 +20,7 @@ import { MessageUpdateService } from "./message-update.service";
       getService(Services.AUTHORIZATION),
       getService(Services.SERVER),
       getService(Services.SEARCH),
+      getService(Services.FILE),
     ]),
     ConfigModule.forRoot({
       isGlobal: true,

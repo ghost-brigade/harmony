@@ -16,8 +16,11 @@ import {
   Post,
   Put,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
+import { FilesInterceptor } from "@nestjs/platform-express";
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -62,11 +65,15 @@ export class MessageController {
     description: "The message to create.",
     type: MessageCreateDto,
   })
-  async newMessage(@Body() message: MessageCreateDto): Promise<MessageDto> {
+  @UseInterceptors(FilesInterceptor("attachements[]", 3))
+  async newMessage(
+    @UploadedFiles() attachements: Multer,
+    @Body() message: MessageCreateDto
+  ): Promise<MessageDto> {
     return this.serviceRequest.send({
       client: this.client,
       pattern: MESSENGER_MESSAGE_PATTERN.CREATE,
-      data: { message },
+      data: { message, attachements },
     });
   }
 

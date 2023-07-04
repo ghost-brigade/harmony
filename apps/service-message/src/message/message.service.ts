@@ -3,24 +3,18 @@ import { ServiceRequest } from "@harmony/nest-microservice";
 import {
   AUTHORIZATION_MESSAGE_PATTERN,
   CHANNEL_MESSAGE_PATTERN,
-  NOTIFICATION_MESSAGE_PATTERN,
-  SEARCH_MESSAGE_PATTERN,
+  FILE_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
 import {
-  FormatZodResponse,
   MessageType,
-  MessageCreateType,
   IdType,
   UserContextType,
-  MessageCreateSchema,
-  MessageUpdateType,
   UserType,
+  FileType,
 } from "@harmony/zod";
 import {
-  BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -35,15 +29,38 @@ export class MessageService {
   constructor(
     @InjectModel("Message") private readonly messageModel,
     private readonly serviceRequest: ServiceRequest,
-    @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
-    private readonly clientNotification: ClientProxy,
     @Inject(getServiceProperty(Services.AUTHORIZATION, "name"))
     private readonly clientAuthorization: ClientProxy,
     @Inject(getServiceProperty(Services.SERVER, "name"))
     private readonly clientServer: ClientProxy,
-    @Inject(getServiceProperty(Services.SEARCH, "name"))
-    private readonly clientSearch: ClientProxy
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly clientFile: ClientProxy
   ) {}
+
+  public async getAttachments(message: MessageType) {
+    if (message.attachment) {
+      return await Promise.all(
+        message.attachment.map(async (attachment) => {
+          try {
+            const file = (await this.serviceRequest.send({
+              client: this.clientFile,
+              pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+              data: {
+                id: attachment,
+              },
+              promise: true,
+            })) as FileType;
+
+            return file.url;
+          } catch (error) {
+            return null;
+          }
+        })
+      );
+    }
+
+    return [];
+  }
 
   private async getServerFromChannel(channelId: IdType) {
     try {
