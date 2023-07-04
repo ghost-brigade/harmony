@@ -41,18 +41,18 @@ export class RoleController {
     private readonly serviceRequest: ServiceRequest
   ) {}
 
-  @ApiOperation({ summary: "Get all roles" })
-  @ApiResponse({ status: 200, description: "Return all roles" })
-  @ApiResponse({ status: 400, description: "Bad request" })
-  @ApiUnauthorizedResponse({ description: "Unauthorized" })
-  @Get()
-  async getRoles(@Param() data?: RoleParamsType) {
-    return this.serviceRequest.send({
-      client: this.client,
-      pattern: ROLE_MESSAGE_PATTERN.FIND_ALL,
-      data,
-    });
-  }
+  // @ApiOperation({ summary: "Get all roles" })
+  // @ApiResponse({ status: 200, description: "Return all roles" })
+  // @ApiResponse({ status: 400, description: "Bad request" })
+  // @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  // @Get()
+  // async getRoles(@Param() data?: RoleParamsType) {
+  //   return this.serviceRequest.send({
+  //     client: this.client,
+  //     pattern: ROLE_MESSAGE_PATTERN.FIND_ALL,
+  //     data,
+  //   });
+  // }
 
   @ApiOperation({ summary: "Get all roles for a server" })
   @ApiResponse({ status: 200, description: "Return all roles" })
