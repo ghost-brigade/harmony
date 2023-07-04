@@ -1,6 +1,7 @@
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
   ACCOUNT_MESSAGE_PATTERN,
+  FILE_MESSAGE_PATTERN,
   ROLE_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
@@ -25,6 +26,8 @@ export class GlobalServerInterceptor implements NestInterceptor {
     private readonly accountService: ClientProxy,
     @Inject(getServiceProperty(Services.ROLE, "name"))
     private readonly roleService: ClientProxy,
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly fileService: ClientProxy,
     private readonly serviceRequest: ServiceRequest,
     private readonly channelService: ChannelService
   ) {}
@@ -38,6 +41,7 @@ export class GlobalServerInterceptor implements NestInterceptor {
       channels: [],
       members: [],
       roles: [],
+      icon: null,
     };
 
     if (server.channels) {
@@ -49,6 +53,9 @@ export class GlobalServerInterceptor implements NestInterceptor {
     if (server.roles) {
       aggregateObject.roles = await this.roleServer(server);
     }
+    if (server.icon) {
+      aggregateObject.icon = await this.iconServer(server);
+    }
 
     // @ts-ignore
     return Object.assign(server.toJSON(), aggregateObject);
@@ -56,6 +63,24 @@ export class GlobalServerInterceptor implements NestInterceptor {
 
   private async channelServer(server: ServerType) {
     return await this.channelService.getAllByIds({ ids: server.channels });
+  }
+
+  private async iconServer(server: ServerType) {
+    try {
+      const icon = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: server.icon,
+        },
+        promise: true,
+      });
+
+      return icon.url;
+    } catch (error) {
+      console.log("Error", error);
+      return server.icon;
+    }
   }
 
   private async memberServer(server: ServerType) {
