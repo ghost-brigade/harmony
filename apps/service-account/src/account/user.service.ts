@@ -96,6 +96,8 @@ export class UserService {
 
     const createdUser = new this.userModel({
       ...createUser,
+      username: createUser.username.toLowerCase(),
+      email: createUser.email.toLowerCase(),
       password: await this.hashPassword(createUser.password),
     });
 
