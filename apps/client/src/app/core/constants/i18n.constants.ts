@@ -60,6 +60,12 @@ export const I18N_CONSTANTS = {
     SETTINGS_ENGLISH: "English",
     SETTINGS_FRENCH: "French",
     SETTINGS_SPANISH: "Spanish",
+    CONTACT_TECHNICAL_ISSUE:
+      "Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.",
+    CONTACT_SUBJECT: "Subject",
+    CONTACT_MESSAGE: "Your message",
+    CONTACT_SEND: "Send message",
+    CONTACT_US: "Contact us",
     EMPTY: "",
     SMILEYS_AND_EMOTION: "Smileys & Emotion",
     PEOPLE_AND_BODY: "People & Body",
