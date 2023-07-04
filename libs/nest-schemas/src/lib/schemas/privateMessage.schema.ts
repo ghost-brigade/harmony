@@ -13,7 +13,7 @@ export class PrivateMessage {
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   author: User;
 
-  @Prop({ type: Types.ObjectId, ref: "User", required: false })
+  @Prop({ type: Types.ObjectId, ref: "User", required: true })
   receiver: User;
 
   @Prop({ type: Types.ObjectId, ref: "PrivateGroup", required: false })
