@@ -67,13 +67,13 @@ export class MessageController {
   })
   @UseInterceptors(FilesInterceptor("attachements[]", 3))
   async newMessage(
-    @UploadedFiles() attachements: Multer,
+    @UploadedFiles() attachments: Multer[],
     @Body() message: MessageCreateDto
   ): Promise<MessageDto> {
     return this.serviceRequest.send({
       client: this.client,
       pattern: MESSENGER_MESSAGE_PATTERN.CREATE,
-      data: { message, attachements },
+      data: { message, attachments },
     });
   }
 

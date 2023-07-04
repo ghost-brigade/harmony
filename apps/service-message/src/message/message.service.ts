@@ -37,7 +37,7 @@ export class MessageService {
     private readonly clientFile: ClientProxy
   ) {}
 
-  public async getAttachments(message: MessageType) {
+  public async getAttachments(message: { attachment: IdType[] }) {
     if (message.attachment) {
       return await Promise.all(
         message.attachment.map(async (attachment) => {

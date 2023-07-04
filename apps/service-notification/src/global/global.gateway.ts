@@ -79,7 +79,7 @@ export class GlobalGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(GlobalNotification.NEW_MESSAGE_ON_SERVER)
-  async onNewMessage({ server }: { server: ServerType }) {
+  async onNewMessage({ server, channelId }: { server: ServerType, channelId: IdType }) {
     server.members.forEach((userId: IdType) => {
       this.server
         .to(this.getRoomName(userId))

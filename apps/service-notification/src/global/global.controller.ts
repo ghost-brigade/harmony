@@ -1,5 +1,5 @@
 import { NOTIFICATION_MESSAGE_PATTERN } from "@harmony/service-config";
-import { ServerType } from "@harmony/zod";
+import { IdType, ServerType } from "@harmony/zod";
 import { Controller } from "@nestjs/common";
 import { MessagePattern, Payload } from "@nestjs/microservices";
 import { GlobalGateway } from "./global.gateway";
@@ -10,10 +10,11 @@ export class GlobalController {
 
   @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.NEW_SERVER_MESSAGE)
   async newServerMessage(
-    @Payload() payload: { server: ServerType }
+    @Payload() payload: { server: ServerType; channelId: IdType }
   ): Promise<void> {
     return await this.globalGateway.onNewMessage({
       server: payload.server,
+      channelId: payload.channelId,
     });
   }
 }

@@ -1,6 +1,8 @@
+import { firstValueFrom } from "rxjs";
 import { Permissions } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
+  ACCOUNT_MESSAGE_PATTERN,
   FILE_MESSAGE_PATTERN,
   NOTIFICATION_MESSAGE_PATTERN,
   SEARCH_MESSAGE_PATTERN,
@@ -13,6 +15,7 @@ import {
   MessageCreateType,
   UserContextType,
   MessageCreateSchema,
+  IdType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -38,7 +41,9 @@ export class MessageCreateService {
     @Inject(getServiceProperty(Services.SEARCH, "name"))
     private readonly clientSearch: ClientProxy,
     @Inject(getServiceProperty(Services.FILE, "name"))
-    private readonly clientFile: ClientProxy
+    private readonly clientFile: ClientProxy,
+    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
+    private readonly clientAccount: ClientProxy
   ) {}
 
   async create(
@@ -67,37 +72,93 @@ export class MessageCreateService {
       );
     }
 
-    const message = await this.messageModel({
+    const newMessage = await this.messageModel.create({
       content: payload.message.content,
       channel: payload.message.channel,
       author: user.id,
     });
 
-    if (payload.attachments) {
-      const attachmentsIds = [];
+    const attachmentsIds = [];
 
+    if (payload.attachments) {
       for (const attachment of payload.attachments) {
         const attachmentId = await this.serviceRequest.send({
           client: this.clientFile,
           pattern: FILE_MESSAGE_PATTERN.CREATE,
           data: {
             file: attachment,
-            message: message.id,
+            message: newMessage.id,
           },
+          promise: true,
         });
 
-        attachmentsIds.push(attachmentId);
+        attachmentsIds.push(attachmentId.id);
       }
-
-      message.attachments = await Promise.all(attachmentsIds);
     }
 
-    await this.sendToSearch(message);
-    await this.emitNotification(message);
+    const insertedMessage = await this.insertMessage(
+      newMessage,
+      attachmentsIds
+    );
 
+    await this.sendToSearch(insertedMessage);
+    await this.emitNotification(insertedMessage);
+
+    return insertedMessage;
+  }
+
+  async insertMessage(
+    message: MessageType,
+    attachments?: IdType[]
+  ): Promise<MessageType & { createdAt: string; updatedAt: string }> {
     try {
-      console.log("message", this.messageService.getAttachments(message));
-      return await message.save();
+      const newMessage = await this.messageModel.create(message);
+
+      if (attachments) {
+        const updatedMessage = await this.messageModel.findByIdAndUpdate(
+          newMessage.id,
+          {
+            attachments,
+          },
+          { new: true }
+        );
+
+        const attachmentsUrl = await this.messageService.getAttachments({
+          attachment: attachments,
+        });
+
+        const author = await firstValueFrom(
+          this.clientAccount.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
+            id: updatedMessage.author,
+          })
+        );
+
+        return {
+          id: updatedMessage.id,
+          content: updatedMessage.content,
+          channel: updatedMessage.channel,
+          // @ts-ignore
+          author: {
+            id: author.id,
+            username: author.username,
+            avatar: (
+              await this.serviceRequest.send({
+                client: this.clientFile,
+                pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+                data: {
+                  id: author.avatar,
+                },
+                promise: true,
+              })
+            ).url,
+          },
+          attachment: attachmentsUrl ?? [],
+          createdAt: updatedMessage.createdAt,
+          updatedAt: updatedMessage.updatedAt,
+        };
+      }
+
+      return newMessage;
     } catch (error) {
       console.log(error);
       throw new RpcException(
@@ -106,13 +167,13 @@ export class MessageCreateService {
     }
   }
 
-  async sendToSearch(message: MessageType & { _id: any }): Promise<void> {
+  async sendToSearch(message: MessageType): Promise<void> {
     try {
       await this.serviceRequest.send({
         client: this.clientSearch,
         pattern: SEARCH_MESSAGE_PATTERN.CREATE,
         data: {
-          id: message._id.toString(),
+          id: message.id,
           channelId: message.channel,
           content: message.content,
         },

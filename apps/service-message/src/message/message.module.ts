@@ -21,6 +21,7 @@ import { MessageUpdateService } from "./message-update.service";
       getService(Services.SERVER),
       getService(Services.SEARCH),
       getService(Services.FILE),
+      getService(Services.ACCOUNT),
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
