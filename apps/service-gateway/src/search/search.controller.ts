@@ -42,19 +42,19 @@ export class SearchController {
   //         not needed for deleting and updating because
   //         only author can update or delete its own message
 
-  @ApiCreatedResponse({
-    description: "Search",
-  })
-  @ApiBadRequestResponse()
-  @HttpCode(201)
-  @Post()
-  create(@Body() createSearch: SearchCreateType) {
-    return this.serviceRequest.send({
-      client: this.client,
-      pattern: SEARCH_MESSAGE_PATTERN.CREATE,
-      data: createSearch,
-    });
-  }
+  // @ApiCreatedResponse({
+  //   description: "Search",
+  // })
+  // @ApiBadRequestResponse()
+  // @HttpCode(201)
+  // @Post()
+  // create(@Body() createSearch: SearchCreateType) {
+  //   return this.serviceRequest.send({
+  //     client: this.client,
+  //     pattern: SEARCH_MESSAGE_PATTERN.CREATE,
+  //     data: createSearch,
+  //   });
+  // }
 
   @ApiOkResponse({
     description: "Search",
@@ -70,30 +70,30 @@ export class SearchController {
     });
   }
 
-  @ApiOkResponse({
-    description: "Update Search by message id",
-  })
-  @ApiBadRequestResponse()
-  @Put(":id")
-  update(@Param("id") id: IdType, @Body() updateSearch: SearchUpdateType) {
-    return this.serviceRequest.send({
-      client: this.client,
-      pattern: SEARCH_MESSAGE_PATTERN.UPDATE,
-      data: { id, ...updateSearch },
-    });
-  }
+  // @ApiOkResponse({
+  //   description: "Update Search by message id",
+  // })
+  // @ApiBadRequestResponse()
+  // @Put(":id")
+  // update(@Param("id") id: IdType, @Body() updateSearch: SearchUpdateType) {
+  //   return this.serviceRequest.send({
+  //     client: this.client,
+  //     pattern: SEARCH_MESSAGE_PATTERN.UPDATE,
+  //     data: { id, ...updateSearch },
+  //   });
+  // }
 
-  @ApiNoContentResponse({
-    description: "Delete Search by message id",
-  })
-  @ApiBadRequestResponse()
-  @HttpCode(204)
-  @Delete(":id")
-  delete(@Param("id") id: IdType) {
-    return this.serviceRequest.send({
-      client: this.client,
-      pattern: SEARCH_MESSAGE_PATTERN.DELETE,
-      data: { id },
-    });
-  }
+  // @ApiNoContentResponse({
+  //   description: "Delete Search by message id",
+  // })
+  // @ApiBadRequestResponse()
+  // @HttpCode(204)
+  // @Delete(":id")
+  // delete(@Param("id") id: IdType) {
+  //   return this.serviceRequest.send({
+  //     client: this.client,
+  //     pattern: SEARCH_MESSAGE_PATTERN.DELETE,
+  //     data: { id },
+  //   });
+  // }
 }
