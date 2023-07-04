@@ -3,10 +3,10 @@ name: "Terraform CI"
 on:
   workflow_dispatch: {}
   push:
-    # branches:
-    #   - main
-    # paths:
-    #   - "terraform/**"
+    branches:
+      - main
+    paths:
+      - "terraform/**"
   pull_request:
     paths:
       - "terraform/**"
