@@ -61,7 +61,6 @@ export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
   eventListener: (message: MessageGetType) => void;
 
   handleNewMessage(message: MessageGetType) {
-    message.content = escapeHtml(message.content);
     this.serverService.addMessage(message);
   }
 
