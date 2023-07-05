@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   OnInit,
   WritableSignal,
@@ -21,6 +22,8 @@ import { ServerService } from "./server.service";
 import { CallComponent } from "../../../shared/components/application/server/call/call.component";
 import { MessageComponent } from "../../../shared/components/application/message/message.component";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { escape } from "querystring";
+import { escapeHtml } from "../../../shared/utils/escapeHtml";
 
 @Component({
   selector: "harmony-server",
@@ -37,7 +40,7 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
   templateUrl: "./server.component.html",
   styleUrls: ["./server.component.css"],
 })
-export class ServerComponent implements OnInit {
+export class ServerComponent implements OnInit, AfterViewInit {
   requestService = inject(RequestService);
   socketService = inject(SocketService);
   serverService = inject(ServerService);
@@ -48,7 +51,7 @@ export class ServerComponent implements OnInit {
   $isCallOpen = computed(() => this.serverService.$isCallOpen());
   $activeChannel = computed(() => this.serverService.$activeChannel());
   $channelMessages = computed(() => this.serverService.$messages());
-
+  $loadingDone = computed(() => this.serverService.$loadingDone());
   $currentChannelName = computed(() => {
     const channel = this.$server()?.channels?.find(
       (c) => c.id === this.$activeChannel()
@@ -60,24 +63,18 @@ export class ServerComponent implements OnInit {
     console.log("joined:", this.$activeChannel());
   });
 
-  constructor(private route: ActivatedRoute) {
-    this.socketService.messageSocket.on(
-      MessageNotification.NEW_MESSAGE,
-      (message: MessageGetType) => {
-        this.serverService.addMessage(message);
-        this.scrollToBottom();
-      }
-    );
-  }
+  constructor(private route: ActivatedRoute) {}
 
   scrollToBottom() {
-    if (this.$channelMessages().length > 0) {
-      const messageList = document.querySelector("#message-list");
-      messageList?.scroll({
-        top: messageList.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+    setTimeout(() => {
+      if (this.$channelMessages().length > 0) {
+        const messageList = document.querySelector("#message-list");
+        messageList?.scroll({
+          top: messageList.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 2000);
   }
 
   ngOnInit() {
@@ -99,5 +96,43 @@ export class ServerComponent implements OnInit {
           },
         });
     });
+
+    this.socketService.messageSocket.on(
+      MessageNotification.NEW_MESSAGE,
+      (message: MessageGetType) => {
+        console.log("new message", message);
+        message.content = escapeHtml(message.content);
+        this.serverService.addMessage(message);
+        //this.scrollToBottom();
+      }
+    );
+    this.socketService.messageSocket.on("disconnect", (msg) =>
+      console.log("disconnected", msg)
+    );
+  }
+
+  observeLoader() {
+    setTimeout(() => {
+      const target = document.querySelector("#refresh-target");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              console.log("target reached");
+              console.log(this.serverService);
+              this.serverService.getMoreMessages();
+            }
+          });
+        },
+        { rootMargin: "0px", threshold: 0.1 }
+      );
+
+      observer.observe(target as Element);
+    }, 2000);
+  }
+
+  ngAfterViewInit(): void {
+    this.observeLoader();
   }
 }
