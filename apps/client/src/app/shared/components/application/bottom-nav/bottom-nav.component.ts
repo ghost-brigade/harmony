@@ -14,10 +14,10 @@ import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
 import { ImagePickerComponent } from "./image-picker/image-picker.component";
 import { HapticsService } from "../../../services/haptics.service";
-import { ChatService } from "apps/client/src/app/views/application/direct-messages/chat/chat.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { Capacitor } from "@capacitor/core";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
+import { escapeHtml } from "../../../utils/escapeHtml";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -40,22 +40,31 @@ export class BottomNavComponent {
   hapticsService = inject(HapticsService);
   serverService = inject(ServerService);
   $isEmojiPickerOpen = computed(
-    () => this.$emojiOpen() && this.bottomNavService.$isTextChannel()
+    () =>
+      this.bottomNavService.$emojiOpen() &&
+      this.bottomNavService.$isTextChannel()
   );
   $isAddFilesOpen = computed(
-    () => this.$addFilesOpen() && this.bottomNavService.$isTextChannel()
+    () =>
+      this.bottomNavService.$addFilesOpen() &&
+      this.bottomNavService.$isTextChannel()
   );
-  $emojiOpen = signal(false);
-  $addFilesOpen = signal(false);
   $isInTextChannel = computed(() => this.bottomNavService.$isTextChannel());
   $isBottomNavOpen = computed(() => this.bottomNavService.$showBottomNav());
   $currentRoute = computed(() => this.bottomNavService.$currentRoute());
   $message = signal("");
   $inputFocused = signal(false);
+  $file = computed(() => this.serverService.$file());
+  $fileUrl = computed(() => {
+    if (this.$file()) {
+      return URL.createObjectURL(this.$file() as Blob);
+    }
+    return "";
+  });
 
   toggleEmojiPicker() {
-    this.$addFilesOpen.set(false);
-    this.$emojiOpen.set(!this.$isEmojiPickerOpen());
+    this.bottomNavService.$addFilesOpen.set(false);
+    this.bottomNavService.$emojiOpen.set(!this.$isEmojiPickerOpen());
   }
 
   async vibrate() {
@@ -69,13 +78,13 @@ export class BottomNavComponent {
   }
 
   toggleAddFiles() {
-    this.$emojiOpen.set(false);
-    this.$addFilesOpen.set(!this.$isAddFilesOpen());
+    this.bottomNavService.$emojiOpen.set(false);
+    this.bottomNavService.$addFilesOpen.set(!this.$isAddFilesOpen());
   }
 
   addEmoji(emoji: string) {
     this.$message.set(this.$message() + emoji);
-    this.$emojiOpen.set(false);
+    this.bottomNavService.$emojiOpen.set(false);
     if (this.messageBox) {
       this.messageBox.nativeElement.focus();
     }
@@ -92,8 +101,13 @@ export class BottomNavComponent {
   }
 
   async sendMessage() {
-    this.serverService.sendMessage(this.$message());
+    // html encode message
+    this.serverService.sendMessage(escapeHtml(this.$message()));
     this.$message.set("");
     await this.vibrate();
+  }
+
+  removeFile() {
+    this.serverService.$file.set(undefined);
   }
 }

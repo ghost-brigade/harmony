@@ -52,14 +52,36 @@ export class GlobalAllMessageInterceptor implements NestInterceptor {
   private async global(message: MessageType) {
     const aggregateObject = {
       author: null,
+      attachment: [],
     };
 
     if (message.author) {
       aggregateObject.author = await this.authorMessage(message);
     }
+    if (message.attachment) {
+      aggregateObject.attachment = await this.attachmentMessage(message.attachment);
+    }
 
     // @ts-ignore
     return Object.assign(message.toJSON(), aggregateObject);
+  }
+
+  private async attachmentMessage(attachments: string[]) {
+    const attachmentUrls = [];
+
+    for (const attachmentId of attachments) {
+      const attachment = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: attachmentId,
+        },
+        promise: true,
+      });
+      attachmentUrls.push(attachment.url);
+    }
+
+    return attachmentUrls;
   }
 
   private async authorMessage(message: MessageType) {

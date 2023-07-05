@@ -185,7 +185,8 @@ export class MessageService {
       return {
         messages,
         count,
-        currentPage: payload.params?.page ?? 1,
+        // @ts-ignore
+        currentPage: Number.parseInt(payload.params?.page ?? "1"),
         lastPage: Math.ceil(count / (payload.params?.limit ?? 10)),
       };
     } catch (error) {
