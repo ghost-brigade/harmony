@@ -53,7 +53,7 @@ export class MessageUpdateService {
     const message = await this.messageModel.findById(payload.message.id);
 
     if (
-      message.author !== user.id ||
+      message.author !== user.id &&
       [Roles.ADMIN, Roles.MODERATOR].includes(user.role) === false
     ) {
       throw new RpcException(

@@ -53,7 +53,7 @@ export class MessageDeleteService {
     const message = await this.messageService.findById(payload, user, false);
 
     if (
-      message.author !== user.id ||
+      message.author !== user.id &&
       [Roles.ADMIN, Roles.MODERATOR].includes(user.role) === false
     ) {
       throw new RpcException(
