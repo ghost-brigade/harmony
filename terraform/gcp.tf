@@ -20,6 +20,14 @@ resource "google_artifact_registry_repository" "registry" {
   format        = "DOCKER"
 }
 
+resource "google_redis_instance" "redis" {
+  name           = "${var.app_name}-redis"
+  tier           = "BASIC"
+  memory_size_gb = 2
+  region         = var.google_region
+  redis_version  = "REDIS_6_X"
+}
+
 module "google_compute_global_address" {
   source        = "./modules/google_compute_global_address"
   app_name      = var.app_name
