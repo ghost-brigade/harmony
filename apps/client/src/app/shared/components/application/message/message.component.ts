@@ -4,6 +4,7 @@ import { MarkdownModule } from "ngx-markdown";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MessageGetType } from "@harmony/zod";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { IMAGE_ANIMATION } from "./image.animation";
 
 @Component({
   selector: "harmony-message",
@@ -16,12 +17,17 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
   ],
   templateUrl: "./message.component.html",
   styleUrls: ["./message.component.css"],
+  animations: IMAGE_ANIMATION,
 })
 export class MessageComponent {
   @Input() message!: MessageGetType;
   selectedImage = "";
+  style = "opacity-0";
 
   setSelectedImage(image: string) {
     this.selectedImage = image;
+  }
+  addOpacity() {
+    this.style = "opacity-100";
   }
 }
