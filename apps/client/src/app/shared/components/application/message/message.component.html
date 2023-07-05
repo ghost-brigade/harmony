@@ -1,13 +1,34 @@
-<div class="flex min-h-[40px] w-full max-w-[100vw] flex-row gap-2 break-words">
+<div
+  class="flex min-h-[40px] w-full max-w-[100vw] flex-row gap-2 break-words"
+  (touchstart)="handleLongPress($event)"
+  (touchend)="handleLongPress($event)"
+  (touchmove)="handleLongPress($event)"
+  (touchcancel)="handleLongPress($event)">
   <harmony-avatar
     [image]="message.author.avatar"
     class="mt-1" />
-  <div class="flex min-w-[calc(100%-40px)] max-w-[calc(100%-40px)] flex-col">
+  <div
+    class="group flex min-w-[calc(100%-40px)] max-w-[calc(100%-40px)] flex-col">
     <div class="flex w-full justify-between">
       <span class="cursor-pointer font-semibold underline">
         {{ message.author.username }}
       </span>
-      <span class="text-sm">
+      <span class="flex flex-row items-center text-sm">
+        <svg
+          fill="none"
+          *ngIf="$isAuthor()"
+          (click)="editMessage()"
+          stroke="currentColor"
+          class="h-6 w-6 cursor-pointer opacity-0 transition-all duration-300 group-hover:opacity-100"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"></path>
+        </svg>
         {{ message.createdAt | date : "short" }}
       </span>
     </div>
@@ -37,3 +58,4 @@
     }}"
     alt="" />
 </div>
+<harmony-message-pop />

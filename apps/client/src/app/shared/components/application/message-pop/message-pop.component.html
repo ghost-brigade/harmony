@@ -1,0 +1,16 @@
+<div
+  *ngIf="$open()"
+  (click)="close()"
+  class="fixed left-0 top-0 z-[200] flex h-screen w-screen items-center justify-center overflow-hidden backdrop-blur-sm">
+  <div
+    class="flex max-w-[200px] flex-col items-center gap-2 rounded-lg bg-white p-4 shadow dark:bg-gray-800"
+    (click)="$event.stopPropagation()">
+    <textarea
+      class="c-input max-h-64 resize-none"
+      [value]="$message()?.content"></textarea>
+    <button class="c-button">Edit message</button>
+    <button class="c-button bg-red-500 text-white hover:bg-red-600">
+      Delete message
+    </button>
+  </div>
+</div>
