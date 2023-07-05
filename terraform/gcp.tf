@@ -28,10 +28,16 @@ resource "google_redis_instance" "redis" {
   redis_version  = "REDIS_6_X"
 }
 
-module "google_compute_global_address" {
-  source        = "./modules/google_compute_global_address"
-  app_name      = var.app_name
-  address_names = ["client-ip", "gateway-ip", "notification-ip"]
+resource "google_compute_global_address" "client_ip" {
+  name = "${var.app_name}-client-ip"
+}
+
+resource "google_compute_global_address" "gateway_ip" {
+  name = "${var.app_name}-gateway-ip"
+}
+
+resource "google_compute_global_address" "notification_ip" {
+  name = "${var.app_name}-notification-ip"
 }
 
 module "google_compute_network" {
