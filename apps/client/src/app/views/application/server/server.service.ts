@@ -21,6 +21,7 @@ export class ServerService {
   $messages: WritableSignal<MessageGetType[]> = signal([]);
   $file: WritableSignal<Blob | undefined> = signal(undefined);
   isLoading = false;
+  audio = new Audio("/assets/sound/notification.mp3");
   lastMessageRequest:
     | {
         count: number;
@@ -100,6 +101,9 @@ export class ServerService {
   }
 
   addMessage(message: MessageGetType) {
+    if (message.author.id !== this.authService.$userId()) {
+      this.audio.play();
+    }
     this.$messages.set([message, ...this.$messages()]);
   }
 
