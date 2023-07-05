@@ -5,10 +5,7 @@ import { LoaderComponent } from "./core/components/loader/loader.component";
 import { AlertComponent } from "./core/components/alert/alert.component";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
-import {
-  setBackForwardNavigationGestures,
-  setWebviewBounce,
-} from "capacitor-plugin-ios-webview-configurator";
+import { setWebviewBounce } from "capacitor-plugin-ios-webview-configurator";
 import { ToastComponent } from "./core/components/toast/toast.component";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { BottomNavComponent } from "./shared/components/application/bottom-nav/bottom-nav.component";
