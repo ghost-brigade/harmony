@@ -5,6 +5,8 @@ import { Module } from "@nestjs/common";
 import { ClientsModule } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PrivateMessageSchema } from "@harmony/nest-schemas";
+import { PrivateMessageController } from "./private-message.controller";
+import { PrivateMessageService } from "./private-message.service";
 @Module({
   imports: [
     NestMicroserviceModule,
@@ -21,7 +23,7 @@ import { PrivateMessageSchema } from "@harmony/nest-schemas";
       { name: "PrivateMessage", schema: PrivateMessageSchema },
     ]),
   ],
-  controllers: [],
-  providers: [],
+  controllers: [PrivateMessageController],
+  providers: [PrivateMessageService],
 })
 export class PrivateMessageModule {}
