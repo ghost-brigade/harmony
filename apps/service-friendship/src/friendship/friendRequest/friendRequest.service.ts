@@ -1,6 +1,5 @@
 import {
   FormatZodResponse,
-  FriendRequestParamsType,
   FriendRequestType,
   IdSchema,
   IdType,
@@ -12,13 +11,11 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
 import { FriendService } from "../friend/friend.service";
-import { ObjectId } from "mongoose";
 import { getServiceProperty, Services } from "@harmony/service-config";
 import { ServiceRequest } from "@harmony/nest-microservice";
 
@@ -60,9 +57,6 @@ export class FriendRequestService {
         { user1: receiver, user2: user.id },
       ],
     });
-    console.log("___________friendExists_______________");
-    console.log(friendExists);
-    console.log("___________friendExists_______________");
     if (friendExists.length > 0) {
       throw new RpcException(
         new BadRequestException("You are already friend with this user.")
@@ -134,9 +128,6 @@ export class FriendRequestService {
       const friendrequests = await this.friendrequestModel
         .find({ sender: user.id })
         .exec();
-      console.log("___________friendrequest_______________");
-      console.log(friendrequests);
-      console.log("___________friendrequest_______________");
       return friendrequests as FriendRequestType[];
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
@@ -162,10 +153,6 @@ export class FriendRequestService {
     friendrequestId: IdType,
     user: UserContextType
   ): Promise<FriendRequestType> {
-    console.log("__________________________");
-    console.log("findOneRequestFriend");
-    console.log("__________________________");
-
     try {
       const friendrequest = await this.friendrequestModel.findOne({
         $or: [
@@ -193,10 +180,6 @@ export class FriendRequestService {
     payload: { id: IdType },
     user: UserContextType
   ): Promise<FriendRequestType> {
-    console.log("__________________________");
-    console.log("findOneRequestFriend");
-    console.log("__________________________");
-
     try {
       const friendrequest = await this.friendrequestModel.findOne({
         $or: [
@@ -247,7 +230,6 @@ export class FriendRequestService {
       );
       return this.deleteFriendRequest({ id: user.id }, user);
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new BadRequestException("Error accepting friendrequest request.")
       );
@@ -258,8 +240,6 @@ export class FriendRequestService {
     payload: { id: IdType },
     user: UserContextType
   ): Promise<boolean> {
-    // const { id } = payload;
-
     try {
       const friendrequest = await this.findOneRequestFriend(payload.id, user);
       if (!friendrequest) {
@@ -278,7 +258,6 @@ export class FriendRequestService {
 
       return this.deleteFriendRequest({ id: user.id }, user);
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new BadRequestException("Error rejecting friendrequest.")
       );
@@ -298,19 +277,12 @@ export class FriendRequestService {
       );
     }
 
-    //check if friendrequest exists
     const friendrequest = await this.findOneRequestFriend(payload.id, user);
     if (!friendrequest) {
       throw new RpcException(
         new NotFoundException("FriendRequest request not found.")
       );
     }
-
-    // if (friendrequest.sender !== user.id) {
-    //   throw new RpcException(
-    //     new UnauthorizedException("You are not authorized to delete this friendrequest request.")
-    //   );
-    // }
 
     try {
       await this.friendrequestModel.deleteOne({

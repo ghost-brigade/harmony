@@ -4,7 +4,7 @@
     class="mt-1" />
   <div class="flex min-w-[calc(100%-40px)] max-w-[calc(100%-40px)] flex-col">
     <div class="flex w-full justify-between">
-      <span class="cursor-pointer">
+      <span class="cursor-pointer font-semibold underline">
         {{ message.author.username }}
       </span>
       <span class="text-sm">
@@ -20,16 +20,20 @@
       <img
         [src]="image"
         (click)="setSelectedImage(image)"
-        class="max-h-[300px] max-w-[300px] cursor-pointer rounded-lg object-contain" />
+        class="max-h-[300px] max-w-[100%] cursor-pointer rounded-lg object-contain" />
     </div>
   </div>
 </div>
 <div
+  @image
   *ngIf="selectedImage"
   (click)="setSelectedImage('')"
   class="fixed left-0 top-0 z-[200] flex h-screen w-screen items-center justify-center overflow-hidden backdrop-blur-lg">
   <img
     [src]="selectedImage"
-    class="max-h-[80vh] max-w-[80vw] rounded-lg"
+    (load)="addOpacity()"
+    class="max-h-[80vh] max-w-[80vw] rounded-lg transition-all duration-500 {{
+      style
+    }}"
     alt="" />
 </div>

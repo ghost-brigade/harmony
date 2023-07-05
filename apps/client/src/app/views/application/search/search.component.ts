@@ -83,7 +83,7 @@ export class SearchComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.router.navigateByUrl(`/app/servers/${server.id}`);
+          this.router.navigateByUrl(`/app/server/${server.id}`);
         },
       });
   }

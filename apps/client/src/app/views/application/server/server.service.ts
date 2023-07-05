@@ -5,7 +5,7 @@ import { GetEndpoint } from "../../../core/constants/endpoints/get.constants";
 import { HttpClient } from "@angular/common/http";
 import { API_BASE_URL } from "../../../core/constants/api.constants";
 import { AuthService } from "../../../core/services/auth.service";
-import { finalize, last } from "rxjs";
+import { finalize } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -56,6 +56,7 @@ export class ServerService {
   }
 
   setActiveChannel(channel: string) {
+    this.$messages.set([]);
     this.lastMessageRequest = undefined;
     this.$loadingDone.set(false);
     this.$activeChannel.set(channel);

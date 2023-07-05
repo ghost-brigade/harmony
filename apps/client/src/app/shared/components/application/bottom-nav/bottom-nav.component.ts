@@ -17,7 +17,6 @@ import { HapticsService } from "../../../services/haptics.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { Capacitor } from "@capacitor/core";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
-import { escapeHtml } from "../../../utils/escapeHtml";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -61,6 +60,13 @@ export class BottomNavComponent {
     }
     return "";
   });
+  $canSend = computed(() => {
+    return (
+      ((this.$inputFocused() && this.$message().trim().length > 0) ||
+        this.$file() !== undefined) &&
+      this.$message().trim().length < 2000
+    );
+  });
 
   toggleEmojiPicker() {
     this.bottomNavService.$addFilesOpen.set(false);
@@ -101,8 +107,11 @@ export class BottomNavComponent {
   }
 
   async sendMessage() {
-    // html encode message
-    this.serverService.sendMessage(escapeHtml(this.$message()));
+    const msg = this.$message().trim();
+    if (!msg && !this.$file()) {
+      return;
+    }
+    this.serverService.sendMessage(msg);
     this.$message.set("");
     await this.vibrate();
   }
