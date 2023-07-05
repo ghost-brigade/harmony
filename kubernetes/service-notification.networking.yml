@@ -14,6 +14,9 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: harmony-notification-ip
     networking.gke.io/managed-certificates: service-notification-cert
+    # nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600s"
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "200000"
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "30000"
 spec:
   rules:
     - host: ws.harmony.vg
@@ -22,6 +25,6 @@ spec:
           - pathType: ImplementationSpecific
             backend:
               service:
-                name: service-notification
+                name: service-notification-svc
                 port:
                   number: 60000
