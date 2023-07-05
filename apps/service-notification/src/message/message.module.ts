@@ -6,6 +6,7 @@ import { MessageController } from "./message.controller";
 import { MessageGateway } from "./message.gateway";
 import { WsAuthService } from "../ws-auth.service";
 import { MessageAuthorizationService } from "./message-authorization.service";
+import { MessageService } from "./message.service";
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { MessageAuthorizationService } from "./message-authorization.service";
     ]),
   ],
   controllers: [MessageController],
-  providers: [WsAuthService, MessageGateway, MessageAuthorizationService],
+  providers: [WsAuthService, MessageGateway, MessageAuthorizationService, MessageService],
   exports: [WsAuthService],
 })
 export class MessageModule {}
