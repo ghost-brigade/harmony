@@ -94,16 +94,19 @@ export class PrivateMessageController {
     description: "The private message to create.",
     type: PrivateMessageCreateDto,
   })
-  // @UseInterceptors(FilesInterceptor("attachements[]", 3))
+  @UseInterceptors(FilesInterceptor("attachements[]", 3))
   async newMessage(
-    // @UploadedFiles() attachments: Multer[],
+    @UploadedFiles() attachments: Multer[],
     @Body() privateMessage: PrivateMessageCreateDto,
     @Param("receiverId") receiverId: string
   ): Promise<PrivateMessageDto> {
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
       pattern: PRIVATE_MESSAGE_PATTERN.CREATE,
-      data: { message: { ...privateMessage, receiver: receiverId } },
+      data: {
+        message: { ...privateMessage, receiver: receiverId },
+        attachments,
+      },
     });
   }
 
