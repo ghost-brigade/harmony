@@ -16,6 +16,7 @@ import {
   UserContextType,
   MessageCreateSchema,
   IdType,
+  UserType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -80,45 +81,90 @@ export class MessageCreateService {
 
     const attachmentsIds = [];
 
-    if (payload.attachments) {
-      for (const attachment of payload.attachments) {
-        const attachmentId = await this.serviceRequest.send({
+    try {
+      if (payload.attachments) {
+        for (const attachment of payload.attachments) {
+          const attachmentId = await this.serviceRequest.send({
+            client: this.clientFile,
+            pattern: FILE_MESSAGE_PATTERN.CREATE,
+            data: {
+              file: attachment,
+              message: newMessage.id,
+            },
+            promise: true,
+          });
+
+          attachmentsIds.push(attachmentId.id);
+        }
+      }
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Cannot upload message attachments")
+      );
+    }
+
+    try {
+      await newMessage.save();
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Cannot create a message")
+      );
+    }
+
+    const message = await this.insertMessage(newMessage, attachmentsIds);
+
+    await this.sendToSearch(message);
+    await this.emitNotification(message);
+
+    return message;
+  }
+
+  async insertMessage(
+    message: MessageType & { createdAt: string; updatedAt: string },
+    attachments?: IdType[]
+  ): Promise<MessageType & { createdAt: string; updatedAt: string }> {
+    try {
+      const authors = await this.serviceRequest.send({
+        client: this.clientAccount,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS,
+        data: {
+          ids: [message.author],
+        },
+        promise: true,
+      });
+
+      let user;
+      const author = authors[0];
+
+      if (authors.length > 0) {
+        const avatarUrl = await this.serviceRequest.send({
           client: this.clientFile,
-          pattern: FILE_MESSAGE_PATTERN.CREATE,
+          pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
           data: {
-            file: attachment,
-            message: newMessage.id,
+            id: author.avatar,
           },
           promise: true,
         });
 
-        attachmentsIds.push(attachmentId.id);
+        user = {
+          id: author.id,
+          username: author.username,
+          avatar: avatarUrl.url,
+        };
+      } else {
+        user = {
+          id: author.id,
+          username: author.username,
+          avatar: null,
+        };
       }
-    }
-
-    const insertedMessage = await this.insertMessage(
-      newMessage,
-      attachmentsIds
-    );
-
-    await this.sendToSearch(insertedMessage);
-    await this.emitNotification(insertedMessage);
-
-    return insertedMessage;
-  }
-
-  async insertMessage(
-    message: MessageType,
-    attachments?: IdType[]
-  ): Promise<MessageType & { createdAt: string; updatedAt: string }> {
-    try {
-      const newMessage = await this.messageModel.create(message);
 
       if (attachments) {
+        // push attachments to message
         const updatedMessage = await this.messageModel.findByIdAndUpdate(
-          newMessage.id,
+          message.id,
           {
-            attachments,
+            attachment: attachments,
           },
           { new: true }
         );
@@ -127,51 +173,28 @@ export class MessageCreateService {
           attachment: attachments,
         });
 
-        const authors = await this.serviceRequest.send({
-          client: this.clientAccount,
-          pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS,
-          data: {
-            ids: [updatedMessage.author],
-          },
-          promise: true,
-        });
-
-        const message = {
+        const messageResponse = {
           id: updatedMessage.id,
           content: updatedMessage.content,
           channel: updatedMessage.channel,
           attachment: attachmentsUrl ?? [],
-          author: updatedMessage.author,
+          author: user,
           createdAt: updatedMessage.createdAt,
           updatedAt: updatedMessage.updatedAt,
         };
 
-        console.log(authors[0]);
-
-        if (authors.length > 0) {
-          const author = authors[0];
-          console.log(author);
-
-          const avatarUrl = await this.serviceRequest.send({
-            client: this.clientFile,
-            pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
-            data: {
-              id: author.avatar,
-            },
-            promise: true,
-          });
-
-          message.author = {
-            id: author.id,
-            username: author.username,
-            avatar: avatarUrl.url,
-          };
-        }
-
-        return message;
-      } else {
-        return newMessage;
+        return messageResponse;
       }
+
+      return {
+        id: message.id,
+        content: message.content,
+        channel: message.channel,
+        author: user,
+        attachment: attachments,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
+      };
     } catch (error) {
       console.log(error);
       throw new RpcException(
