@@ -4,7 +4,7 @@ import {
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
-import { MessageCreateDto, MessageDto, MessageUpdateDto } from "@harmony/zod";
+import { PrivateMessageDto, PrivateMessageCreateDto } from "@harmony/zod";
 import {
   Body,
   Controller,
@@ -56,6 +56,36 @@ export class PrivateMessageController {
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
       pattern: "abc",
+    });
+  }
+
+  @Post()
+  @HttpCode(201)
+  @ApiOperation({
+    summary: "Create a new private message",
+    description: "Create a new private message",
+  })
+  @ApiCreatedResponse({
+    description: "The private message has been successfully created.",
+    type: PrivateMessageDto,
+  })
+  @ApiBadRequestResponse({
+    description: "The provided data was invalid.",
+  })
+  @ApiUnauthorizedResponse({
+    description: "The user is not authorized.",
+  })
+  @ApiBody({
+    description: "The private message to create.",
+    type: PrivateMessageCreateDto,
+  })
+  async newMessage(
+    @Body() privateMessage: PrivateMessageCreateDto
+  ): Promise<PrivateMessageDto> {
+    return this.serviceRequest.send({
+      client: this.clientPrivateMessage,
+      pattern: PRIVATE_MESSAGE_PATTERN.CREATE,
+      data: { privateMessage },
     });
   }
 }
