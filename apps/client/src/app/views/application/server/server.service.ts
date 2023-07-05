@@ -5,6 +5,7 @@ import { GetEndpoint } from "../../../core/constants/endpoints/get.constants";
 import { HttpClient } from "@angular/common/http";
 import { API_BASE_URL } from "../../../core/constants/api.constants";
 import { AuthService } from "../../../core/services/auth.service";
+import { finalize, last } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -18,6 +19,17 @@ export class ServerService {
   $isCallOpen = signal(false);
   $activeChannel = signal("");
   $messages: WritableSignal<MessageGetType[]> = signal([]);
+  $file: WritableSignal<Blob | undefined> = signal(undefined);
+  isLoading = false;
+  lastMessageRequest:
+    | {
+        count: number;
+        currentPage: number;
+        lastPage: number;
+        messages: MessageGetType[];
+      }
+    | undefined;
+  $loadingDone = signal(false);
 
   openChannelList() {
     this.$isChannelListOpen.set(true);
@@ -44,10 +56,14 @@ export class ServerService {
   }
 
   setActiveChannel(channel: string) {
+    this.lastMessageRequest = undefined;
+    this.$loadingDone.set(false);
     this.$activeChannel.set(channel);
   }
 
   getChannelMessages(channelId: string) {
+    this.$loadingDone.set(false);
+    this.lastMessageRequest = undefined;
     this.requestService
       .get({
         endpoint: GetEndpoint.ChannelMessages,
@@ -63,6 +79,14 @@ export class ServerService {
         next: (messages) => {
           console.log(messages);
           this.$messages.set(messages.messages);
+          this.lastMessageRequest = messages;
+          setTimeout(() => {
+            const messageList = document.querySelector("#message-list");
+            messageList?.scroll({
+              top: messageList.scrollHeight,
+              behavior: "smooth",
+            });
+          }, 500);
         },
       });
   }
@@ -75,6 +99,10 @@ export class ServerService {
     const form = new FormData();
     form.append("channel", this.$activeChannel());
     form.append("content", content);
+    if (this.$file()) {
+      form.append("attachements[]", this.$file() as Blob);
+    }
+    this.$file.set(undefined);
     this.http
       .post(API_BASE_URL + "/message", form, {
         headers: {
@@ -86,5 +114,48 @@ export class ServerService {
           console.log(message);
         },
       });
+  }
+
+  getMoreMessages() {
+    if (this.isLoading) {
+      console.log("already loading");
+      return;
+    }
+    if (this.lastMessageRequest) {
+      this.isLoading = true;
+    }
+    if (this.lastMessageRequest) {
+      if (
+        this.lastMessageRequest.currentPage < this.lastMessageRequest.lastPage
+      ) {
+        this.requestService
+          .get({
+            endpoint: GetEndpoint.ChannelMessages,
+            params: {
+              channelId: this.$activeChannel(),
+            },
+            queryParams: {
+              limit: 30,
+              page: +this.lastMessageRequest.currentPage + 1,
+            },
+          })
+          .pipe(finalize(() => (this.isLoading = false)))
+          .subscribe({
+            next: (messages) => {
+              console.log(messages);
+              this.lastMessageRequest = messages;
+              if (
+                this.lastMessageRequest.currentPage ===
+                this.lastMessageRequest.lastPage
+              ) {
+                this.$loadingDone.set(true);
+              }
+              this.$messages().push(...messages.messages);
+            },
+          });
+      } else {
+        this.$loadingDone.set(true);
+      }
+    }
   }
 }

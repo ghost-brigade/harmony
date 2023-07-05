@@ -9,9 +9,13 @@ import { BrowserModule, bootstrapApplication } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
 import { defineCustomElements } from "@ionic/pwa-elements/loader";
-import { MarkdownModule, MarkedOptions } from "ngx-markdown";
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
 import { GLOBAL_AUTO_ANIMATE_OPTIONS } from "ng-auto-animate";
-import { SecurityContext } from "@angular/core";
+
+const renderer = new MarkedRenderer();
+renderer.image = (href: string, title: string, text: string) => {
+  return `![${text}](${href})`;
+};
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -36,6 +40,7 @@ bootstrapApplication(AppComponent, {
             pedantic: false,
             smartLists: true,
             smartypants: false,
+            renderer,
           },
         },
       })

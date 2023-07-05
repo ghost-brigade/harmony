@@ -5,6 +5,18 @@
 <harmony-image-picker
   [open]="$isAddFilesOpen()"
   auto-animate />
+
+<div
+  *ngIf="$file() !== undefined"
+  class="fixed bottom-[calc(env(safe-area-inset-bottom)+4rem)] left-5 z-10 mx-auto mb-4 flex max-h-[150px] min-h-[150px] min-w-[150px] max-w-[150px] flex-col items-center justify-center gap-2 whitespace-nowrap rounded-lg md:left-[calc((100vw-672px)/2)]"
+  auto-animate>
+  <img
+    (click)="removeFile()"
+    *ngIf="$file() !== undefined"
+    [src]="$fileUrl()"
+    class="fixed bottom-[calc(env(safe-area-inset-bottom)+4rem)] left-5 z-10 mx-auto mb-4 flex max-h-[150px] max-w-[150px] cursor-pointer flex-col gap-2 whitespace-nowrap rounded-lg shadow transition-all duration-300 hover:brightness-50 md:left-[calc((100vw-672px)/2)]" />
+</div>
+
 <div
   *ngIf="$isBottomNavOpen()"
   @bottomNav

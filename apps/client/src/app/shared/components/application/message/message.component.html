@@ -1,21 +1,35 @@
-<div class="flex min-h-[40px] w-full min-w-max max-w-full flex-row gap-2">
+<div class="flex min-h-[40px] w-full max-w-[100vw] flex-row gap-2 break-words">
   <harmony-avatar
     [image]="message.author.avatar"
-    status="red"
     class="mt-1" />
-  <div class="flex w-full flex-col">
+  <div class="flex min-w-[calc(100%-40px)] max-w-[calc(100%-40px)] flex-col">
     <div class="flex w-full justify-between">
-      <span class="">
+      <span class="cursor-pointer">
         {{ message.author.username }}
       </span>
-      <span>
+      <span class="text-sm">
         {{ message.createdAt | date : "short" }}
       </span>
     </div>
     <markdown
-      class="format dark:format-invert text-black dark:text-white"
+      class="format dark:format-invert max-w-[calc(100%-40px)] select-text overflow-hidden !break-words text-black dark:text-white"
       ngPreserveWhitespaces
       [data]="message.content">
     </markdown>
+    <div *ngFor="let image of message.attachment">
+      <img
+        [src]="image"
+        (click)="setSelectedImage(image)"
+        class="max-h-[300px] max-w-[300px] cursor-pointer rounded-lg object-contain" />
+    </div>
   </div>
+</div>
+<div
+  *ngIf="selectedImage"
+  (click)="setSelectedImage('')"
+  class="fixed left-0 top-0 z-[200] flex h-screen w-screen items-center justify-center overflow-hidden backdrop-blur-lg">
+  <img
+    [src]="selectedImage"
+    class="max-h-[80vh] max-w-[80vw] rounded-lg"
+    alt="" />
 </div>
