@@ -111,6 +111,14 @@ export class FriendshipController {
     return (await this.friendService.findFriendWithUser(payload, user)) ?? [];
   }
 
+  @MessagePattern(FRIEND_MESSAGE_PATTERN.IS_FRIEND)
+  async isFriend(
+    @Payload() payload: { id: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return (await this.friendService.isFriend(payload, user)) ?? [];
+  }
+
   @MessagePattern(FRIEND_MESSAGE_PATTERN.DELETE)
   async deleteFriend(
     @Payload() payload: { id: IdType },

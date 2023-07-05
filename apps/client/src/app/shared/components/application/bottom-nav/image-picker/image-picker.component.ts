@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilePicker } from "@capawesome/capacitor-file-picker";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
@@ -22,10 +22,11 @@ export class ImagePickerComponent {
   async addFiles() {
     const result = await FilePicker.pickImages({
       multiple: false,
+      readData: true,
     });
-    this.serverService.$file.set(result.files[0].blob);
+    const file = this.b64toBlob(result.files[0].data as string);
+    this.serverService.$file.set(file);
     this.bottomNavService.$addFilesOpen.set(false);
-    console.log(result);
   }
 
   async openCamera() {
@@ -47,10 +48,12 @@ export class ImagePickerComponent {
       }
     }
     const image = await Camera.getPhoto({
-      quality: 90,
+      quality: 70,
       allowEditing: false,
       source: CameraSource.Camera,
       resultType: CameraResultType.Uri,
+      width: 1200,
+      height: 1200,
     });
     if (image.webPath) {
       const file = await fetch(image.webPath);

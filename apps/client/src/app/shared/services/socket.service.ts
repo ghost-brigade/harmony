@@ -16,6 +16,12 @@ export class SocketService {
       token: this.authService.$token(),
     },
   });
+
+  constructor() {
+    this.messageSocket.on("disconnect", () => {
+      this.messageSocket.connect();
+    });
+  }
   /*
   serverSocket = io(WS_BASE_URL + "/server", {
     auth: {
@@ -32,8 +38,6 @@ export class SocketService {
   joinChannel(channelId: string) {
     console.log(this.authService.$token());
     console.log(channelId);
-    this.messageSocket.disconnect();
-    this.messageSocket.connect();
     this.messageSocket.emit(MessageNotification.JOIN_CHANNEL, channelId);
     this.serverService.getChannelMessages(channelId);
   }
