@@ -15,7 +15,9 @@ const PrivateMessageSchema = z.object({
 
 export const PrivateMessageCreateSchema = PrivateMessageSchema.omit({
   id: true,
-  attachment: true,
+  // attachment: true,
+  author: true,
+  // receiver: true,
 });
 
 export const PrivateMessageUpdateSchema = PrivateMessageSchema.omit({

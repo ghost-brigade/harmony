@@ -59,7 +59,7 @@ export class PrivateMessageController {
     });
   }
 
-  @Post()
+  @Post("user/:receiverId")
   @HttpCode(201)
   @ApiOperation({
     summary: "Create a new private message",
@@ -79,13 +79,16 @@ export class PrivateMessageController {
     description: "The private message to create.",
     type: PrivateMessageCreateDto,
   })
+  // @UseInterceptors(FilesInterceptor("attachements[]", 3))
   async newMessage(
-    @Body() privateMessage: PrivateMessageCreateDto
+    // @UploadedFiles() attachments: Multer[],
+    @Body() privateMessage: PrivateMessageCreateDto,
+    @Param("receiverId") receiverId: string
   ): Promise<PrivateMessageDto> {
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
       pattern: PRIVATE_MESSAGE_PATTERN.CREATE,
-      data: { privateMessage },
+      data: { message: { ...privateMessage, receiver: receiverId } },
     });
   }
 }
