@@ -66,20 +66,18 @@ export class GlobalUserPrivateMessageInterceptor implements NestInterceptor {
       },
       promise: true,
     });
-    console.log(user);
 
-    // if (user.avatar) {
-    //   const icon = await this.serviceRequest.send({
-    //     client: this.fileService,
-    //     pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
-    //     data: {
-    //       id: user.avatar,
-    //     },
-    //     promise: true,
-    //   });
-    //   user.avatar = icon.url;
-    // }
-    // console.log(user);
+    if (user.avatar) {
+      const icon = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: user.avatar,
+        },
+        promise: true,
+      });
+      user.avatar = icon.url;
+    }
 
     return user;
   }

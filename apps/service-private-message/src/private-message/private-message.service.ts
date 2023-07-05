@@ -5,6 +5,8 @@ import {
   AUTHORIZATION_MESSAGE_PATTERN,
   CHANNEL_MESSAGE_PATTERN,
   FILE_MESSAGE_PATTERN,
+  FRIENDREQUEST_MESSAGE_PATTERN,
+  FRIEND_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
@@ -113,6 +115,16 @@ export class PrivateMessageService {
         new NotFoundException(Errors.ERROR_USER_NOT_FOUND)
       );
     }
+
+    // USER IS NOT YOUR FRIEND
+    // const isFriend = await this.serviceRequest.send({
+    //   client: this.accountService,
+    //   pattern: FRIEND_MESSAGE_PATTERN.FIND_ALL,
+    //   data: {
+    //     id: payload.message.receiver,
+    //   },
+    //   promise: true,
+    // });
 
     const newMessage = await this.privateMessageModel.create({
       content: payload.message.content,
