@@ -111,10 +111,12 @@ export class GlobalServerInterceptor implements NestInterceptor {
         promise: true,
       });
 
+      console.log("Icon", icon);
+
       return icon.url;
     } catch (error) {
       console.log("Error", error);
-      return server.icon;
+      return undefined;
     }
   }
 
