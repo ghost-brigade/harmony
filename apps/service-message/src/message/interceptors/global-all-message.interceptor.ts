@@ -71,6 +71,18 @@ export class GlobalAllMessageInterceptor implements NestInterceptor {
       },
       promise: true,
     });
+    if (author.avatar) {
+      const icon = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: author.avatar,
+        },
+        promise: true,
+      });
+      author.avatar = icon.url;
+    }
+
     return author;
   }
 }
