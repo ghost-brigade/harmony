@@ -45,7 +45,7 @@ export class PrivateMessageController {
     private readonly serviceRequest: ServiceRequest
   ) {}
 
-  @Get()
+  @Get("user")
   @HttpCode(200)
   @ApiOperation({
     summary: "Get all messages",
@@ -55,7 +55,7 @@ export class PrivateMessageController {
     console.log("getAll");
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
-      pattern: "abc",
+      pattern: PRIVATE_MESSAGE_PATTERN.FIND_ALL,
     });
   }
 

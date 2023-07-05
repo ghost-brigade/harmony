@@ -41,7 +41,43 @@ export class PrivateMessageService {
   ) {}
 
   public async findAll(user: UserContextType): Promise<any> {
-    return "test";
+    const query = {
+      $or: [{ author: user.id }, { receiver: user.id }],
+    };
+
+    const distinctUsers = await this.privateMessageModel.aggregate([
+      { $match: query },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $cond: {
+              if: { $eq: ["$author", user.id] },
+              then: "$receiver",
+              else: "$author",
+            },
+          },
+          createdAt: { $first: "$createdAt" },
+        },
+      },
+      {
+        $project: {
+          userId: "$_id",
+          _id: 0,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+
+    return distinctUsers.map((user: { userId: string }) => user.userId);
   }
 
   public async create(
