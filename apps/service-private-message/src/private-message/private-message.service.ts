@@ -20,6 +20,7 @@ import {
   PrivateMessageCreateType,
   PrivateMessageCreateSchema,
   FormatZodResponse,
+  PrivateMessageDto,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -82,6 +83,19 @@ export class PrivateMessageService {
     return distinctUsers.map((user: { userId: string }) => user.userId);
   }
 
+  public async findMessagesWithUser(userId: string): Promise<any> {
+    const query = {
+      $or: [{ author: userId }, { receiver: userId }],
+    };
+
+    const messages = await this.privateMessageModel
+      .find(query)
+      .sort({ createdAt: 1 })
+      .exec();
+
+    return messages;
+  }
+
   public async create(
     payload: { message: PrivateMessageCreateType; attachments: Multer[] },
     user: UserContextType
@@ -133,5 +147,34 @@ export class PrivateMessageService {
     });
 
     return newMessage;
+  }
+
+  public async updateMessage(
+    messageId: string,
+    privateMessage: PrivateMessageDto
+  ): Promise<PrivateMessageDto> {
+    const updatedMessage = await this.privateMessageModel
+      .findByIdAndUpdate(messageId, privateMessage, { new: true })
+      .exec();
+
+    if (!updatedMessage) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_MESSAGE_NOT_FOUND)
+      );
+    }
+
+    return updatedMessage;
+  }
+
+  public async deleteMessage(messageId: string): Promise<void> {
+    const deletedMessage = await this.privateMessageModel
+      .findByIdAndDelete(messageId)
+      .exec();
+
+    if (!deletedMessage) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_MESSAGE_NOT_FOUND)
+      );
+    }
   }
 }

@@ -6,20 +6,28 @@ import { MessagePattern, Payload } from "@nestjs/microservices";
 import { PRIVATE_MESSAGE_PATTERN } from "@harmony/service-config";
 import {
   MessageCreateType,
+  PrivateMessageDto,
   UserContextType,
   UserParamsType,
 } from "@harmony/zod";
 import { PrivateMessageService } from "./private-message.service";
-import { GlobalUserPrivateMessageInterceptor } from "./interceptors/global-user-private-message.interceptor";
+import { GlobalAllPrivateMessageInterceptor } from "./interceptors/global-all-private-message.interceptor";
+import { GlobalPrivateMessageInterceptor } from "./interceptors/global-private-message.interceptor";
 
 @Controller()
 export class PrivateMessageController {
   constructor(private readonly privateMessageService: PrivateMessageService) {}
 
   @MessagePattern(PRIVATE_MESSAGE_PATTERN.FIND_ALL)
-  @UseInterceptors(GlobalUserPrivateMessageInterceptor)
+  @UseInterceptors(GlobalAllPrivateMessageInterceptor)
   findAll(@UserContext() userContext: UserParamsType) {
     return this.privateMessageService.findAll(userContext);
+  }
+
+  @MessagePattern(PRIVATE_MESSAGE_PATTERN.FIND_MESSAGES_WITH_USER)
+  @UseInterceptors(GlobalPrivateMessageInterceptor)
+  findMessagesWithUser(@Payload() payload: { userId: string }) {
+    return this.privateMessageService.findMessagesWithUser(payload.userId);
   }
 
   @MessagePattern(PRIVATE_MESSAGE_PATTERN.CREATE)
@@ -28,5 +36,21 @@ export class PrivateMessageController {
     @UserContext() user: UserContextType
   ) {
     return this.privateMessageService.create(payload, user);
+  }
+
+  @MessagePattern(PRIVATE_MESSAGE_PATTERN.UPDATE)
+  // @UseInterceptors(GlobalUserPrivateMessageInterceptor)
+  updateMessage(
+    @Payload() payload: { messageId: string; privateMessage: PrivateMessageDto }
+  ) {
+    const { messageId, privateMessage } = payload;
+    return this.privateMessageService.updateMessage(messageId, privateMessage);
+  }
+
+  @MessagePattern(PRIVATE_MESSAGE_PATTERN.DELETE)
+  // @UseInterceptors(GlobalUserPrivateMessageInterceptor)
+  deleteMessage(@Payload() payload: { messageId: string }) {
+    const { messageId } = payload;
+    return this.privateMessageService.deleteMessage(messageId);
   }
 }

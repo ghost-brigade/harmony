@@ -24,7 +24,7 @@ import { from, Observable } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 
 @Injectable()
-export class GlobalUserPrivateMessageInterceptor implements NestInterceptor {
+export class GlobalAllPrivateMessageInterceptor implements NestInterceptor {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly accountService: ClientProxy,
@@ -44,9 +44,7 @@ export class GlobalUserPrivateMessageInterceptor implements NestInterceptor {
   }
 
   private async global(user) {
-    let aggregateObject = {
-      
-    };
+    let aggregateObject = {};
 
     if (user) {
       aggregateObject = await this.userIdToUser(user);
@@ -57,7 +55,6 @@ export class GlobalUserPrivateMessageInterceptor implements NestInterceptor {
   }
 
   private async userIdToUser(userId) {
-    console.log(userId);
     const user = await this.serviceRequest.send({
       client: this.accountService,
       pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
