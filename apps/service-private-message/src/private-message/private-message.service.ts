@@ -21,6 +21,7 @@ import {
   PrivateMessageCreateSchema,
   FormatZodResponse,
   PrivateMessageDto,
+  PrivateMessageType,
 } from "@harmony/zod";
 import {
   BadRequestException,
@@ -40,6 +41,10 @@ export class PrivateMessageService {
     @InjectModel("PrivateMessage") private readonly privateMessageModel,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly accountService: ClientProxy,
+    @Inject(getServiceProperty(Services.FILE, "name"))
+    private readonly clientFile: ClientProxy,
+    @Inject(getServiceProperty(Services.ACCOUNT, "name"))
+    private readonly clientAccount: ClientProxy,
     private readonly serviceRequest: ServiceRequest
   ) {}
 
@@ -83,17 +88,36 @@ export class PrivateMessageService {
     return distinctUsers.map((user: { userId: string }) => user.userId);
   }
 
-  public async findMessagesWithUser(userId: string): Promise<any> {
+  public async findMessagesWithUser(
+    payload: {
+      userId: IdType;
+      params?: { page?: number; limit?: number };
+    },
+    user
+  ): Promise<any> {
     const query = {
-      $or: [{ author: userId }, { receiver: userId }],
+      $or: [
+        { $and: [{ author: user.id }, { receiver: payload.userId }] },
+        { $and: [{ author: payload.userId }, { receiver: user.id }] },
+      ],
     };
 
     const messages = await this.privateMessageModel
       .find(query)
+      .limit(payload.params?.limit ?? 10)
+      .skip((payload.params?.page - 1 ?? 0) * (payload.params?.limit ?? 10))
       .sort({ createdAt: 1 })
       .exec();
 
-    return messages;
+    const count = await this.privateMessageModel.countDocuments(query);
+
+    return {
+      messages,
+      count,
+      // @ts-ignore
+      currentPage: Number.parseInt(payload.params?.page ?? "1"),
+      lastPage: Math.ceil(count / (payload.params?.limit ?? 10)),
+    };
   }
 
   public async create(
@@ -112,6 +136,18 @@ export class PrivateMessageService {
     if (user.id === payload.message.receiver) {
       throw new RpcException(
         new BadRequestException(Errors.ERROR_CANT_SEND_SELF_DM)
+      );
+    }
+
+    if (!payload.message.content && !payload.attachments) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_NO_CONTENT_OR_ATTACHMENT)
+      );
+    }
+
+    if (payload.message.content?.length > 500) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_CONTENT_MESSAGE_TOO_LONG)
       );
     }
 
@@ -146,7 +182,185 @@ export class PrivateMessageService {
       author: user.id,
     });
 
-    return newMessage;
+    const attachmentsIds = [];
+
+    try {
+      if (payload.attachments) {
+        for (const attachment of payload.attachments) {
+          const attachmentId = await this.serviceRequest.send({
+            client: this.clientFile,
+            pattern: FILE_MESSAGE_PATTERN.CREATE,
+            data: {
+              file: attachment,
+              message: newMessage.id,
+            },
+            promise: true,
+          });
+
+          attachmentsIds.push(attachmentId.id);
+        }
+      }
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Cannot upload message attachments")
+      );
+    }
+
+    try {
+      await newMessage.save();
+    } catch (error) {
+      throw new RpcException(
+        new InternalServerErrorException("Cannot create a message")
+      );
+    }
+
+    const message = await this.insertMessage(newMessage, attachmentsIds);
+
+    // await this.sendToSearch(message);
+    // await this.emitNotification(message);
+
+    return message;
+  }
+
+  async insertMessage(
+    message: PrivateMessageType & { createdAt: string; updatedAt: string },
+    attachments?: IdType[]
+  ): Promise<PrivateMessageType & { createdAt: string; updatedAt: string }> {
+    try {
+      const authors = await this.serviceRequest.send({
+        client: this.clientAccount,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ALL_BY_IDS,
+        data: {
+          ids: [message.author, message.receiver],
+        },
+        promise: true,
+      });
+
+      let userAuthor;
+      let userReceiver;
+      const author = authors[0];
+      const receiver = authors[1];
+
+      let authorAvatarUrl = null;
+      let receiverAvatarUrl = null;
+
+      if (authors.length > 0) {
+        try {
+          authorAvatarUrl = await this.serviceRequest.send({
+            client: this.clientFile,
+            pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+            data: {
+              id: author.avatar,
+            },
+            promise: true,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+
+        try {
+          receiverAvatarUrl = await this.serviceRequest.send({
+            client: this.clientFile,
+            pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+            data: {
+              id: receiver.avatar,
+            },
+            promise: true,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+
+        userAuthor = {
+          id: author.id,
+          username: author.username,
+          avatar: authorAvatarUrl?.url ?? undefined,
+        };
+        userReceiver = {
+          id: receiver.id,
+          username: receiver.username,
+          avatar: receiverAvatarUrl?.url ?? undefined,
+        };
+      } else {
+        userAuthor = {
+          id: author.id,
+          username: author.username,
+          avatar: null,
+        };
+        userReceiver = {
+          id: receiver.id,
+          username: receiver.username,
+          avatar: null,
+        };
+      }
+
+      if (attachments) {
+        // push attachments to message
+        const updatedMessage = await this.privateMessageModel.findByIdAndUpdate(
+          message.id,
+          {
+            attachment: attachments,
+          },
+          { new: true }
+        );
+
+        const attachmentsUrl = await this.getAttachments({
+          attachment: attachments,
+        });
+
+        const messageResponse = {
+          id: updatedMessage.id,
+          content: updatedMessage.content,
+          receiver: userReceiver,
+          attachment: attachmentsUrl ?? [],
+          author: userAuthor,
+          createdAt: updatedMessage.createdAt,
+          updatedAt: updatedMessage.updatedAt,
+        };
+
+        return messageResponse;
+      }
+
+      return {
+        id: message.id,
+        content: message.content,
+        receiver: userReceiver,
+        author: userAuthor,
+        attachment: attachments,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error creating message")
+      );
+    }
+  }
+
+  public async getAttachments(message: { attachment: IdType[] }) {
+    if (message.attachment) {
+      return await Promise.all(
+        message.attachment.map(async (attachment) => {
+          try {
+            const file = (await this.serviceRequest.send({
+              client: this.clientFile,
+              pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+              data: {
+                id: attachment,
+              },
+              promise: true,
+            })) as FileType;
+
+            return file.url;
+          } catch (error) {
+            return null;
+          }
+        })
+      );
+    }
+
+    return [];
   }
 
   public async updateMessage(

@@ -5,6 +5,7 @@ import { UserContext } from "@harmony/nest-microservice";
 import { MessagePattern, Payload } from "@nestjs/microservices";
 import { PRIVATE_MESSAGE_PATTERN } from "@harmony/service-config";
 import {
+  IdType,
   MessageCreateType,
   PrivateMessageDto,
   UserContextType,
@@ -26,8 +27,15 @@ export class PrivateMessageController {
 
   @MessagePattern(PRIVATE_MESSAGE_PATTERN.FIND_MESSAGES_WITH_USER)
   @UseInterceptors(GlobalPrivateMessageInterceptor)
-  findMessagesWithUser(@Payload() payload: { userId: string }) {
-    return this.privateMessageService.findMessagesWithUser(payload.userId);
+  findMessagesWithUser(
+    @Payload()
+    payload: {
+      userId: IdType;
+      params?: { page?: number; limit?: number };
+    },
+    @UserContext() user: UserContextType
+  ) {
+    return this.privateMessageService.findMessagesWithUser(payload, user);
   }
 
   @MessagePattern(PRIVATE_MESSAGE_PATTERN.CREATE)

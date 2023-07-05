@@ -8,6 +8,7 @@ import {
 } from "@harmony/service-config";
 import {
   MessageType,
+  PrivateMessageType,
   RoleType,
   ServerType,
   UserPublicType,
@@ -33,56 +34,108 @@ export class GlobalPrivateMessageInterceptor implements NestInterceptor {
     private readonly serviceRequest: ServiceRequest
   ) {}
 
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next
-      .handle()
-      .pipe(
-        switchMap((messages) =>
-          from(Promise.all(messages.map((message) => this.global(message))))
-        )
-      );
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      switchMap((response) => {
+        const messages = response.messages;
+        const updatedMessages = messages.map((message) => this.global(message));
+
+        return from(Promise.all(updatedMessages)).pipe(
+          map((processedMessages) => ({
+            ...response,
+            messages: processedMessages,
+          }))
+        );
+      })
+    );
   }
 
-  private async global(message) {
-    let aggregateObject = {
+  private async global(message: PrivateMessageType) {
+    const aggregateObject = {
       author: null,
       receiver: null,
+      attachment: [],
     };
 
     if (message.author) {
-      aggregateObject.author = await this.userMessage(message.author);
+      aggregateObject.author = await this.authorMessage(message);
     }
     if (message.receiver) {
-      aggregateObject.receiver = await this.userMessage(message.receiver);
+      aggregateObject.receiver = await this.receiverMessage(message);
+    }
+    if (message.attachment) {
+      aggregateObject.attachment = await this.attachmentMessage(
+        message.attachment
+      );
     }
 
     // @ts-ignore
     return Object.assign(message.toJSON(), aggregateObject);
   }
 
-  private async userMessage(userId) {
-    const user = await this.serviceRequest.send({
+  private async attachmentMessage(attachments: string[]) {
+    const attachmentUrls = [];
+
+    for (const attachmentId of attachments) {
+      const attachment = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: attachmentId,
+        },
+        promise: true,
+      });
+      attachmentUrls.push(attachment.url);
+    }
+
+    return attachmentUrls;
+  }
+
+  private async authorMessage(message: PrivateMessageType) {
+    const author = await this.serviceRequest.send({
       client: this.accountService,
       pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
       data: {
-        id: userId,
+        id: message.author,
       },
       promise: true,
     });
-    if (user.avatar) {
+    if (author.avatar) {
       const icon = await this.serviceRequest.send({
         client: this.fileService,
         pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
         data: {
-          id: user.avatar,
+          id: author.avatar,
         },
         promise: true,
       });
-      user.avatar = icon.url;
-    } else {
-      user.avatar = null;
+      author.avatar = icon.url;
     }
 
-    return user;
+    return author;
+  }
+
+  private async receiverMessage(message: PrivateMessageType) {
+    const receiver = await this.serviceRequest.send({
+      client: this.accountService,
+      pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
+      data: {
+        id: message.receiver,
+      },
+      promise: true,
+    });
+    if (receiver.avatar) {
+      const icon = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: receiver.avatar,
+        },
+        promise: true,
+      });
+      receiver.avatar = icon.url;
+    }
+
+    return receiver;
   }
 }

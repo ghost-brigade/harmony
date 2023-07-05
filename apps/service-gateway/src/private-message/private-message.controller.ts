@@ -66,11 +66,15 @@ export class PrivateMessageController {
     description: "Get messages between the user and a specific recipient",
   })
   @ApiParam({ name: "userId", description: "ID of the recipient user" })
-  async getMessagesWithUser(@Param("userId") userId: string): Promise<any> {
+  async getMessagesWithUser(
+    @Param("userId") userId: string,
+    @Query("limit") limit: number = 10,
+    @Query("page") page: number = 1
+  ): Promise<any> {
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
       pattern: PRIVATE_MESSAGE_PATTERN.FIND_MESSAGES_WITH_USER,
-      data: { userId },
+      data: { userId, params: { limit, page } },
     });
   }
 
