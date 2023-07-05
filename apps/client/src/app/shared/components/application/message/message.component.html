@@ -25,11 +25,15 @@
   </div>
 </div>
 <div
+  @image
   *ngIf="selectedImage"
   (click)="setSelectedImage('')"
   class="fixed left-0 top-0 z-[200] flex h-screen w-screen items-center justify-center overflow-hidden backdrop-blur-lg">
   <img
     [src]="selectedImage"
-    class="max-h-[80vh] max-w-[80vw] rounded-lg"
+    (load)="addOpacity()"
+    class="max-h-[80vh] max-w-[80vw] rounded-lg transition-all duration-500 {{
+      style
+    }}"
     alt="" />
 </div>

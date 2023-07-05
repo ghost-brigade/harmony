@@ -16,6 +16,12 @@ export class SocketService {
       token: this.authService.$token(),
     },
   });
+
+  constructor() {
+    this.messageSocket.on("disconnect", () => {
+      this.messageSocket.connect();
+    });
+  }
   /*
   serverSocket = io(WS_BASE_URL + "/server", {
     auth: {
