@@ -1,5 +1,5 @@
 import { firstValueFrom } from "rxjs";
-import { Permissions } from "@harmony/enums";
+import { Errors, Permissions } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
   ACCOUNT_MESSAGE_PATTERN,
@@ -56,6 +56,18 @@ export class MessageCreateService {
     if (parse.success === false) {
       throw new RpcException(
         new BadRequestException(FormatZodResponse(parse.error.issues))
+      );
+    }
+
+    if (!payload.message.content && !payload.attachments) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_NO_CONTENT_OR_ATTACHMENT)
+      );  
+    }
+
+    if (payload.message.content?.length > 500) {
+      throw new RpcException(
+        new BadRequestException(Errors.ERROR_CONTENT_MESSAGE_TOO_LONG)
       );
     }
 
