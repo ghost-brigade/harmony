@@ -201,6 +201,25 @@ export class FriendshipController {
     });
   }
 
+  @ApiOperation({ summary: "Is Friend ?" })
+  @ApiOkResponse({
+    status: 200,
+    description: "Return one true or false",
+    type: FriendCreateDto,
+  })
+  @ApiBadRequestResponse({ status: 400, description: "Bad request" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @ApiParam({ name: "id", type: String })
+  @Get("/isfriend/:id")
+  async isFriend(@Param("id") id: IdType) {
+    console.log("isFriend");
+    return this.serviceRequest.send({
+      client: this.client,
+      pattern: FRIEND_MESSAGE_PATTERN.IS_FRIEND,
+      data: { id },
+    });
+  }
+
   @ApiOperation({ summary: "Delete friend" })
   @ApiNoContentResponse({ status: 204, description: "Return deleted friend" })
   @ApiBadRequestResponse({ status: 400, description: "Bad request" })

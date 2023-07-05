@@ -112,6 +112,29 @@ export class FriendService {
         .exec();
       return friend as FriendType;
     } catch (error) {
+      console.log(error);
+      throw new RpcException(new InternalServerErrorException(error.message));
+    }
+  }
+  public async isFriend(
+    payload: { id: IdType },
+    user: UserContextType
+  ): Promise<boolean> {
+    try {
+      const friend = await this.friendModel
+        .find({
+          $or: [
+            { user1: payload.id, user2: user.id },
+            { user1: user.id, user2: payload.id },
+          ],
+        })
+        .exec();
+      if (friend.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
