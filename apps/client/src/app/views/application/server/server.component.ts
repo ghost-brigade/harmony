@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  OnDestroy,
   OnInit,
   WritableSignal,
   computed,
@@ -22,7 +23,6 @@ import { ServerService } from "./server.service";
 import { CallComponent } from "../../../shared/components/application/server/call/call.component";
 import { MessageComponent } from "../../../shared/components/application/message/message.component";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
-import { escape } from "querystring";
 import { escapeHtml } from "../../../shared/utils/escapeHtml";
 
 @Component({
@@ -40,7 +40,7 @@ import { escapeHtml } from "../../../shared/utils/escapeHtml";
   templateUrl: "./server.component.html",
   styleUrls: ["./server.component.css"],
 })
-export class ServerComponent implements OnInit, AfterViewInit {
+export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
   requestService = inject(RequestService);
   socketService = inject(SocketService);
   serverService = inject(ServerService);
@@ -58,12 +58,27 @@ export class ServerComponent implements OnInit, AfterViewInit {
     );
     return channel?.name;
   });
-  $socket = computed(() => {
-    this.socketService.joinChannel(this.$activeChannel());
-    console.log("joined:", this.$activeChannel());
-  });
+  eventListener: (message: MessageGetType) => void;
 
-  constructor(private route: ActivatedRoute) {}
+  handleNewMessage(message: MessageGetType) {
+    message.content = escapeHtml(message.content);
+    this.serverService.addMessage(message);
+  }
+
+  constructor(private route: ActivatedRoute) {
+    this.eventListener = this.handleNewMessage.bind(this);
+    this.socketService.messageSocket.on(
+      MessageNotification.NEW_MESSAGE,
+      this.eventListener
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.socketService.messageSocket.off(
+      MessageNotification.NEW_MESSAGE,
+      this.eventListener
+    );
+  }
 
   scrollToBottom() {
     setTimeout(() => {
@@ -97,15 +112,6 @@ export class ServerComponent implements OnInit, AfterViewInit {
         });
     });
 
-    this.socketService.messageSocket.on(
-      MessageNotification.NEW_MESSAGE,
-      (message: MessageGetType) => {
-        console.log("new message", message);
-        message.content = escapeHtml(message.content);
-        this.serverService.addMessage(message);
-        //this.scrollToBottom();
-      }
-    );
     this.socketService.messageSocket.on("disconnect", (msg) =>
       console.log("disconnected", msg)
     );
@@ -119,8 +125,6 @@ export class ServerComponent implements OnInit, AfterViewInit {
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              console.log("target reached");
-              console.log(this.serverService);
               this.serverService.getMoreMessages();
             }
           });

@@ -101,8 +101,7 @@ export class BottomNavComponent {
   }
 
   async sendMessage() {
-    // html encode message
-    this.serverService.sendMessage(escapeHtml(this.$message()));
+    this.serverService.sendMessage(this.$message());
     this.$message.set("");
     await this.vibrate();
   }

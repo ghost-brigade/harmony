@@ -33,7 +33,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.i18nService.getUserLanguage();
-    setBackForwardNavigationGestures(true);
     setWebviewBounce(true);
     if (Capacitor.getPlatform() === "android") this.registerAndroidListener();
     SplashScreen.hide();
