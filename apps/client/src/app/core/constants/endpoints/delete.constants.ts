@@ -1,5 +1,8 @@
 export const DeleteEndpoint = {
   DeleteFriend: "/friend/delete/:id",
+  DeleteMessage: "/message/:id",
+  LeaveServer: "/server/leave/:id",
+  DeleteServer: "/server/:id",
 } as const;
 
 export type DeleteEndpointValue =
@@ -7,6 +10,24 @@ export type DeleteEndpointValue =
 
 export type DeleteEndpointMap = {
   "/friend/delete/:id": {
+    response: object;
+    params: {
+      id: string;
+    };
+  };
+  "/message/:id": {
+    response: object;
+    params: {
+      id: string;
+    };
+  };
+  "/server/leave/:id": {
+    response: object;
+    params: {
+      id: string;
+    };
+  };
+  "/server/:id": {
     response: object;
     params: {
       id: string;

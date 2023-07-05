@@ -63,6 +63,13 @@ export class ServerService {
   }
 
   getChannelMessages(channelId: string) {
+    if (
+      this.lastMessageRequest !== undefined &&
+      this.lastMessageRequest?.currentPage === this.lastMessageRequest?.lastPage
+    ) {
+      this.$loadingDone.set(true);
+      return;
+    }
     this.$loadingDone.set(false);
     this.lastMessageRequest = undefined;
     this.requestService

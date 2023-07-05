@@ -27,6 +27,8 @@ export const I18N_CONSTANTS = {
     APP_NAME: "Harmony",
     HOME_ABOUT: "About",
     HOME_CONTACT: "Contact",
+    SERVER_UPDATE_SUCCESS: "Server updated successfully",
+    COPIED_TO_CLIPBOARD: "Copied to clipboard",
     HOME_HERO_SUBTITLE:
       "Harmony is the easiest way to communicate over voice, video, and text, whether you’re part of a school club, a nightly gaming group, a worldwide art community, or just a handful of friends that want to hang out.",
     HOME_HERO_TITLE: "A new way to chat with your communities and friends.",

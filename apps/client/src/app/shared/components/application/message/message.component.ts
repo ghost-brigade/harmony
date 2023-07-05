@@ -18,7 +18,6 @@ import { MessagePopComponent } from "../message-pop/message-pop.component";
     MarkdownModule,
     AvatarComponent,
     NgAutoAnimateDirective,
-    MessagePopComponent,
   ],
   templateUrl: "./message.component.html",
   styleUrls: ["./message.component.css"],
@@ -44,20 +43,5 @@ export class MessageComponent {
 
   editMessage() {
     this.messagePopService.open(this.message);
-  }
-
-  handleLongPress($event: TouchEvent) {
-    if (!this.$isAuthor()) return;
-    if ($event.type === "touchstart") {
-      this.longPressTimeout = window.setTimeout(() => {
-        this.editMessage();
-      }, 500);
-    } else if (
-      $event.type === "touchend" ||
-      $event.type === "touchcancel" ||
-      $event.type === "touchmove"
-    ) {
-      clearTimeout(this.longPressTimeout);
-    }
   }
 }
