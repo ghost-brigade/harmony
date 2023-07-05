@@ -6,6 +6,9 @@ import { HttpClient } from "@angular/common/http";
 import { API_BASE_URL } from "../../../core/constants/api.constants";
 import { AuthService } from "../../../core/services/auth.service";
 import { finalize } from "rxjs";
+import { AlertService } from "../../../core/components/alert/alert.service";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { error } from "console";
 
 @Injectable({
   providedIn: "root",
@@ -14,6 +17,7 @@ export class ServerService {
   requestService = inject(RequestService);
   http = inject(HttpClient);
   authService = inject(AuthService);
+  alertService = inject(AlertService);
   $isChannelListOpen = signal(false);
   $isUserListOpen = signal(false);
   $isCallOpen = signal(false);
@@ -124,6 +128,15 @@ export class ServerService {
       .subscribe({
         next: (message) => {
           console.log(message);
+          Haptics.impact({
+            style: ImpactStyle.Heavy,
+          });
+        },
+        error: (error) => {
+          this.alertService.show({
+            message: error.error.message,
+            type: "error",
+          });
         },
       });
   }

@@ -98,6 +98,7 @@ export const I18N_CONSTANTS = {
     SERVER_CREATE_SUCCESS: "Server created successfully",
     SERVER_JOIN_SUCCESS: "Server joined successfully",
     IS_PRIVATE_SERVER: "This is a private server",
+    ERROR_CONTENT_MESSAGE_TOO_LONG: "Message too long",
     "en-US": "English",
     "fr-FR": "French",
     "es-ES": "Spanish",

@@ -64,7 +64,7 @@ export class BottomNavComponent {
     return (
       ((this.$inputFocused() && this.$message().trim().length > 0) ||
         this.$file() !== undefined) &&
-      this.$message().trim().length < 2000
+      this.$message().trim().length < 500
     );
   });
 
