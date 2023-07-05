@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Multer } from 'multer';
-import { Controller } from "@nestjs/common";
+import { Multer } from "multer";
+import { Controller, UseInterceptors } from "@nestjs/common";
 import { UserContext } from "@harmony/nest-microservice";
 import { MessageService } from "./message.service";
 import { MessagePattern, Payload } from "@nestjs/microservices";
@@ -14,6 +14,7 @@ import {
 import { MessageCreateService } from "./message-create.service";
 import { MessageDeleteService } from "./message-delete.service";
 import { MessageUpdateService } from "./message-update.service";
+import { GlobalAllMessageInterceptor } from "./interceptors/global-all-message.interceptor";
 
 @Controller()
 export class MessageController {
@@ -26,7 +27,7 @@ export class MessageController {
 
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.CREATE)
   create(
-    @Payload() payload: { message: MessageCreateType, attachments: Multer[] },
+    @Payload() payload: { message: MessageCreateType; attachments: Multer[] },
     @UserContext() user: UserContextType
   ) {
     return this.messageCreateService.create(payload, user);
@@ -67,6 +68,7 @@ export class MessageController {
   }
 
   @MessagePattern(MESSENGER_MESSAGE_PATTERN.FIND_BY_CHANNEL_ID)
+  @UseInterceptors(GlobalAllMessageInterceptor)
   findByChannelId(
     @Payload()
     payload: { channelId: IdType; params?: { page?: number; limit?: number } },
