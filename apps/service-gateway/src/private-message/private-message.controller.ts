@@ -48,14 +48,29 @@ export class PrivateMessageController {
   @Get("user")
   @HttpCode(200)
   @ApiOperation({
-    summary: "Get all messages",
-    description: "Get all messages",
+    summary: "Get all conversations of user",
+    description: "Get all conversations of user",
   })
   async getAll(): Promise<any> {
     console.log("getAll");
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
       pattern: PRIVATE_MESSAGE_PATTERN.FIND_ALL,
+    });
+  }
+
+  @Get("user/:userId")
+  @HttpCode(200)
+  @ApiOperation({
+    summary: "Get messages between the user and a specific recipient",
+    description: "Get messages between the user and a specific recipient",
+  })
+  @ApiParam({ name: "userId", description: "ID of the recipient user" })
+  async getMessagesWithUser(@Param("userId") userId: string): Promise<any> {
+    return this.serviceRequest.send({
+      client: this.clientPrivateMessage,
+      pattern: PRIVATE_MESSAGE_PATTERN.FIND_MESSAGES_WITH_USER,
+      data: { userId },
     });
   }
 
@@ -89,6 +104,40 @@ export class PrivateMessageController {
       client: this.clientPrivateMessage,
       pattern: PRIVATE_MESSAGE_PATTERN.CREATE,
       data: { message: { ...privateMessage, receiver: receiverId } },
+    });
+  }
+
+  @Put(":messageId")
+  @HttpCode(200)
+  @ApiOperation({
+    summary: "Update a private message",
+    description: "Update a private message",
+  })
+  @ApiParam({ name: "messageId", description: "ID of the private message" })
+  @ApiBody({ type: PrivateMessageDto })
+  async updateMessage(
+    @Param("messageId") messageId: string,
+    @Body() privateMessage: PrivateMessageDto
+  ): Promise<PrivateMessageDto> {
+    return this.serviceRequest.send({
+      client: this.clientPrivateMessage,
+      pattern: PRIVATE_MESSAGE_PATTERN.UPDATE,
+      data: { messageId, privateMessage },
+    });
+  }
+
+  @Delete(":messageId")
+  @HttpCode(204)
+  @ApiOperation({
+    summary: "Delete a private message",
+    description: "Delete a private message",
+  })
+  @ApiParam({ name: "messageId", description: "ID of the private message" })
+  async deleteMessage(@Param("messageId") messageId: string): Promise<void> {
+    return this.serviceRequest.send({
+      client: this.clientPrivateMessage,
+      pattern: PRIVATE_MESSAGE_PATTERN.DELETE,
+      data: { messageId },
     });
   }
 }
