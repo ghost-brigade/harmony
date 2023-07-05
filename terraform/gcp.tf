@@ -10,7 +10,7 @@ data "google_storage_bucket_object" "terraform_bucket" {
 module "google_project_service" {
   source     = "./modules/google_project_service"
   project_id = var.google_project_id
-  services   = ["iam", "iamcredentials", "logging", "secretmanager", "storage", "compute", "container", "artifactregistry"]
+  services   = ["redis", "iam", "iamcredentials", "logging", "secretmanager", "storage", "compute", "container", "artifactregistry"]
 }
 
 resource "google_artifact_registry_repository" "registry" {
