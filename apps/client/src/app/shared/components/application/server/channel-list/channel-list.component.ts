@@ -6,6 +6,7 @@ import { ServerService } from "apps/client/src/app/views/application/server/serv
 import { SocketService } from "../../../../services/socket.service";
 import { ServerIconComponent } from "../../server-icon/server-icon.component";
 import { RouterModule } from "@angular/router";
+import { ServerPopService } from "../../server-pop/server-pop.service";
 
 @Component({
   selector: "harmony-channel-list",
@@ -21,7 +22,7 @@ export class ChannelListComponent {
   @Input() currentChannel = "";
   serverService = inject(ServerService);
   socketService = inject(SocketService);
-
+  serverPopService = inject(ServerPopService);
   closeChannelList() {
     this.serverService.closeChannelList();
   }
@@ -39,5 +40,9 @@ export class ChannelListComponent {
     this.serverService.setActiveChannel(channel);
     this.socketService.joinChannel(channel);
     this.serverService.$isChannelListOpen.set(false);
+  }
+
+  openServerPop() {
+    this.serverPopService.open();
   }
 }

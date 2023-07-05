@@ -17,6 +17,7 @@
         *ngFor="let message of $channelMessages()"></harmony-message>
       <span
         id="refresh-target"
+        *ngIf="!$loadingDone()"
         class="flex w-full justify-center">
         <div role="status">
           <svg
@@ -45,3 +46,6 @@
 <harmony-call
   class="absolute top-0 z-[150]"
   *ngIf="$isCallOpen()" />
+
+<harmony-message-pop />
+<harmony-server-pop [server]="$server()" />

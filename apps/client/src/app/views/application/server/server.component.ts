@@ -5,7 +5,6 @@ import {
   OnInit,
   WritableSignal,
   computed,
-  effect,
   inject,
   signal,
 } from "@angular/core";
@@ -23,7 +22,8 @@ import { ServerService } from "./server.service";
 import { CallComponent } from "../../../shared/components/application/server/call/call.component";
 import { MessageComponent } from "../../../shared/components/application/message/message.component";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
-import { escapeHtml } from "../../../shared/utils/escapeHtml";
+import { MessagePopComponent } from "../../../shared/components/application/message-pop/message-pop.component";
+import { ServerPopComponent } from "../../../shared/components/application/server-pop/server-pop.component";
 
 @Component({
   selector: "harmony-server",
@@ -36,6 +36,8 @@ import { escapeHtml } from "../../../shared/utils/escapeHtml";
     CallComponent,
     MessageComponent,
     NgAutoAnimateDirective,
+    MessagePopComponent,
+    ServerPopComponent,
   ],
   templateUrl: "./server.component.html",
   styleUrls: ["./server.component.css"],
@@ -77,6 +79,10 @@ export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
       MessageNotification.NEW_MESSAGE,
       this.eventListener
     );
+    this.serverService.$isUserListOpen.set(false);
+    this.serverService.$isChannelListOpen.set(false);
+    this.serverService.$messages.set([]);
+    this.serverService.lastMessageRequest = undefined;
   }
 
   scrollToBottom() {

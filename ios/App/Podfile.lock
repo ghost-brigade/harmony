@@ -6,7 +6,7 @@ PODS:
   - CapacitorCamera (5.0.4):
     - Capacitor
   - CapacitorCordova (5.0.5)
-  - CapacitorDialog (5.0.4):
+  - CapacitorDialog (5.0.5):
     - Capacitor
   - CapacitorHaptics (5.0.4):
     - Capacitor
@@ -63,7 +63,7 @@ SPEC CHECKSUMS:
   CapacitorApp: 7a5dec8b33573707164b293475d5c89ba684364a
   CapacitorCamera: 9b5c8e809c1042f263994f97ba846aa37e974f12
   CapacitorCordova: f8c06b897c74ee8f7701fe10e6443b40822bc83a
-  CapacitorDialog: fe8b913cdf8c73cabe556974565fc44f2a09c75f
+  CapacitorDialog: bea25662cdd38bc87476cefbab875198495657b8
   CapacitorHaptics: e36653b37326d71bb35ae42b944124037dbc3d97
   CapacitorKeyboard: d1b25fde6f19744ad09c890862aefc6e2a7ded3d
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
