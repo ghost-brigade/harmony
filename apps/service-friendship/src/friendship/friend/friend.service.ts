@@ -1,30 +1,17 @@
-import {
-  FormatZodResponse,
-  FriendParamsType,
-  FriendType,
-  IdSchema,
-  IdType,
-  UserContextType,
-} from "@harmony/zod";
+import { FriendType, IdType, UserContextType } from "@harmony/zod";
 import {
   BadRequestException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { RpcException } from "@nestjs/microservices";
 import { InjectModel } from "@nestjs/mongoose";
-import { ServiceRequest } from "@harmony/nest-microservice";
-import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 
 @Injectable()
 export class FriendService {
-  constructor(
-    @InjectModel("FriendRequest") private readonly friendrequestModel,
-    @InjectModel("Friend") private readonly friendModel
-  ) {}
+  constructor(@InjectModel("Friend") private readonly friendModel) {}
 
   async newFriend(
     payload: {
@@ -40,7 +27,6 @@ export class FriendService {
       ],
     });
 
-    console.log(existingFriend);
     if (existingFriend.length > 0) {
       throw new RpcException(new BadRequestException("Friend already exists."));
     }
@@ -52,7 +38,6 @@ export class FriendService {
       });
       return await newFriend.save();
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error creating friend")
       );
@@ -81,7 +66,6 @@ export class FriendService {
         _id: friend.id,
       });
     } catch (error) {
-      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error deleting friend.")
       );
@@ -112,7 +96,6 @@ export class FriendService {
         .exec();
       return friend as FriendType;
     } catch (error) {
-      console.log(error);
       throw new RpcException(new InternalServerErrorException(error.message));
     }
   }
@@ -144,8 +127,16 @@ export class FriendService {
   ): Promise<FriendType> {
     try {
       const friend = await this.friendModel
-        .findOne({ $or: [{ user1: payload.id }, { user2: payload.id }] })
+        .findOne({
+          $or: [
+            { user1: payload.id, user2: user.id },
+            { user1: user.id, user2: payload.id },
+          ],
+        })
         .exec();
+      if (!friend) {
+        throw new RpcException(new NotFoundException("Friend not found."));
+      }
       return { friend, user } as FriendType;
     } catch (error) {
       throw new RpcException(new InternalServerErrorException(error.message));
