@@ -27,11 +27,17 @@ export class PrivateMessageController {
 
   @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.DELETE_PRIVATE_MESSAGE)
   async deleteMessage(
-    @Payload() payload: { messageId: IdType; receiverId: IdType }
+    @Payload()
+    payload: {
+      messageId: IdType;
+      receiverId: IdType;
+      authorId: IdType;
+    }
   ) {
     return this.privateMessageGateway.onDeleteMessage({
       receiverId: payload.receiverId,
       messageId: payload.messageId,
+      authorId: payload.authorId,
     });
   }
 }

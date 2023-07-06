@@ -7,6 +7,7 @@ import {
   FILE_MESSAGE_PATTERN,
   FRIENDREQUEST_MESSAGE_PATTERN,
   FRIEND_MESSAGE_PATTERN,
+  NOTIFICATION_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
@@ -45,6 +46,8 @@ export class PrivateMessageService {
     private readonly clientFile: ClientProxy,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly clientAccount: ClientProxy,
+    @Inject(getServiceProperty(Services.NOTIFICATION, "name"))
+    private readonly clientNotification: ClientProxy,
     private readonly serviceRequest: ServiceRequest
   ) {}
 
@@ -230,9 +233,49 @@ export class PrivateMessageService {
     const message = await this.insertMessage(newMessage, attachmentsIds);
 
     // await this.sendToSearch(message);
-    // await this.emitNotification(message);
+    await this.emitNotification(message, "CREATE");
 
     return message;
+  }
+
+  async emitNotification(
+    message: PrivateMessageType,
+    type: "CREATE" | "UPDATE" | "DELETE"
+  ): Promise<void> {
+    let data, pattern;
+
+    switch (type) {
+      case "CREATE":
+        data = { message };
+        pattern = NOTIFICATION_MESSAGE_PATTERN.NEW_PRIVATE_MESSAGE;
+        break;
+      case "UPDATE":
+        data = { message };
+        pattern = NOTIFICATION_MESSAGE_PATTERN.UPDATE_PRIVATE_MESSAGE;
+        break;
+      case "DELETE":
+        data = {
+          messageId: message.id,
+          receiverId: message.receiver,
+          authorId: message.author,
+        };
+        pattern = NOTIFICATION_MESSAGE_PATTERN.DELETE_PRIVATE_MESSAGE;
+        break;
+    }
+
+    try {
+      await this.serviceRequest.send({
+        client: this.clientNotification,
+        pattern,
+        data,
+        promise: true,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error emitting message notification")
+      );
+    }
   }
 
   async insertMessage(
@@ -257,7 +300,7 @@ export class PrivateMessageService {
       let authorAvatarUrl = null;
       let receiverAvatarUrl = null;
 
-      if (authors.length > 0) {
+      if (author) {
         try {
           authorAvatarUrl = await this.serviceRequest.send({
             client: this.clientFile,
@@ -267,10 +310,24 @@ export class PrivateMessageService {
             },
             promise: true,
           });
+
+          userAuthor = {
+            id: author.id,
+            username: author.username,
+            avatar: authorAvatarUrl?.url ?? undefined,
+          };
         } catch (error) {
           console.log(error);
         }
+      } else {
+        userAuthor = {
+          id: author.id,
+          username: author.username,
+          avatar: null,
+        };
+      }
 
+      if (receiver) {
         try {
           receiverAvatarUrl = await this.serviceRequest.send({
             client: this.clientFile,
@@ -283,23 +340,12 @@ export class PrivateMessageService {
         } catch (error) {
           console.log(error);
         }
-
-        userAuthor = {
-          id: author.id,
-          username: author.username,
-          avatar: authorAvatarUrl?.url ?? undefined,
-        };
         userReceiver = {
           id: receiver.id,
           username: receiver.username,
           avatar: receiverAvatarUrl?.url ?? undefined,
         };
       } else {
-        userAuthor = {
-          id: author.id,
-          username: author.username,
-          avatar: null,
-        };
         userReceiver = {
           id: receiver.id,
           username: receiver.username,
@@ -390,17 +436,31 @@ export class PrivateMessageService {
       );
     }
 
+    await this.emitNotification(updatedMessage, "UPDATE");
+
     return updatedMessage;
   }
 
-  public async deleteMessage(messageId: string): Promise<void> {
-    const deletedMessage = await this.privateMessageModel
-      .findByIdAndDelete(messageId)
-      .exec();
+  public async deleteMessage(messageId: string): Promise<boolean> {
+    const message = await this.privateMessageModel.findById(messageId).exec();
 
-    if (!deletedMessage) {
+    if (!message) {
       throw new RpcException(
         new NotFoundException(Errors.ERROR_MESSAGE_NOT_FOUND)
+      );
+    }
+
+    await this.emitNotification(message, "DELETE");
+
+    try {
+      await this.privateMessageModel.deleteOne({
+        _id: messageId,
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      throw new RpcException(
+        new InternalServerErrorException("Error while deleting private message")
       );
     }
   }

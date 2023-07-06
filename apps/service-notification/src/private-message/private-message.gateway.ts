@@ -1,10 +1,5 @@
 import { PrivateMessageNotification } from "@harmony/notification";
-import {
-  IdSchema,
-  IdType,
-  PrivateMessageType,
-  UserType,
-} from "@harmony/zod";
+import { IdSchema, IdType, PrivateMessageType, UserType } from "@harmony/zod";
 import {
   ConnectedSocket,
   MessageBody,
@@ -28,9 +23,7 @@ import { Injectable } from "@nestjs/common";
 export class PrivateMessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(
-    private readonly wsAuthService: WsAuthService
-  ) {}
+  constructor(private readonly wsAuthService: WsAuthService) {}
 
   user: UserType;
 
@@ -39,6 +32,7 @@ export class PrivateMessageGateway
 
   async handleConnection(client: Socket & { request: { user: UserType } }) {
     console.log(`Client ${client.id} connected.`);
+
     this.user = await this.wsAuthService.jwtLogin({
       client,
     });
@@ -48,8 +42,8 @@ export class PrivateMessageGateway
     console.log(`Client ${client.id} disconnected.`);
   }
 
-  private getRoomName(receiverId: IdType) {
-    const name = [this.user.id, receiverId].sort();
+  private getRoomName(receiverId: IdType, userId?: IdType) {
+    const name = [userId ? userId : this.user?.id, receiverId].sort();
     return name.join("-");
   }
 
@@ -69,6 +63,7 @@ export class PrivateMessageGateway
     @ConnectedSocket() client: Socket & { request: { user: UserType } },
     @MessageBody() receiverId: IdType
   ) {
+    console.log("join", receiverId);
     try {
       IdSchema.parse(receiverId);
     } catch (error) {
@@ -77,21 +72,18 @@ export class PrivateMessageGateway
       return;
     }
 
-    console.log("join", receiverId);
-
     await this.onLeaveAllRooms(client);
     await client.join(this.getRoomName(receiverId));
   }
 
   @SubscribeMessage(PrivateMessageNotification.NEW_MESSAGE)
-  onNewMessage({ message }: { message: PrivateMessageType }) {
+  onNewMessage({ message }: { message: any }) {
     try {
-      if (message.author === this.user.id) {
-        return true;
-      }
-
+      // if (message.author === this.user.id) {
+      //   return true;
+      // }
       this.server
-        .to(this.getRoomName(message.receiver))
+        .to(this.getRoomName(message.receiver.id, message.author.id))
         .emit(PrivateMessageNotification.NEW_MESSAGE, message);
       return true;
     } catch (error) {
@@ -100,14 +92,14 @@ export class PrivateMessageGateway
   }
 
   @SubscribeMessage(PrivateMessageNotification.UPDATE_MESSAGE)
-  onUpdateMessage({ message }: { message: PrivateMessageType }) {
+  onUpdateMessage({ message }: { message: any }) {
     try {
-      if (message.author === this.user.id) {
-        return true;
-      }
+      // if (message.author === this.user.id) {
+      //   return true;
+      // }
 
       this.server
-        .to(this.getRoomName(message.receiver))
+        .to(this.getRoomName(message.receiver, message.author))
         .emit(PrivateMessageNotification.UPDATE_MESSAGE, message);
       return true;
     } catch (error) {
@@ -117,19 +109,21 @@ export class PrivateMessageGateway
 
   @SubscribeMessage(PrivateMessageNotification.DELETE_MESSAGE)
   onDeleteMessage({
+    authorId,
     receiverId,
     messageId,
   }: {
+    authorId: IdType;
     receiverId: IdType;
     messageId: IdType;
   }) {
     try {
-      if (this.user.id !== receiverId) {
-        return true;
-      }
+      // if (this.user.id !== receiverId) {
+      //   return true;
+      // }
 
       this.server
-        .to(this.getRoomName(receiverId))
+        .to(this.getRoomName(receiverId, authorId))
         .emit(PrivateMessageNotification.DELETE_MESSAGE, messageId);
       return true;
     } catch (error) {
