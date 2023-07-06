@@ -1,5 +1,6 @@
 import {
   MessageGetType,
+  PrivateMessageType,
   ServerGetType,
   ServerType,
   UserType,
@@ -14,6 +15,7 @@ export const GetEndpoint = {
   BlockedUsers: "/user/blocked",
   Server: "/server/:serverId",
   ChannelMessages: "/message/channel/:channelId",
+  DirectMessages: "/private-message/user",
 } as const;
 
 export type GetEndpointValue = (typeof GetEndpoint)[keyof typeof GetEndpoint];
@@ -60,6 +62,9 @@ export type GetEndpointMap = {
       limit: number;
       page: number;
     };
+  };
+  "/private-message/user": {
+    response: UserType[];
   };
 };
 

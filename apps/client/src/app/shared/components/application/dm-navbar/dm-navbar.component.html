@@ -1,0 +1,14 @@
+<nav
+  class="left-0 top-0 z-20 min-h-[3.75rem] w-full border-b border-gray-200 bg-white pt-[env(safe-area-inset-top)+2rem] dark:border-gray-600 dark:bg-gray-900">
+  <div
+    class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-2 p-4">
+    <harmony-avatar
+      [image]="$user()?.avatar"
+      [status]="$user()?.status!"
+      class="h-10 w-10" />
+    <span
+      class="flex-1 self-center whitespace-nowrap text-xl font-semibold dark:text-white"
+      >{{ $user()?.username }}
+    </span>
+  </div>
+</nav>

@@ -1,8 +1,9 @@
-import { Component, computed, effect, signal } from "@angular/core";
+import { Component, computed, effect, inject, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { AlertService } from "./alert.service";
 import { ALERT_ANIMATION } from "./alert.animation";
 import { I18nPipe } from "../../pipes/i18n.pipe";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "harmony-core-alert",
@@ -17,8 +18,12 @@ export class AlertComponent {
   $message = computed(() => this.alertService.$message());
   $visible = computed(() => this.alertService.$visible());
   $type = computed(() => this.alertService.$type());
+  router = inject(Router);
 
   constructor(private alertService: AlertService) {
+    this.router.events.subscribe(() => {
+      this.alertService.dismiss();
+    });
     effect(
       () => {
         switch (this.alertService.$type()) {

@@ -23,7 +23,7 @@ export class LoginComponent {
   alertService = inject(AlertService);
   email = signal("");
   password = signal("");
-  rememberMe = signal(false);
+  rememberMe = signal(true);
   btnDisabled = computed(() => {
     return !this.email() || !this.password();
   });
