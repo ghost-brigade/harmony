@@ -5,11 +5,12 @@ import { ServerService } from "apps/client/src/app/views/application/server/serv
 import { SocketService } from "../../../../services/socket.service";
 import { USER_LIST_ANIMATION } from "./user-list.animation";
 import { AvatarComponent } from "../../avatar/avatar.component";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-user-list",
   standalone: true,
-  imports: [CommonModule, AvatarComponent],
+  imports: [CommonModule, AvatarComponent, I18nPipe],
   templateUrl: "./user-list.component.html",
   styleUrls: ["./user-list.component.css"],
   animations: USER_LIST_ANIMATION,
