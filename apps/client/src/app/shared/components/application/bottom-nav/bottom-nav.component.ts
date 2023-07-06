@@ -62,7 +62,8 @@ export class BottomNavComponent {
   });
   $canSend = computed(() => {
     return (
-      ((this.$inputFocused() && this.$message().trim().length > 0) ||
+      (this.$inputFocused() ||
+        this.$message().trim().length > 0 ||
         this.$file() !== undefined) &&
       this.$message().trim().length < 500
     );

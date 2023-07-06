@@ -73,7 +73,12 @@ export type PostEndpointMap = {
     body: undefined;
   };
   "/channel": {
-    response: object;
+    response: {
+      id: string;
+      name: string;
+      type: "TEXT" | "VOICE";
+      order: number;
+    };
     body: {
       name: string;
       server: string;

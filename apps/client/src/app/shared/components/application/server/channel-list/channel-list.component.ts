@@ -17,11 +17,22 @@ import { AuthService } from "apps/client/src/app/core/services/auth.service";
 import { FormsModule } from "@angular/forms";
 import { RequestService } from "apps/client/src/app/core/services/request.service";
 import { PostEndpoint } from "apps/client/src/app/core/constants/endpoints/post.constants";
+import { DeleteEndpoint } from "apps/client/src/app/core/constants/endpoints/delete.constants";
+import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
+import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
+import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { Dialog } from "@capacitor/dialog";
 
 @Component({
   selector: "harmony-channel-list",
   standalone: true,
-  imports: [CommonModule, ServerIconComponent, RouterModule, FormsModule],
+  imports: [
+    CommonModule,
+    ServerIconComponent,
+    RouterModule,
+    FormsModule,
+    NgAutoAnimateDirective,
+  ],
   templateUrl: "./channel-list.component.html",
   styleUrls: ["./channel-list.component.css"],
   animations: CHANNEL_LIST_ANIMATION,
@@ -33,8 +44,10 @@ export class ChannelListComponent {
   serverService = inject(ServerService);
   socketService = inject(SocketService);
   authService = inject(AuthService);
+  toastService = inject(ToastService);
   requestService = inject(RequestService);
   serverPopService = inject(ServerPopService);
+  alertService = inject(AlertService);
   channelAddOpen = false;
   newChannelName = "";
   newChannelType = "TEXT";
@@ -84,8 +97,48 @@ export class ChannelListComponent {
         },
       })
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.closeChannelAdd();
+          this.$server()?.channels.push(res);
+        },
+      });
+  }
+
+  async deleteChannel(channel: string) {
+    const d = await Dialog.confirm({
+      title: "Delete Channel",
+      message: "Are you sure you want to delete this channel?",
+      okButtonTitle: "Delete",
+      cancelButtonTitle: "Cancel",
+    });
+    if (!d.value) return;
+    this.requestService
+      .delete({
+        endpoint: DeleteEndpoint.DeleteChannel,
+        params: {
+          id: channel,
+        },
+      })
+      .subscribe({
+        next: () => {
+          this.toastService.show({
+            message: "CHANNEL_DELETE_SUCCESS",
+            type: "success",
+          });
+          const newChannels = this.$server()?.channels.filter(
+            (c) => c.id !== channel
+          );
+          // @ts-ignore
+          this.$server().channels = newChannels;
+          if (this.currentChannel === channel) {
+            this.selectChannel(this.$server()?.channels?.[0].id as string);
+          }
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }

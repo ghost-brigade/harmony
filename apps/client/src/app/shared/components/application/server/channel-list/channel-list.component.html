@@ -1,5 +1,6 @@
 <div
-  class="hidden h-full min-w-[250px] flex-col items-center gap-2 border-r border-gray-100 pt-4 dark:border-gray-700 lg:flex">
+  class="hidden h-full max-h-screen min-w-[250px] flex-col items-center gap-2 overflow-y-auto border-r border-gray-100 py-4 dark:border-gray-700 lg:flex"
+  auto-animate>
   <div class="flex w-full flex-row justify-between px-4">
     <svg
       [routerLink]="['/app']"
@@ -75,6 +76,21 @@
           d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"></path>
       </svg>
       <span class="flex-1 text-start">#{{ channel?.name }}</span>
+      <svg
+        fill="none"
+        *ngIf="$isOwner()"
+        (click)="deleteChannel(channel.id); $event.stopPropagation()"
+        stroke="currentColor"
+        stroke-width="2"
+        class="h-6 w-6"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
     </button>
   </div>
   <div
@@ -103,12 +119,14 @@
 <div
   *ngIf="isOpen"
   @backdrop
+  auto-animate
   class="absolute top-0 z-[100] h-screen w-screen backdrop-blur lg:hidden"
   (click)="closeChannelList()"></div>
 <div
   @channelList
   *ngIf="isOpen"
-  class="absolute top-0 z-[110] flex min-h-screen min-w-[250px] flex-col items-center gap-2 border-r border-gray-100 bg-white pt-[calc(env(safe-area-inset-top)+1rem)] dark:border-gray-700 dark:bg-gray-800 lg:hidden">
+  auto-animate
+  class="absolute top-0 z-[110] flex max-h-screen min-h-screen min-w-[250px] flex-col items-center gap-2 overflow-y-auto border-r border-gray-100 bg-white pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] dark:border-gray-700 dark:bg-gray-800 lg:hidden">
   <div class="flex w-full flex-row justify-between px-4">
     <svg
       [routerLink]="['/app']"
@@ -184,6 +202,21 @@
           d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"></path>
       </svg>
       <span class="flex-1 text-start">#{{ channel?.name }}</span>
+      <svg
+        fill="none"
+        *ngIf="$isOwner()"
+        (click)="deleteChannel(channel.id); $event.stopPropagation()"
+        stroke="currentColor"
+        stroke-width="2"
+        class="h-6 w-6"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
     </button>
   </div>
 

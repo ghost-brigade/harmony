@@ -3,6 +3,7 @@ export const DeleteEndpoint = {
   DeleteMessage: "/message/:id",
   LeaveServer: "/server/leave/:id",
   DeleteServer: "/server/:id",
+  DeleteChannel: "/channel/:id",
 } as const;
 
 export type DeleteEndpointValue =
@@ -28,6 +29,12 @@ export type DeleteEndpointMap = {
     };
   };
   "/server/:id": {
+    response: object;
+    params: {
+      id: string;
+    };
+  };
+  "/channel/:id": {
     response: object;
     params: {
       id: string;
