@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { SettingsComponent } from "./settings.component";
+import { DmNavbarComponent } from "./dm-navbar.component";
 
-describe("SettingsComponent", () => {
-  let component: SettingsComponent;
-  let fixture: ComponentFixture<SettingsComponent>;
+describe("DmNavbarComponent", () => {
+  let component: DmNavbarComponent;
+  let fixture: ComponentFixture<DmNavbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SettingsComponent],
+      imports: [DmNavbarComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SettingsComponent);
+    fixture = TestBed.createComponent(DmNavbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

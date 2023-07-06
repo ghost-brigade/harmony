@@ -16,11 +16,20 @@ export class SocketService {
       token: this.authService.$token(),
     },
   });
+  dmSocket = io(WS_BASE_URL + "/private-message", {
+    auth: {
+      token: this.authService.$token(),
+    },
+  });
 
   constructor() {
     this.messageSocket.on("disconnect", () => {
       this.messageSocket.connect();
       this.messageSocket.emit("RECONNECT", "RECONNECT");
+    });
+    this.dmSocket.on("disconnect", () => {
+      this.dmSocket.connect();
+      this.dmSocket.emit("RECONNECT", "RECONNECT");
     });
   }
   /*

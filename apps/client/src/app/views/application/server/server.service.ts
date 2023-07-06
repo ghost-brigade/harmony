@@ -8,7 +8,6 @@ import { AuthService } from "../../../core/services/auth.service";
 import { finalize } from "rxjs";
 import { AlertService } from "../../../core/components/alert/alert.service";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-import { error } from "console";
 
 @Injectable({
   providedIn: "root",

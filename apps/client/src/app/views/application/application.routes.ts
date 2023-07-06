@@ -34,7 +34,12 @@ export default [
       import("./direct-messages/chat/chat.component").then(
         (m) => m.ChatComponent
       ),
-    data: { showBottomNav: true, isText: true, animation: "ChatPage" },
+    data: {
+      showBottomNav: true,
+      isText: true,
+      animation: "ChatPage",
+      isDMs: true,
+    },
   },
   {
     path: "settings",

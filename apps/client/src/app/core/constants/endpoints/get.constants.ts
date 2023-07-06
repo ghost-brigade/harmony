@@ -14,6 +14,9 @@ export const GetEndpoint = {
   BlockedUsers: "/user/blocked",
   Server: "/server/:serverId",
   ChannelMessages: "/message/channel/:channelId",
+  DirectMessages: "/private-message/user",
+  User: "/user/:userId",
+  DM: "/private-message/user/:id",
 } as const;
 
 export type GetEndpointValue = (typeof GetEndpoint)[keyof typeof GetEndpoint];
@@ -55,6 +58,30 @@ export type GetEndpointMap = {
     };
     params: {
       channelId: string;
+    };
+    queryParams: {
+      limit: number;
+      page: number;
+    };
+  };
+  "/private-message/user": {
+    response: UserType[];
+  };
+  "/user/:userId": {
+    response: UserType;
+    params: {
+      userId: string;
+    };
+  };
+  "/private-message/user/:id": {
+    response: {
+      count: number;
+      currentPage: number;
+      lastPage: number;
+      messages: MessageGetType[];
+    };
+    params: {
+      id: string;
     };
     queryParams: {
       limit: number;

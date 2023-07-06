@@ -13,6 +13,7 @@ export class BottomNavService {
   $isTextChannel = signal(false);
   $emojiOpen = signal(false);
   $addFilesOpen = signal(false);
+  $isDMs = signal(false);
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
     this.router.events
@@ -28,6 +29,7 @@ export class BottomNavService {
           if (!data["isText"]) {
             this.serverService.$file.set(undefined);
           }
+          this.$isDMs.set(data["isDMs"] || false);
         });
       });
   }
