@@ -66,7 +66,11 @@ export class GlobalServerInterceptor implements NestInterceptor {
   }
 
   private async channelServer(server: ServerType) {
-    return await this.channelService.getAllByIds({ ids: server.channels });
+    return await this.channelService.getAllByServerId(
+      { serverId: server.id },
+      {},
+      false
+    );
   }
 
   private async ownerServer(server: ServerType) {

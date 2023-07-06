@@ -35,7 +35,11 @@ export class ChannelService {
     private readonly messageClient: ClientProxy
   ) {}
 
-  async getAllByServerId(payload: { serverId: IdType }, user: UserContextType) {
+  async getAllByServerId(
+    payload: { serverId: IdType },
+    user: UserContextType,
+    authorization: boolean = true
+  ) {
     if (payload.serverId === undefined) {
       throw new RpcException(
         new BadRequestException(
@@ -52,17 +56,19 @@ export class ChannelService {
       );
     }
 
-    const canView = await this.channelAuthorizationService.canViewChannel({
-      serverId: payload.serverId,
-      user,
-    });
+    if (authorization) {
+      const canView = await this.channelAuthorizationService.canViewChannel({
+        serverId: payload.serverId,
+        user,
+      });
 
-    if (canView === false) {
-      throw new RpcException(
-        new BadRequestException(
-          "You do not have permission to view channels for this server."
-        )
-      );
+      if (canView === false) {
+        throw new RpcException(
+          new BadRequestException(
+            "You do not have permission to view channels for this server."
+          )
+        );
+      }
     }
 
     try {
