@@ -3,11 +3,12 @@ import { CommonModule } from "@angular/common";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { SocketService } from "../../../../services/socket.service";
 import { CALL_ANIMATION } from "./call.animation";
+import { NgAutoAnimateDirective } from "ng-auto-animate";
 
 @Component({
   selector: "harmony-call",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgAutoAnimateDirective],
   templateUrl: "./call.component.html",
   styleUrls: ["./call.component.css"],
   animations: CALL_ANIMATION,
