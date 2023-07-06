@@ -138,11 +138,7 @@ export class MessageGateway
         };
 
         this.voices.push(response);
-
-        client.emit(
-          "user_list",
-          this.voices.map((voice) => voice.user.id)
-        );
+        await this.onUserList(client);
 
         // await this.messageService.joinVoiceChannel({
         //     client,
@@ -162,6 +158,16 @@ export class MessageGateway
         client.emit("error", { message: "Invalid channel type" });
         client.disconnect();
     }
+  }
+
+  @SubscribeMessage(MessageNotification.USER_LIST)
+  async onUserList(
+    @ConnectedSocket() client: Socket & { request: { user: UserType } }
+  ) {
+    client.emit(
+      MessageNotification.USER_LIST,
+      this.voices.map((voice) => voice.user.id)
+    );
   }
 
   // @SubscribeMessage(MessageNotification.VOICE_ANSWER)

@@ -9,5 +9,7 @@ export const enum MessageNotification {
   VOICE_LEAVE = "voice_leave",
   VOICE_ANSWER = "voice_answer",
 
+  USER_LIST = "user_list",
+
   ERROR = "error",
 }
