@@ -65,6 +65,7 @@ export class ServerService {
     this.$messages.set([]);
     this.lastMessageRequest = undefined;
     this.$loadingDone.set(false);
+    this.$isCallOpen.set(false);
     this.$activeChannel.set(channel);
   }
 
