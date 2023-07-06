@@ -60,7 +60,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     this.peerConnection.onicecandidate = (event) => {
       console.log("onicecandidate", event);
       if (event.candidate) {
-        this.socketService.messageSocket.emit("voice_answer", {
+        this.socketService.messageSocket.emit("voice_offer", {
           channelId: this.serverService.$voiceChannel(),
           answer: event.candidate,
         });
@@ -84,6 +84,26 @@ export class CallComponent implements AfterViewInit, OnDestroy {
         offer,
       });
     };
+
+    this.socketService.messageSocket.on(
+      "voice_answer",
+      async (answer: { answer: RTCSessionDescription }) => {
+        await this.peerConnection.setRemoteDescription(answer.answer);
+      }
+    );
+
+    this.socketService.messageSocket.on(
+      "voice_join",
+      async (offer: { offer: RTCSessionDescription }) => {
+        await this.peerConnection.setRemoteDescription(offer.offer);
+        const answer = await this.peerConnection.createAnswer();
+        await this.peerConnection.setLocalDescription(answer);
+        this.socketService.messageSocket.emit("voice_answer", {
+          channelId: this.serverService.$voiceChannel(),
+          answer,
+        });
+      }
+    );
   }
 
   endCall() {
