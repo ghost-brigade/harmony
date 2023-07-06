@@ -42,9 +42,17 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
-  async findOne(data: UserType) {
+  async findOne(data: UserType & { auth?: boolean }) {
     try {
       let user: UserType;
+
+      if (data?.auth === undefined) {
+        delete user.password;
+      } else {
+        delete data.auth;
+        // refresh redis user last request
+      }
+
       if (Object.keys(data).length === 2 && "id" in data) {
         user = await this.userService.findOne(data.id);
       } else {

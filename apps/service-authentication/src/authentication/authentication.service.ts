@@ -30,7 +30,6 @@ export class AuthenticationService {
   ) {}
 
   async validateUser(user: UserType) {
-
     // if (
     //   user &&
     //   (await this.comparePassword(plainPassword, user.password)) &&
@@ -53,6 +52,7 @@ export class AuthenticationService {
       const user: UserType = await firstValueFrom(
         this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
           email: loginType.email,
+          auth: true,
         })
       );
 
@@ -99,6 +99,7 @@ export class AuthenticationService {
       const user = await firstValueFrom(
         this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
           email: payload.email,
+          auth: true,
         })
       );
 
