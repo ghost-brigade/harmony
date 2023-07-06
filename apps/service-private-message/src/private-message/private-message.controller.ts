@@ -38,6 +38,14 @@ export class PrivateMessageController {
     return this.privateMessageService.findMessagesWithUser(payload, user);
   }
 
+  @MessagePattern(PRIVATE_MESSAGE_PATTERN.GET_BY_ID)
+  async getById(
+    @Payload() payload: { id: IdType },
+    @UserContext() user: UserContextType
+  ) {
+    return this.privateMessageService.getById(payload, user);
+  }
+
   @MessagePattern(PRIVATE_MESSAGE_PATTERN.CREATE)
   create(
     @Payload() payload: { message: MessageCreateType; attachments: Multer[] },

@@ -120,11 +120,24 @@ export class PrivateMessageService {
     };
   }
 
+  async getById(payload: { id: IdType }, user: UserContextType) {
+    const privateMessage = await this.privateMessageModel
+      .findById(payload.id)
+      .exec();
+
+    if (!privateMessage) {
+      throw new RpcException(
+        new NotFoundException(Errors.ERROR_MESSAGE_NOT_FOUND)
+      );
+    }
+
+    return privateMessage;
+  }
+
   public async create(
     payload: { message: PrivateMessageCreateType; attachments: Multer[] },
     user: UserContextType
   ) {
-    console.log(payload.message);
     const parse = PrivateMessageCreateSchema.safeParse(payload.message);
 
     if (parse.success === false) {
