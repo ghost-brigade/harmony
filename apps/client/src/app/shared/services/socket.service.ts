@@ -20,6 +20,7 @@ export class SocketService {
   constructor() {
     this.messageSocket.on("disconnect", () => {
       this.messageSocket.connect();
+      this.messageSocket.emit("RECONNECT", "RECONNECT");
     });
   }
   /*
