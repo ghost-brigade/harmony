@@ -53,6 +53,8 @@
 	<string>To pick a picture from your library</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To talk in calls</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 </dict>
