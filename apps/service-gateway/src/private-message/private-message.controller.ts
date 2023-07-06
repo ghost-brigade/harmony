@@ -11,8 +11,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
   Param,
+  ParseFilePipeBuilder,
   Post,
   Put,
   Query,
@@ -99,7 +101,17 @@ export class PrivateMessageController {
   })
   @UseInterceptors(FilesInterceptor("attachements[]", 3))
   async newMessage(
-    @UploadedFiles() attachments: Multer[],
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpg|jpeg|png|gif|webp)/,
+        })
+        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        })
+    )
+    attachments: Multer[],
     @Body() privateMessage: PrivateMessageCreateDto,
     @Param("receiverId") receiverId: string
   ): Promise<PrivateMessageDto> {

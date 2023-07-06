@@ -6,7 +6,9 @@ import {
 } from "@harmony/service-config";
 import {
   Controller,
+  HttpStatus,
   Inject,
+  ParseFilePipeBuilder,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -41,7 +43,19 @@ export class UserAvatarController {
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
   @UseInterceptors(FileInterceptor("file"))
   @Post("avatar")
-  changeAvatar(@UploadedFile() file: Express.Multer.File) {
+  changeAvatar(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpg|jpeg|png|gif|webp)/,
+        })
+        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        })
+    )
+    file: Express.Multer.File
+  ) {
     return this.serviceRequest.send({
       client: this.client,
       pattern: ACCOUNT_MESSAGE_PATTERN.CHANGE_AVATAR,

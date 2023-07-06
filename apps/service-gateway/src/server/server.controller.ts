@@ -9,8 +9,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Put,
@@ -77,7 +79,17 @@ export class ServerController {
   @Post(":id/icon")
   async uploadServerIcon(
     @Param("id") id: string,
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpg|jpeg|png|gif|webp)/,
+        })
+        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        })
+    )
+    file: Express.Multer.File
   ) {
     return this.serviceRequest.send({
       client: this.client,

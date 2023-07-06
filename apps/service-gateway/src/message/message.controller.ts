@@ -11,8 +11,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
   Param,
+  ParseFilePipeBuilder,
   Post,
   Put,
   Query,
@@ -31,6 +33,7 @@ import {
   ApiParam,
   ApiQuery,
 } from "@nestjs/swagger";
+import { Throttle } from "@nestjs/throttler";
 
 // Due to a bug we need to import Multer without using it
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,7 +70,17 @@ export class MessageController {
   })
   @UseInterceptors(FilesInterceptor("attachements[]", 3))
   async newMessage(
-    @UploadedFiles() attachments: Multer[],
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpg|jpeg|png|gif|webp)/,
+        })
+        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        })
+    )
+    attachments: Multer[],
     @Body() message: MessageCreateDto
   ): Promise<MessageDto> {
     return this.serviceRequest.send({
