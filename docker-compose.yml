@@ -24,6 +24,12 @@ services:
       - ${SOCKET_PORT:-3001}:3001
     command: npx nx serve service-notification
 
+  service-private-message:
+    extends:
+      file: docker-compose.template.yml
+      service: service-template
+    command: npx nx serve service-private-message
+
   service-authentication:
     extends:
       file: docker-compose.template.yml

@@ -8,6 +8,7 @@ import {
 } from "@harmony/service-config";
 import {
   MessageType,
+  PrivateMessageType,
   RoleType,
   ServerType,
   UserPublicType,
@@ -24,7 +25,7 @@ import { from, Observable } from "rxjs";
 import { switchMap, map } from "rxjs/operators";
 
 @Injectable()
-export class GlobalAllMessageInterceptor implements NestInterceptor {
+export class GlobalPrivateMessageInterceptor implements NestInterceptor {
   constructor(
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
     private readonly accountService: ClientProxy,
@@ -49,14 +50,18 @@ export class GlobalAllMessageInterceptor implements NestInterceptor {
     );
   }
 
-  private async global(message: MessageType) {
+  private async global(message: PrivateMessageType) {
     const aggregateObject = {
       author: null,
+      receiver: null,
       attachment: [],
     };
 
     if (message.author) {
       aggregateObject.author = await this.authorMessage(message);
+    }
+    if (message.receiver) {
+      aggregateObject.receiver = await this.receiverMessage(message);
     }
     if (message.attachment) {
       aggregateObject.attachment = await this.attachmentMessage(
@@ -86,7 +91,7 @@ export class GlobalAllMessageInterceptor implements NestInterceptor {
     return attachmentUrls;
   }
 
-  private async authorMessage(message: MessageType) {
+  private async authorMessage(message: PrivateMessageType) {
     const author = await this.serviceRequest.send({
       client: this.accountService,
       pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
@@ -108,5 +113,29 @@ export class GlobalAllMessageInterceptor implements NestInterceptor {
     }
 
     return author;
+  }
+
+  private async receiverMessage(message: PrivateMessageType) {
+    const receiver = await this.serviceRequest.send({
+      client: this.accountService,
+      pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
+      data: {
+        id: message.receiver,
+      },
+      promise: true,
+    });
+    if (receiver.avatar) {
+      const icon = await this.serviceRequest.send({
+        client: this.fileService,
+        pattern: FILE_MESSAGE_PATTERN.FIND_BY_ID,
+        data: {
+          id: receiver.avatar,
+        },
+        promise: true,
+      });
+      receiver.avatar = icon.url;
+    }
+
+    return receiver;
   }
 }

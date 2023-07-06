@@ -62,7 +62,7 @@ export class MessageCreateService {
     if (!payload.message.content && !payload.attachments) {
       throw new RpcException(
         new BadRequestException(Errors.ERROR_NO_CONTENT_OR_ATTACHMENT)
-      );  
+      );
     }
 
     if (payload.message.content?.length > 500) {

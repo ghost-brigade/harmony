@@ -12,6 +12,13 @@ export enum NOTIFICATION_MESSAGE_PATTERN {
   DELETE_MESSAGE = "notification.delete_message",
 
   /**
+   * Private message patterns for notification service
+   */
+  NEW_PRIVATE_MESSAGE = "notification.new_private_message",
+  UPDATE_PRIVATE_MESSAGE = "notification.update_private_message",
+  DELETE_PRIVATE_MESSAGE = "notification.delete_private_message",
+
+  /**
    * Server patterns for notification service
    */
   NEW_CHANNEL = "notification.new_channel",
