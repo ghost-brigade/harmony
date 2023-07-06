@@ -14,7 +14,6 @@ export class PrivateMessageController {
   ): Promise<boolean> {
     console.log("newMessage", payload);
     return this.privateMessageGateway.onNewMessage({
-      receiverId: payload.message.receiver,
       message: payload.message,
     });
   }
@@ -22,7 +21,6 @@ export class PrivateMessageController {
   @MessagePattern(NOTIFICATION_MESSAGE_PATTERN.UPDATE_PRIVATE_MESSAGE)
   async updateMessage(@Payload() payload: { message: PrivateMessageType }) {
     return this.privateMessageGateway.onUpdateMessage({
-      receiverId: payload.message.receiver,
       message: payload.message,
     });
   }

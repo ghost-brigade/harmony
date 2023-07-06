@@ -3,9 +3,8 @@ import { Module } from "@nestjs/common";
 import { ClientsModule } from "@nestjs/microservices";
 import { getService, Services } from "@harmony/service-config";
 import { PrivateMessageController } from "./private-message.controller";
-import { MessageGateway } from "./private-message.gateway";
 import { WsAuthService } from "../ws-auth.service";
-import { MessageAuthorizationService } from "./private-message-authorization.service";
+import { PrivateMessageGateway } from "./private-message.gateway";
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import { MessageAuthorizationService } from "./private-message-authorization.ser
     ]),
   ],
   controllers: [PrivateMessageController],
-  providers: [WsAuthService, MessageGateway, MessageAuthorizationService],
+  providers: [WsAuthService, PrivateMessageGateway],
   exports: [WsAuthService],
 })
 export class PrivateMessageModule {}

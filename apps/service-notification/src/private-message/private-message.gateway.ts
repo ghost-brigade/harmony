@@ -2,7 +2,6 @@ import { PrivateMessageNotification } from "@harmony/notification";
 import {
   IdSchema,
   IdType,
-  MessageType,
   PrivateMessageType,
   UserType,
 } from "@harmony/zod";
@@ -18,7 +17,6 @@ import {
 import { Server, Socket } from "socket.io";
 import { WsAuthService } from "../ws-auth.service";
 import { Injectable } from "@nestjs/common";
-import { PrivateMessageAuthorizationService } from "./private-message-authorization.service";
 
 @WebSocketGateway({
   cors: {
@@ -31,7 +29,6 @@ export class PrivateMessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private readonly messageAuthorizationService: PrivateMessageAuthorizationService,
     private readonly wsAuthService: WsAuthService
   ) {}
 
@@ -52,7 +49,8 @@ export class PrivateMessageGateway
   }
 
   private getRoomName(receiverId: IdType) {
-    return `${receiverId}`;
+    const name = [this.user.id, receiverId].sort();
+    return name.join("-");
   }
 
   @SubscribeMessage(PrivateMessageNotification.LEAVE_ALL_ROOMS)
@@ -79,37 +77,21 @@ export class PrivateMessageGateway
       return;
     }
 
-    const isAuthorized =
-      await this.messageAuthorizationService.canAccessChannel({
-        channelId,
-        user: this.user as UserType,
-      });
+    console.log("join", receiverId);
 
-    if (isAuthorized) {
-      console.log("join", channelId);
-
-      await this.onLeaveAllRooms(client);
-      await client.join(this.getRoomName(channelId));
-    } else {
-      client.emit("error", {
-        message: "You are not authorized to join this channel",
-      });
-
-      client.disconnect();
-    }
+    await this.onLeaveAllRooms(client);
+    await client.join(this.getRoomName(receiverId));
   }
 
   @SubscribeMessage(PrivateMessageNotification.NEW_MESSAGE)
-  onNewMessage({
-    receiverId,
-    message,
-  }: {
-    receiverId: IdType;
-    message: PrivateMessageType;
-  }) {
+  onNewMessage({ message }: { message: PrivateMessageType }) {
     try {
+      if (message.author === this.user.id) {
+        return true;
+      }
+
       this.server
-        .to(this.getRoomName(receiverId))
+        .to(this.getRoomName(message.receiver))
         .emit(PrivateMessageNotification.NEW_MESSAGE, message);
       return true;
     } catch (error) {
@@ -118,16 +100,14 @@ export class PrivateMessageGateway
   }
 
   @SubscribeMessage(PrivateMessageNotification.UPDATE_MESSAGE)
-  onUpdateMessage({
-    receiverId,
-    message,
-  }: {
-    receiverId: IdType;
-    message: MessageType;
-  }) {
+  onUpdateMessage({ message }: { message: PrivateMessageType }) {
     try {
+      if (message.author === this.user.id) {
+        return true;
+      }
+
       this.server
-        .to(this.getRoomName(receiverId))
+        .to(this.getRoomName(message.receiver))
         .emit(PrivateMessageNotification.UPDATE_MESSAGE, message);
       return true;
     } catch (error) {
@@ -144,6 +124,10 @@ export class PrivateMessageGateway
     messageId: IdType;
   }) {
     try {
+      if (this.user.id !== receiverId) {
+        return true;
+      }
+
       this.server
         .to(this.getRoomName(receiverId))
         .emit(PrivateMessageNotification.DELETE_MESSAGE, messageId);
