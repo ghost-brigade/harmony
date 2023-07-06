@@ -18,6 +18,7 @@ import { AlertService } from "apps/client/src/app/core/components/alert/alert.se
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
 import { finalize } from "rxjs";
 import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.constants";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-server-pop",
@@ -27,6 +28,7 @@ import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.co
     FormsModule,
     ServerIconComponent,
     NgAutoAnimateDirective,
+    I18nPipe,
   ],
   templateUrl: "./server-pop.component.html",
   styleUrls: ["./server-pop.component.css"],

@@ -17,6 +17,7 @@ import { HapticsService } from "../../../services/haptics.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { Capacitor } from "@capacitor/core";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -28,6 +29,7 @@ import { ServerService } from "apps/client/src/app/views/application/server/serv
     FormsModule,
     RouterLink,
     NgAutoAnimateDirective,
+    I18nPipe,
   ],
   templateUrl: "./bottom-nav.component.html",
   styleUrls: ["./bottom-nav.component.css"],

@@ -4,11 +4,12 @@ import { MessagePopService } from "./message-pop.service";
 import { FormsModule } from "@angular/forms";
 import { Dialog } from "@capacitor/dialog";
 import { MESSAGE_POP_ANIMATION } from "./message-pop.animation";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-message-pop",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, I18nPipe],
   templateUrl: "./message-pop.component.html",
   styleUrls: ["./message-pop.component.css"],
   animations: MESSAGE_POP_ANIMATION,

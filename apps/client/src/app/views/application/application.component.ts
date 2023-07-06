@@ -17,6 +17,7 @@ import { AvatarComponent } from "../../shared/components/application/avatar/avat
 import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
 import { DeleteEndpoint } from "../../core/constants/endpoints/delete.constants";
 import { ServerIconComponent } from "../../shared/components/application/server-icon/server-icon.component";
+import { I18nPipe } from "../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-application",
@@ -29,6 +30,7 @@ import { ServerIconComponent } from "../../shared/components/application/server-
     AvatarComponent,
     ServerIconComponent,
     RouterModule,
+    I18nPipe,
   ],
   templateUrl: "./application.component.html",
   styleUrls: ["./application.component.css"],

@@ -3,7 +3,7 @@
   *ngIf="open">
   <input
     type="search"
-    placeholder="Search an emoji..."
+    [placeholder]="'PLACEHOLDER_SEARCH_EMOJI' | i18n"
     [ngModel]="$searchValue()"
     (ngModelChange)="$searchValue.set($event)"
     class="c-input" />

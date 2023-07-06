@@ -4,12 +4,12 @@
   <p
     (click)="openCamera()"
     class="cursor-pointer rounded-lg px-4 py-2 text-center hover:bg-gray-100 dark:hover:bg-slate-600">
-    Open camera
+    {{ "OPEN_CAMERA" | i18n }}
   </p>
   <hr class="my-1 h-px border-0 bg-gray-200 dark:bg-gray-900" />
   <p
     (click)="addFiles()"
     class="cursor-pointer rounded-lg px-4 py-2 text-center hover:bg-gray-100 dark:hover:bg-slate-600">
-    Add files
+    {{ "ADD_FILES" | i18n }}
   </p>
 </div>
