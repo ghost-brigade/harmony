@@ -75,7 +75,7 @@ export class MessageDeleteService {
       );
     }
 
-    await this.sendToSearch(message);
+    // await this.sendToSearch(message);
     await this.emitNotification(message);
 
     try {

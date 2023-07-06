@@ -80,7 +80,7 @@ export class MessageUpdateService {
       { content: payload.message.content }
     );
 
-    await this.sendToSearch(updatedMessage);
+    // await this.sendToSearch(updatedMessage);
     await this.emitNotification(updatedMessage);
 
     try {
