@@ -102,6 +102,12 @@ export class ServerService {
             });
           }, 500);
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -177,6 +183,12 @@ export class ServerService {
                 this.$loadingDone.set(true);
               }
               this.$messages().push(...messages.messages);
+            },
+            error: (err) => {
+              this.alertService.show({
+                message: err.error.message,
+                type: "error",
+              });
             },
           });
       } else {

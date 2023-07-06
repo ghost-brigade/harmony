@@ -24,6 +24,7 @@ import { MessageComponent } from "../../../shared/components/application/message
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { MessagePopComponent } from "../../../shared/components/application/message-pop/message-pop.component";
 import { ServerPopComponent } from "../../../shared/components/application/server-pop/server-pop.component";
+import { AlertService } from "../../../core/components/alert/alert.service";
 
 @Component({
   selector: "harmony-server",
@@ -46,6 +47,7 @@ export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
   requestService = inject(RequestService);
   socketService = inject(SocketService);
   serverService = inject(ServerService);
+  alertService = inject(AlertService);
   router = inject(Router);
   $server: WritableSignal<ServerGetType | null> = signal(null);
   $isChannelListOpen = computed(() => this.serverService.$isChannelListOpen());
@@ -113,6 +115,12 @@ export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
             this.$server.set(server);
             this.serverService.setActiveChannel(server.channels[0].id);
             this.socketService.joinChannel(this.serverService.$activeChannel());
+          },
+          error: (err) => {
+            this.alertService.show({
+              message: err.error.message,
+              type: "error",
+            });
           },
         });
     });

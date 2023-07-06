@@ -15,6 +15,7 @@ import { PostEndpoint } from "../../../core/constants/endpoints/post.constants";
 import { Router } from "@angular/router";
 import { SERVER_SEARCH_ANIMATION } from "./server-search.animation";
 import { I18nPipe } from "../../../core/pipes/i18n.pipe";
+import { AlertService } from "../../../core/components/alert/alert.service";
 
 @Component({
   selector: "harmony-search",
@@ -27,6 +28,7 @@ import { I18nPipe } from "../../../core/pipes/i18n.pipe";
 export class SearchComponent implements OnInit {
   requestService = inject(RequestService);
   router = inject(Router);
+  alertService = inject(AlertService);
   $name = signal("");
   servers: ServerType[] = [];
   $userServers: WritableSignal<ServerType[]> = signal([]);
@@ -37,6 +39,12 @@ export class SearchComponent implements OnInit {
       next: (servers) => {
         console.log(servers);
         this.$userServers.set(servers);
+      },
+      error: (err) => {
+        this.alertService.show({
+          message: err.error.message,
+          type: "error",
+        });
       },
     });
     this.searchServers();
@@ -69,6 +77,12 @@ export class SearchComponent implements OnInit {
             }
           });
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -85,6 +99,12 @@ export class SearchComponent implements OnInit {
       .subscribe({
         next: () => {
           this.router.navigateByUrl(`/app/server/${server.id}`);
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }

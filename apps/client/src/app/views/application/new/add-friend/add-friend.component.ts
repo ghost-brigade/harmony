@@ -64,7 +64,10 @@ export class AddFriendComponent implements OnDestroy {
           this.addFriendService.close();
         },
         error: (err) => {
-          this.alertService.show({ message: err.message, type: "error" });
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }

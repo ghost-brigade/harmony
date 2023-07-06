@@ -18,6 +18,7 @@ import { PostEndpoint } from "../../core/constants/endpoints/post.constants";
 import { DeleteEndpoint } from "../../core/constants/endpoints/delete.constants";
 import { ServerIconComponent } from "../../shared/components/application/server-icon/server-icon.component";
 import { I18nPipe } from "../../core/pipes/i18n.pipe";
+import { AlertService } from "../../core/components/alert/alert.service";
 
 @Component({
   selector: "harmony-application",
@@ -38,6 +39,7 @@ import { I18nPipe } from "../../core/pipes/i18n.pipe";
 })
 export class ApplicationComponent implements OnInit {
   requestService = inject(RequestService);
+  alertService = inject(AlertService);
   $selectedTab = signal("servers");
   $loading = signal(false);
   $friendRequests: WritableSignal<UserType[]> = signal([]);
@@ -62,6 +64,12 @@ export class ApplicationComponent implements OnInit {
           console.log(servers);
           this.$servers.set(servers);
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -74,6 +82,12 @@ export class ApplicationComponent implements OnInit {
         next: (friendRequests) => {
           console.log(friendRequests);
           this.$friendRequests.set(friendRequests);
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }
@@ -88,6 +102,12 @@ export class ApplicationComponent implements OnInit {
           console.log(friends);
           this.$friends.set(friends);
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -100,6 +120,12 @@ export class ApplicationComponent implements OnInit {
         next: (blockedUsers) => {
           console.log(blockedUsers);
           this.$blockedUsers.set(blockedUsers);
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }
@@ -122,6 +148,12 @@ export class ApplicationComponent implements OnInit {
           this.getFriendRequests();
           this.getFriends();
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -138,6 +170,12 @@ export class ApplicationComponent implements OnInit {
         next: () => {
           this.getFriendRequests();
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -152,6 +190,12 @@ export class ApplicationComponent implements OnInit {
       .subscribe({
         next: () => {
           this.getFriends();
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }
@@ -170,6 +214,12 @@ export class ApplicationComponent implements OnInit {
           this.getFriends();
           this.getBlockedUsers();
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -186,6 +236,12 @@ export class ApplicationComponent implements OnInit {
         next: () => {
           this.getBlockedUsers();
           this.getFriends();
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }

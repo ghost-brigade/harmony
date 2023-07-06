@@ -1,5 +1,6 @@
 import { Injectable, WritableSignal, inject, signal } from "@angular/core";
 import { MessageGetType } from "@harmony/zod";
+import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
 import { DeleteEndpoint } from "apps/client/src/app/core/constants/endpoints/delete.constants";
 import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.constants";
 import { RequestService } from "apps/client/src/app/core/services/request.service";
@@ -11,6 +12,7 @@ import { ServerService } from "apps/client/src/app/views/application/server/serv
 export class MessagePopService {
   requestService = inject(RequestService);
   serverService = inject(ServerService);
+  alertService = inject(AlertService);
   $isOpen = signal(false);
   $message: WritableSignal<MessageGetType | undefined> = signal(undefined);
 
@@ -41,6 +43,12 @@ export class MessagePopService {
               )
           );
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -57,6 +65,12 @@ export class MessagePopService {
               .$messages()
               .filter((message) => message.id !== messageId)
           );
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }
