@@ -76,12 +76,19 @@ export class MessageGateway
       (voice) => voice.socketId === client.id
     );
 
+
     if (voiceIndex !== -1) {
-      client.broadcast.emit(MessageNotification.VOICE_LEAVE, {
-        socketId: client.id,
-        channelId: this.voices[voiceIndex].channelId,
-        user: this.voices[voiceIndex].user,
-      });
+      console.log("onVoiceLeave", this.voices[voiceIndex]);
+
+      this.server
+        //.to(this.getRoomName(this.voices[voiceIndex].channelId))
+        .emit(MessageNotification.VOICE_LEAVE, this.voices[voiceIndex].user.id);
+
+      // client.broadcast.emit(MessageNotification.VOICE_LEAVE, {
+      //   socketId: client.id,
+      //   channelId: this.voices[voiceIndex].channelId,
+      //   user: this.voices[voiceIndex].user,
+      // });
 
       this.voices.splice(voiceIndex, 1);
     }
@@ -164,10 +171,16 @@ export class MessageGateway
   async onUserList(
     @ConnectedSocket() client: Socket & { request: { user: UserType } }
   ) {
-    client.emit(
-      MessageNotification.USER_LIST,
-      this.voices.map((voice) => voice.user.id)
+    const voiceIndex = this.voices.findIndex(
+      (voice) => voice.socketId === client.id
     );
+
+    this.server
+      //.to(this.getRoomName(this.voices[voiceIndex].channelId))
+      .emit(
+        MessageNotification.USER_LIST,
+        this.voices.map((voice) => voice.user.id)
+      );
   }
 
   // @SubscribeMessage(MessageNotification.VOICE_ANSWER)
