@@ -139,7 +139,7 @@ export class MessageGateway
 
         this.voices.push(response);
 
-        client.broadcast.emit(
+        client.emit(
           "user_list",
           this.voices.map((voice) => voice.user.id)
         );
