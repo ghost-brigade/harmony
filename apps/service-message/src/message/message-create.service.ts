@@ -108,8 +108,6 @@ export class MessageCreateService {
         );
       }
 
-      console.log(channel);
-
       if (!channel) {
         throw new RpcException(
           new BadRequestException(Errors.ERROR_CHANNEL_NOT_FOUND)

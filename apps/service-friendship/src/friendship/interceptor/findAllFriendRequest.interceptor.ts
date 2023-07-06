@@ -30,8 +30,6 @@ export class FindAllFriendRequest implements NestInterceptor {
   }
 
   private async global(findFriend) {
-    console.log("____________findAllFriendRequest_______________");
-    console.log("findFriend", findFriend);
     if (findFriend) {
       return this.friendsReturn(findFriend);
     }
@@ -41,8 +39,6 @@ export class FindAllFriendRequest implements NestInterceptor {
       sender: friend.sender,
       receiver: friend.receiver,
     }));
-    console.log("______________user2Array_______________");
-    console.log("user2Array", user2Array);
     try {
       const user = await this.serviceRequest.send({
         client: this.accountService,

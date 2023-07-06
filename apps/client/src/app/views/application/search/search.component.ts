@@ -37,7 +37,6 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     this.requestService.get({ endpoint: GetEndpoint.Servers }).subscribe({
       next: (servers) => {
-        console.log(servers);
         this.$userServers.set(servers);
       },
       error: (err) => {
@@ -58,7 +57,6 @@ export class SearchComponent implements OnInit {
   }
 
   searchServers() {
-    console.log(this.$name());
     this.requestService
       .get({
         endpoint: GetEndpoint.SearchServers,
@@ -87,7 +85,6 @@ export class SearchComponent implements OnInit {
   }
 
   joinServer(server: ServerType) {
-    console.log(server);
     this.requestService
       .post({
         endpoint: PostEndpoint.JoinServer,

@@ -52,7 +52,6 @@ export class PrivateMessageController {
     description: "Get all conversations of user",
   })
   async getAll(): Promise<any> {
-    console.log("getAll");
     return this.serviceRequest.send({
       client: this.clientPrivateMessage,
       pattern: PRIVATE_MESSAGE_PATTERN.FIND_ALL,

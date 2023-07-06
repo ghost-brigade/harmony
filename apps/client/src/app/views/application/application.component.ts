@@ -61,7 +61,6 @@ export class ApplicationComponent implements OnInit {
       })
       .subscribe({
         next: (servers) => {
-          console.log(servers);
           this.$servers.set(servers);
         },
         error: (err) => {
@@ -80,7 +79,6 @@ export class ApplicationComponent implements OnInit {
       })
       .subscribe({
         next: (friendRequests) => {
-          console.log(friendRequests);
           this.$friendRequests.set(friendRequests);
         },
         error: (err) => {
@@ -99,7 +97,6 @@ export class ApplicationComponent implements OnInit {
       })
       .subscribe({
         next: (friends) => {
-          console.log(friends);
           this.$friends.set(friends);
         },
         error: (err) => {
@@ -118,7 +115,6 @@ export class ApplicationComponent implements OnInit {
       })
       .subscribe({
         next: (blockedUsers) => {
-          console.log(blockedUsers);
           this.$blockedUsers.set(blockedUsers);
         },
         error: (err) => {

@@ -26,7 +26,6 @@ export class MessagePopComponent {
   }
 
   editMessage() {
-    console.log(this.editedMessage);
     this.messagePopService.editMessage(
       this.messagePopService.$message()?.id as string,
       this.editedMessage.trim()

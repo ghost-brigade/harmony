@@ -45,7 +45,6 @@ export class ServerUpdateService {
     const parsed = ServerUpdateSchema.safeParse(payload.server);
 
     if (parsed.success === false) {
-      console.log(parsed.error.issues);
       throw new RpcException(
         new UnprocessableEntityException(FormatZodResponse(parsed.error.issues))
       );

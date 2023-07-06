@@ -91,7 +91,6 @@ export class ServerService {
       })
       .subscribe({
         next: (messages) => {
-          console.log(messages);
           this.$messages.set(messages.messages);
           this.lastMessageRequest = messages;
           setTimeout(() => {
@@ -134,7 +133,6 @@ export class ServerService {
       })
       .subscribe({
         next: (message) => {
-          console.log(message);
           Haptics.impact({
             style: ImpactStyle.Heavy,
           });
@@ -174,7 +172,6 @@ export class ServerService {
           .pipe(finalize(() => (this.isLoading = false)))
           .subscribe({
             next: (messages) => {
-              console.log(messages);
               this.lastMessageRequest = messages;
               if (
                 this.lastMessageRequest.currentPage ===

@@ -132,7 +132,6 @@ export class UserController {
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.BANNED_USERS)
   async findAllBannedUsers(@UserContext() user: UserContextType) {
-    console.log("findAllBannedUser controller service");
     return await this.userService.findAllBannedUsers(user);
   }
 

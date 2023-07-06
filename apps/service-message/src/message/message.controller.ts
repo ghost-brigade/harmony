@@ -54,7 +54,6 @@ export class MessageController {
     @Payload() payload: { message: MessageUpdateType },
     @UserContext() user: UserContextType
   ) {
-    console.log(payload);
     return this.messageUpdateService.update(payload, user);
   }
 

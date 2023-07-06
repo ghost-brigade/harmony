@@ -102,7 +102,6 @@ export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe((params) => {
       const { serverId } = params;
-      console.log(serverId);
       this.requestService
         .get({
           endpoint: GetEndpoint.Server,

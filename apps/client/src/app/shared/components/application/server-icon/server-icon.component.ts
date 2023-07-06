@@ -18,7 +18,6 @@ export class ServerIconComponent implements AfterViewInit {
 
     if (svg && textElement) {
       const svgWidth = svg.getBoundingClientRect().width;
-      console.log(svgWidth);
       const fontSize = svgWidth * 0.8;
       textElement.setAttribute("font-size", fontSize + "px");
     }
