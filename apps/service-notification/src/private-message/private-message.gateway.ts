@@ -24,7 +24,7 @@ import { PrivateMessageAuthorizationService } from "./private-message-authorizat
   cors: {
     origin: "*",
   },
-  namespace: "message",
+  namespace: "private-message",
 })
 @Injectable()
 export class PrivateMessageGateway
