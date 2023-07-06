@@ -182,12 +182,14 @@ export class MessageService {
         channel: payload.channelId,
       });
 
+      const lastPage = Math.ceil(count / (payload.params?.limit ?? 10));
+
       return {
         messages,
         count,
         // @ts-ignore
         currentPage: Number.parseInt(payload.params?.page ?? "1"),
-        lastPage: Math.ceil(count / (payload.params?.limit ?? 10)),
+        lastPage: lastPage == 0 ? 1 : lastPage,
       };
     } catch (error) {
       console.log(error);
