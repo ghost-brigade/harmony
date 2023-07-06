@@ -8,6 +8,7 @@ export const PostEndpoint = {
   DeclineFriendRequest: "/friend-request/reject/:friendId",
   BlockUser: "/user/block/:id",
   UnblockUser: "/user/unblock/:id",
+  CreateChannel: "/channel",
 } as const;
 import { LoginType, ServerCreateType, UserCreateType } from "@harmony/zod";
 
@@ -70,6 +71,15 @@ export type PostEndpointMap = {
       id: string;
     };
     body: undefined;
+  };
+  "/channel": {
+    response: object;
+    body: {
+      name: string;
+      server: string;
+      type: string;
+      order: number;
+    };
   };
 };
 
