@@ -16,7 +16,7 @@ export type MessageDocument = HydratedDocument<Message>;
   },
 })
 export class Message {
-  @Prop({ type: String, required: true, default: "" })
+  @Prop({ type: String, required: false, default: "" })
   content: string;
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
