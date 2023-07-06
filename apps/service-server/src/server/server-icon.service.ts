@@ -74,8 +74,6 @@ export class ServerIconService {
       );
     }
 
-    console.log("ServerIconService icon", payload.file.originalname);
-
     payload.file.originalname = `${server.id}.${payload.file.originalname
       .split(".")
       .pop()}`;

@@ -115,6 +115,12 @@ export class ChannelListComponent {
           this.closeChannelAdd();
           this.$server()?.channels.push(res);
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 

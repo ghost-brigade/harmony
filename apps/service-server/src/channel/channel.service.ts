@@ -205,7 +205,7 @@ export class ChannelService {
       }
     }
 
-    if ((await this.getChannelCount(payload.channel.server)) >= 50) {
+    if ((await this.getChannelCount(payload.channel.server)) >= 30) {
       throw new RpcException(
         new BadRequestException(
           "You cannot create more than 30 channels for a server."
@@ -343,6 +343,19 @@ export class ChannelService {
 
     if (channel === null) {
       throw new RpcException(new BadRequestException("Channel not found."));
+    }
+
+    const countChannelText = await this.channelModel.countDocuments({
+      server: channel.server,
+      type: ChannelTypeEnum.TEXT,
+    });
+
+    if (countChannelText <= 1) {
+      throw new RpcException(
+        new BadRequestException(
+          "You cannot delete the last text channel in a server."
+        )
+      );
     }
 
     if (authorization) {

@@ -31,14 +31,11 @@ export class ImagePickerComponent {
   }
 
   async openCamera() {
-    console.log("open camera");
     const perms = await Camera.checkPermissions();
-    console.log(perms);
     if (perms.camera === "denied" || perms.photos === "denied") {
       const req = await Camera.requestPermissions({
         permissions: ["camera", "photos"],
       });
-      console.log(req);
       if (req.camera === "denied") {
         this.toastService.show({
           message: "CAMERA_PERMISSION_DENIED",
@@ -58,13 +55,10 @@ export class ImagePickerComponent {
     });
     if (image.webPath) {
       const file = await fetch(image.webPath);
-      console.log(file);
       const blob = await file.blob();
       this.serverService.$file.set(blob);
       this.bottomNavService.$addFilesOpen.set(false);
     }
-
-    console.log(image);
   }
 
   b64toBlob = (b64Data: string, contentType = "", sliceSize = 512) => {

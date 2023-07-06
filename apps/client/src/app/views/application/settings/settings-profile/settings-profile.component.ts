@@ -74,6 +74,12 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
           this.loaderService.hide();
           this.profile = response;
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -113,7 +119,6 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
           },
         });
 
-      console.log(file);
     } catch {}
   }
 

@@ -78,6 +78,12 @@ export class ServerPopComponent implements OnDestroy {
           this.serverPopService.close();
           this.router.navigate(["/app"]);
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -127,7 +133,6 @@ export class ServerPopComponent implements OnDestroy {
           },
         });
 
-      console.log(file);
     } catch {}
   }
 
@@ -153,6 +158,12 @@ export class ServerPopComponent implements OnDestroy {
             window.location.reload();
           }, 1000);
         },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
+        },
       });
   }
 
@@ -173,6 +184,12 @@ export class ServerPopComponent implements OnDestroy {
         next: () => {
           this.serverPopService.close();
           this.router.navigate(["/app"]);
+        },
+        error: (err) => {
+          this.alertService.show({
+            message: err.error.message,
+            type: "error",
+          });
         },
       });
   }

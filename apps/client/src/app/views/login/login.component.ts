@@ -42,7 +42,6 @@ export class LoginComponent {
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.authService.$token.set(res.access_token);
           if (this.rememberMe()) {
             this.authService.saveToken(res.access_token);
@@ -50,7 +49,6 @@ export class LoginComponent {
           this.authService.login();
         },
         error: (err) => {
-          console.log(err);
           this.alertService.show({
             message: err.error.message,
             type: "error",

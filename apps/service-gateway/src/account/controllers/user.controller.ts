@@ -53,7 +53,6 @@ export class UserController {
   @ApiNotFoundResponse({ description: "Ban user not found" })
   @Get("/blocked")
   public findAllBannedUsers() {
-    console.log("findAllBannedUser controller sdsfgateway");
     return this.serviceRequest.send({
       client: this.client,
       pattern: ACCOUNT_MESSAGE_PATTERN.BANNED_USERS,

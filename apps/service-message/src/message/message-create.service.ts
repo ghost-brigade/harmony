@@ -1,11 +1,13 @@
 import { firstValueFrom } from "rxjs";
-import { Errors, Permissions } from "@harmony/enums";
+import { ChannelType, Errors, Permissions } from "@harmony/enums";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
   ACCOUNT_MESSAGE_PATTERN,
+  CHANNEL_MESSAGE_PATTERN,
   FILE_MESSAGE_PATTERN,
   NOTIFICATION_MESSAGE_PATTERN,
   SEARCH_MESSAGE_PATTERN,
+  SERVER_MESSAGE_PATTERN,
   Services,
   getServiceProperty,
 } from "@harmony/service-config";
@@ -44,7 +46,9 @@ export class MessageCreateService {
     @Inject(getServiceProperty(Services.FILE, "name"))
     private readonly clientFile: ClientProxy,
     @Inject(getServiceProperty(Services.ACCOUNT, "name"))
-    private readonly clientAccount: ClientProxy
+    private readonly clientAccount: ClientProxy,
+    @Inject(getServiceProperty(Services.SERVER, "name"))
+    private readonly clientServer: ClientProxy
   ) {}
 
   async create(
@@ -83,6 +87,63 @@ export class MessageCreateService {
       throw new RpcException(
         new UnauthorizedException("You are not authorized to create a message")
       );
+    }
+
+    let channel;
+
+    if (payload.message.channel) {
+      try {
+        channel = await this.serviceRequest.send({
+          client: this.clientServer,
+          pattern: CHANNEL_MESSAGE_PATTERN.GET_BY_ID,
+          data: {
+            id: payload.message.channel,
+          },
+          promise: true,
+        });
+      } catch (error) {
+        console.log(error);
+        throw new RpcException(
+          new InternalServerErrorException("Error getting channel of message")
+        );
+      }
+
+      if (!channel) {
+        throw new RpcException(
+          new BadRequestException(Errors.ERROR_CHANNEL_NOT_FOUND)
+        );
+      }
+
+      if (channel.type === ChannelType.VOICE) {
+        throw new RpcException(
+          new BadRequestException(Errors.ERROR_CANT_SEND_MESSAGE_IN_VOCAL)
+        );
+      }
+    }
+
+    let server;
+
+    if (channel.server) {
+      try {
+        server = await this.serviceRequest.send({
+          client: this.clientServer,
+          pattern: SERVER_MESSAGE_PATTERN.GET_BY_ID,
+          data: {
+            serverId: channel.server,
+          },
+          promise: true,
+        });
+
+        if (server.banned.includes(user.id)) {
+          throw new RpcException(
+            new UnauthorizedException("You are banned from this server")
+          );
+        }
+      } catch (error) {
+        throw new RpcException(
+          new InternalServerErrorException("Error getting server of channel")
+        );
+      }
     }
 
     const newMessage = await this.messageModel.create({
@@ -125,7 +186,7 @@ export class MessageCreateService {
 
     const message = await this.insertMessage(newMessage, attachmentsIds);
 
-    await this.sendToSearch(message);
+    // await this.sendToSearch(message);
     await this.emitNotification(message);
 
     return message;
