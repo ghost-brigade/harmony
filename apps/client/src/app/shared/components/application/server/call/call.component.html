@@ -5,9 +5,11 @@
     class="flex h-full w-full flex-row flex-wrap items-center"
     auto-animate>
     <video
-      id="remoteVideo"
+      *ngFor="let streamId of remoteStreams | keyvalue"
       class="rounded-lg"
       playsinline
+      (change)="changeVideo()"
+      [srcObject]="streamId.value"
       autoplay></video>
     <video
       id="localVideo"

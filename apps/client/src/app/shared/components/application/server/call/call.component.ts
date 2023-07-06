@@ -27,6 +27,9 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   };
   peerConnection: RTCPeerConnection = new RTCPeerConnection(this.configuration);
   stream: MediaStream | undefined;
+  remoteStreams: {
+    [key: string]: MediaStream;
+  } = {};
 
   ngAfterViewInit() {
     this.setupPeerConnection();
@@ -37,15 +40,11 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   }
 
   private setupPeerConnection() {
-    console.log("setupPeerConnection");
     this.peerConnection = new RTCPeerConnection(this.configuration);
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(
       (stream) => {
         this.stream = stream;
-        console.log("getUserMedia", stream);
         const videoElement = document.getElementById("localVideo");
-        console.log("videoElement", videoElement);
-        console.log(stream);
         if (videoElement instanceof HTMLVideoElement) {
           videoElement.srcObject = stream;
         }
@@ -58,7 +57,6 @@ export class CallComponent implements AfterViewInit, OnDestroy {
       }
     );
     this.peerConnection.onicecandidate = (event) => {
-      console.log("onicecandidate", event);
       if (event.candidate) {
         this.socketService.messageSocket.emit("voice_offer", {
           channelId: this.serverService.$voiceChannel(),
@@ -69,10 +67,19 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
     this.peerConnection.ontrack = (event) => {
       console.log("ontrack", event);
-      const videoElement = document.getElementById("remoteVideo");
-      if (videoElement instanceof HTMLVideoElement) {
-        videoElement.srcObject = event.streams[0];
+      if (!this.remoteStreams[event.streams[0].id]) {
+        this.remoteStreams[event.streams[0].id] = new MediaStream();
       }
+      if (this.remoteStreams[event.streams[0].id]) {
+        //if (event.track.kind === "audio") {
+        //  this.remoteStreams[event.streams[0].id].addTrack(event.track);
+        //}
+        if (event.track.kind === "video") {
+          //this.remoteStreams[event.streams[0].id].addTrack(event.track);
+          this.remoteStreams[event.streams[0].id] = event.streams[0];
+        }
+      }
+      console.log(this.remoteStreams);
     };
 
     this.peerConnection.onnegotiationneeded = async () => {
@@ -88,6 +95,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     this.socketService.messageSocket.on(
       "voice_answer",
       async (answer: { answer: RTCSessionDescription }) => {
+        console.log("voice_answer", answer);
         await this.peerConnection.setRemoteDescription(answer.answer);
       }
     );
@@ -95,6 +103,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     this.socketService.messageSocket.on(
       "voice_join",
       async (offer: { offer: RTCSessionDescription }) => {
+        console.log("voice_join", offer);
         await this.peerConnection.setRemoteDescription(offer.offer);
         const answer = await this.peerConnection.createAnswer();
         await this.peerConnection.setLocalDescription(answer);
@@ -123,5 +132,8 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     }
     this.peerConnection.close();
     this.serverService.closeCall();
+  }
+  changeVideo() {
+    console.log("changeVideo");
   }
 }
