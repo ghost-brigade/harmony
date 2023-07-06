@@ -5,11 +5,12 @@ import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { BottomNavService } from "../bottom-nav.service";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-image-picker",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, I18nPipe],
   templateUrl: "./image-picker.component.html",
   styleUrls: ["./image-picker.component.css"],
 })

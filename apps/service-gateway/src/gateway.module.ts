@@ -13,6 +13,8 @@ import { DefaultModule } from "./default/default.module";
 import { SearchModule } from "./search/search.module";
 import { ChannelModule } from "./channel/server.module";
 import { MessageModule } from "./message/message.module";
+import { PrivateMessage } from "@harmony/nest-schemas";
+import { PrivateMessageModule } from "./private-message/private-message.module";
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { MessageModule } from "./message/message.module";
     SearchModule,
     ChannelModule,
     MessageModule,
+    PrivateMessageModule,
   ],
   providers: [
     {

@@ -10,3 +10,4 @@ export * from "./search.enum";
 export * from "./channel.enum";
 export * from "./message.enum";
 export * from "./notification.enum";
+export * from "./private-message.enum";

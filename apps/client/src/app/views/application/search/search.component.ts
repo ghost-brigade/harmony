@@ -14,11 +14,12 @@ import { ServerType } from "@harmony/zod";
 import { PostEndpoint } from "../../../core/constants/endpoints/post.constants";
 import { Router } from "@angular/router";
 import { SERVER_SEARCH_ANIMATION } from "./server-search.animation";
+import { I18nPipe } from "../../../core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-search",
   standalone: true,
-  imports: [CommonModule, NgAutoAnimateDirective, FormsModule],
+  imports: [CommonModule, NgAutoAnimateDirective, FormsModule, I18nPipe],
   templateUrl: "./search.component.html",
   styleUrls: ["./search.component.css"],
   animations: SERVER_SEARCH_ANIMATION,

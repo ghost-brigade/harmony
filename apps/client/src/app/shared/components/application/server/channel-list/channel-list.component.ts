@@ -22,6 +22,7 @@ import { AlertService } from "apps/client/src/app/core/components/alert/alert.se
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { Dialog } from "@capacitor/dialog";
+import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 
 @Component({
   selector: "harmony-channel-list",
@@ -32,6 +33,7 @@ import { Dialog } from "@capacitor/dialog";
     RouterModule,
     FormsModule,
     NgAutoAnimateDirective,
+    I18nPipe,
   ],
   templateUrl: "./channel-list.component.html",
   styleUrls: ["./channel-list.component.css"],

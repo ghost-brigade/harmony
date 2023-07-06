@@ -76,12 +76,19 @@ export class MessageGateway
       (voice) => voice.socketId === client.id
     );
 
+
     if (voiceIndex !== -1) {
-      client.broadcast.emit(MessageNotification.VOICE_LEAVE, {
-        socketId: client.id,
-        channelId: this.voices[voiceIndex].channelId,
-        user: this.voices[voiceIndex].user,
-      });
+      console.log("onVoiceLeave", this.voices[voiceIndex]);
+
+      this.server
+        //.to(this.getRoomName(this.voices[voiceIndex].channelId))
+        .emit(MessageNotification.VOICE_LEAVE, this.voices[voiceIndex].user.id);
+
+      // client.broadcast.emit(MessageNotification.VOICE_LEAVE, {
+      //   socketId: client.id,
+      //   channelId: this.voices[voiceIndex].channelId,
+      //   user: this.voices[voiceIndex].user,
+      // });
 
       this.voices.splice(voiceIndex, 1);
     }
@@ -125,13 +132,28 @@ export class MessageGateway
 
     switch (channel.type) {
       case ChannelTypeEnum.VOICE:
-        await this.messageService.joinVoiceChannel({
-          client,
+        client.join(this.getRoomName(payload.channelId));
+
+        const response = {
+          socketId: client.id,
           channelId: payload.channelId,
-          user: this.user,
-          offer: payload.offer,
-          voices: this.voices,
-        });
+          user: {
+            id: this.user.id,
+            username: this.user.username,
+            avatar: this.user.avatar,
+          },
+        };
+
+        this.voices.push(response);
+        await this.onUserList(client);
+
+        // await this.messageService.joinVoiceChannel({
+        //     client,
+        //     channelId: payload.channelId,
+        //     user: this.user,
+        //     offer: payload.offer,
+        //     voices: this.voices,
+        //   });
 
         console.log("response", this.voices);
         break;
@@ -145,45 +167,61 @@ export class MessageGateway
     }
   }
 
-  @SubscribeMessage(MessageNotification.VOICE_ANSWER)
-  async onVoiceAnswer(
-    @ConnectedSocket() client: Socket & { request: { user: UserType } },
-    @MessageBody() payload: { channelId?: IdType; answer?: string }
+  @SubscribeMessage(MessageNotification.USER_LIST)
+  async onUserList(
+    @ConnectedSocket() client: Socket & { request: { user: UserType } }
   ) {
-    if (!payload.channelId) {
-      client.emit(MessageNotification.ERROR, {
-        message: "Invalid payload channelId is required",
-      });
-      client.disconnect();
-      return;
-    }
+    const voiceIndex = this.voices.findIndex(
+      (voice) => voice.socketId === client.id
+    );
 
-    try {
-      IdSchema.parse(payload.channelId);
-    } catch (error) {
-      client.emit("error", { message: "Invalid channel id" });
-      client.disconnect();
-      return;
-    }
-
-    if (!payload.answer) {
-      client.emit(MessageNotification.ERROR, {
-        message: "Invalid payload answer is required",
-      });
-      client.disconnect();
-      return;
-    }
-
-    const user = this.voices.find((voice) => voice.socketId === client.id);
-
-    client
-      .to(this.getRoomName(payload.channelId))
-      .emit(MessageNotification.VOICE_ANSWER, {
-        ...user,
-        offer: undefined,
-        answer: payload.answer,
-      });
+    this.server
+      //.to(this.getRoomName(this.voices[voiceIndex].channelId))
+      .emit(
+        MessageNotification.USER_LIST,
+        this.voices.map((voice) => voice.user.id)
+      );
   }
+
+  // @SubscribeMessage(MessageNotification.VOICE_ANSWER)
+  // async onVoiceAnswer(
+  //   @ConnectedSocket() client: Socket & { request: { user: UserType } },
+  //   @MessageBody() payload: { channelId?: IdType; answer?: string }
+  // ) {
+  //   if (!payload.channelId) {
+  //     client.emit(MessageNotification.ERROR, {
+  //       message: "Invalid payload channelId is required",
+  //     });
+  //     client.disconnect();
+  //     return;
+  //   }
+
+  //   try {
+  //     IdSchema.parse(payload.channelId);
+  //   } catch (error) {
+  //     client.emit("error", { message: "Invalid channel id" });
+  //     client.disconnect();
+  //     return;
+  //   }
+
+  //   if (!payload.answer) {
+  //     client.emit(MessageNotification.ERROR, {
+  //       message: "Invalid payload answer is required",
+  //     });
+  //     client.disconnect();
+  //     return;
+  //   }
+
+  //   const user = this.voices.find((voice) => voice.socketId === client.id);
+
+  //   client
+  //     .to(this.getRoomName(payload.channelId))
+  //     .emit(MessageNotification.VOICE_ANSWER, {
+  //       ...user,
+  //       offer: undefined,
+  //       answer: payload.answer,
+  //     });
+  // }
 
   @SubscribeMessage(MessageNotification.NEW_MESSAGE)
   onNewMessage({

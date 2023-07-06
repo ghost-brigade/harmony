@@ -59,7 +59,9 @@ export class GlobalAllMessageInterceptor implements NestInterceptor {
       aggregateObject.author = await this.authorMessage(message);
     }
     if (message.attachment) {
-      aggregateObject.attachment = await this.attachmentMessage(message.attachment);
+      aggregateObject.attachment = await this.attachmentMessage(
+        message.attachment
+      );
     }
 
     // @ts-ignore

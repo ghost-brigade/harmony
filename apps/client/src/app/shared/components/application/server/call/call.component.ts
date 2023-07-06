@@ -1,9 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { SocketService } from "../../../../services/socket.service";
 import { CALL_ANIMATION } from "./call.animation";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
+import { Peer } from "peerjs";
+import { AuthService } from "apps/client/src/app/core/services/auth.service";
 
 @Component({
   selector: "harmony-call",
@@ -13,115 +15,78 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
   styleUrls: ["./call.component.css"],
   animations: CALL_ANIMATION,
 })
-export class CallComponent implements AfterViewInit, OnDestroy {
+export class CallComponent implements AfterViewInit {
   serverService = inject(ServerService);
   socketService = inject(SocketService);
-  configuration: RTCConfiguration = {
-    iceServers: [
-      {
-        urls: "turn:167.235.15.244:3478",
-        username: "username",
-        credential: "password",
-      },
-    ],
-  };
-  peerConnection: RTCPeerConnection = new RTCPeerConnection(this.configuration);
-  stream: MediaStream | undefined;
+  authService = inject(AuthService);
+  self = new Peer(this.authService.$userId());
+  peers: string[] = [];
+  streams: { [key: string]: MediaStream } = {};
+  selfStream: MediaStream | undefined;
+  userListListener: (userList: string[]) => void;
+  handleUserList(userList: string[]) {
+    this.peers = userList.filter((user) => user !== this.self.id);
+    console.log("USERLIST", this.peers);
+    this.callUsers();
+  }
+
+  voiceLeaveListener: (user: string) => void;
+  handleVoiceLeave(user: string) {
+    console.log("LEAVE", user);
+    delete this.streams[user];
+  }
+
+  constructor() {
+    this.userListListener = this.handleUserList.bind(this);
+    this.voiceLeaveListener = this.handleVoiceLeave.bind(this);
+    this.socketService.messageSocket.on("user_list", this.userListListener);
+    this.self.on("call", (s) => {
+      console.log("CALL");
+      s.answer(this.selfStream);
+      s.on("stream", (stream) => {
+        this.streams[s.peer] = stream;
+      });
+      s.on("close", () => {
+        this.streams[s.peer]?.getTracks().forEach((track) => track.stop());
+        delete this.streams[s.peer];
+        this.selfStream?.getTracks().forEach((track) => track.stop());
+      });
+    });
+    this.socketService.messageSocket.on("voice_leave", this.voiceLeaveListener);
+  }
 
   ngAfterViewInit() {
-    this.setupPeerConnection();
+    this.socketService.messageSocket.emit("join_voice", {
+      channelId: this.serverService.$voiceChannel(),
+    });
   }
 
-  ngOnDestroy() {
-    this.peerConnection.close();
-  }
-
-  private setupPeerConnection() {
-    console.log("setupPeerConnection");
-    this.peerConnection = new RTCPeerConnection(this.configuration);
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(
-      (stream) => {
-        this.stream = stream;
-        console.log("getUserMedia", stream);
-        const videoElement = document.getElementById("localVideo");
-        console.log("videoElement", videoElement);
-        console.log(stream);
-        if (videoElement instanceof HTMLVideoElement) {
-          videoElement.srcObject = stream;
-        }
-        stream.getTracks().forEach((track) => {
-          this.peerConnection.addTrack(track, stream);
-        });
-      },
-      (error) => {
-        console.error("getUserMedia", error);
-      }
-    );
-    this.peerConnection.onicecandidate = (event) => {
-      console.log("onicecandidate", event);
-      if (event.candidate) {
-        this.socketService.messageSocket.emit("voice_offer", {
-          channelId: this.serverService.$voiceChannel(),
-          answer: event.candidate,
-        });
-      }
-    };
-
-    this.peerConnection.ontrack = (event) => {
-      console.log("ontrack", event);
-      const videoElement = document.getElementById("remoteVideo");
-      if (videoElement instanceof HTMLVideoElement) {
-        videoElement.srcObject = event.streams[0];
-      }
-    };
-
-    this.peerConnection.onnegotiationneeded = async () => {
-      console.log("onnegotiationneeded");
-      const offer = await this.peerConnection.createOffer();
-      await this.peerConnection.setLocalDescription(offer);
-      this.socketService.messageSocket.emit("join_channel", {
-        channelId: this.serverService.$voiceChannel(),
-        offer,
+  async callUsers() {
+    this.streams = {};
+    this.selfStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    for (const user of this.peers) {
+      const call = this.self.call(user, this.selfStream);
+      call.on("stream", (stream) => {
+        this.streams[user] = stream;
       });
-    };
-
-    this.socketService.messageSocket.on(
-      "voice_answer",
-      async (answer: { answer: RTCSessionDescription }) => {
-        await this.peerConnection.setRemoteDescription(answer.answer);
-      }
-    );
-
-    this.socketService.messageSocket.on(
-      "voice_join",
-      async (offer: { offer: RTCSessionDescription }) => {
-        await this.peerConnection.setRemoteDescription(offer.offer);
-        const answer = await this.peerConnection.createAnswer();
-        await this.peerConnection.setLocalDescription(answer);
-        this.socketService.messageSocket.emit("voice_answer", {
-          channelId: this.serverService.$voiceChannel(),
-          answer,
-        });
-      }
-    );
+    }
   }
 
   endCall() {
     this.socketService.joinChannel(this.serverService.$activeChannel());
     this.serverService.setActiveChannel(this.serverService.$activeChannel());
     this.serverService.getChannelMessages(this.serverService.$activeChannel());
+    this.self.disconnect();
+    this.self.destroy();
+    this.self.removeAllListeners();
+    this.socketService.messageSocket.off("user_list", this.userListListener);
+    this.socketService.messageSocket.off(
+      "voice_leave",
+      this.voiceLeaveListener
+    );
     this.serverService.$isChannelListOpen.set(false);
-    if (this.stream) {
-      this.stream.getTracks().forEach((track) => {
-        this.peerConnection.removeTrack(
-          this.peerConnection
-            .getSenders()
-            .find((sender) => sender.track === track) as RTCRtpSender
-        );
-        track.stop();
-      });
-    }
-    this.peerConnection.close();
-    this.serverService.closeCall();
   }
 }

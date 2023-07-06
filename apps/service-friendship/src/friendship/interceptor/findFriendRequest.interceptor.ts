@@ -48,16 +48,10 @@ export class FindFriendRequest implements NestInterceptor {
     try {
       const user = await this.serviceRequest.send({
         client: this.accountService,
-        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
         data: { id: findFriend.friendrequest.sender },
         promise: true,
       });
-      delete user.email;
-      delete user.password;
-      delete user.role;
-      delete user.createdAt;
-      delete user.updatedAt;
-      delete user.blockedUsers;
       return user;
     } catch (error) {
       console.log("Error", error);
@@ -67,16 +61,10 @@ export class FindFriendRequest implements NestInterceptor {
     try {
       const user = await this.serviceRequest.send({
         client: this.accountService,
-        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE_FRIEND,
+        pattern: ACCOUNT_MESSAGE_PATTERN.FIND_ONE,
         data: { id: friend.receiver },
         promise: true,
       });
-      delete user.email;
-      delete user.password;
-      delete user.role;
-      delete user.createdAt;
-      delete user.updatedAt;
-      delete user.blockedUsers;
       return user;
     } catch (error) {
       console.log("Error", error);

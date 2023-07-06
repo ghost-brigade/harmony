@@ -34,7 +34,7 @@
         (keyup.enter)="enterPressed()"
         (focus)="setInputFocused(true)"
         (blur)="setInputFocused(false)"
-        placeholder="Your message..."
+        [placeholder]="'PLACEHOLDER_NEW_MESSAGE' | i18n"
         [ngModel]="$message()"
         (ngModelChange)="$message.set($event)"
         class="c-input h-12 flex-1 resize-none rounded-full px-5 leading-[24px]"></textarea>

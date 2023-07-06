@@ -252,23 +252,23 @@
   <div
     class="flex max-w-[300px] flex-col items-center gap-2 rounded-lg border bg-white p-4 shadow dark:border-gray-600 dark:bg-gray-800"
     (click)="$event.stopPropagation()">
-    <span class="text-xl font-semibold">Add a channel</span>
+    <span class="text-xl font-semibold">{{ "CHANNEL_ADD_TITLE" | i18n }}</span>
     <input
       type="text"
-      placeholder="Channel name"
+      [placeholder]="'PLACEHOLDER_CHANNEL_NAME' | i18n"
       class="c-input"
       [(ngModel)]="newChannelName" />
     <select
       class="c-input"
       [(ngModel)]="newChannelType">
-      <option value="TEXT">Text</option>
-      <option value="VOICE">Voice</option>
+      <option value="TEXT">{{ "CHANNEL_TEXT" | i18n }}</option>
+      <option value="VOICE">{{ "CHANNEL_VOICE" | i18n }}</option>
     </select>
     <button
       type="button"
       (click)="addChannel()"
       class="c-button">
-      Add
+      {{ "CHANNEL_ADD" | i18n }}
     </button>
   </div>
 </div>

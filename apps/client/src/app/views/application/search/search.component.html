@@ -10,13 +10,13 @@
         [ngModel]="$name()"
         (keyup)="onNameInput()"
         (ngModelChange)="$name.set($event)"
-        placeholder="Search for a server..." />
+        [placeholder]="'SERVER_SEARCH_PLACEHOLDER' | i18n" />
       <div class="flex w-full flex-row items-center gap-2">
         <span
           class="my-4 h-[2px] flex-1 border-0 bg-gray-100 dark:bg-gray-700"></span>
       </div>
       <div class="flex w-full flex-col items-center gap-2">
-        <div *ngIf="servers.length === 0">No servers matching search</div>
+        <div *ngIf="servers.length === 0">{{ "SERVER_SEARCH_NO_MATCH" | i18n }}</div>
         <div
           class="flex w-full flex-col gap-2"
           auto-animate>
@@ -46,13 +46,13 @@
                 *ngIf="!isServerJoined(server)"
                 class="c-button max-w-min whitespace-nowrap"
                 (click)="joinServer(server)">
-                Join
+                {{ "SERVER_JOIN" | i18n }}
               </button>
               <button
                 *ngIf="isServerJoined(server)"
                 class="c-button max-w-min whitespace-nowrap"
                 disabled>
-                Already joined
+                {{ "SERVER_ALREADY_JOIN" | i18n }}
               </button>
             </div>
           </div>
