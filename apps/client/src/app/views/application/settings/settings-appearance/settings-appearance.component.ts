@@ -29,7 +29,6 @@ export class SettingsAppearanceComponent {
   }
 
   onLanguageChange() {
-    this.selectedLanguage);
     this.i18nService.language.set(this.selectedLanguage);
     this.preferenceService.savePreferences({ language: this.selectedLanguage });
   }
