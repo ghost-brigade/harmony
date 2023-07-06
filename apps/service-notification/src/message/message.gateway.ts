@@ -12,7 +12,8 @@ import {
 import { Server, Socket } from "socket.io";
 import { WsAuthService } from "../ws-auth.service";
 import { Injectable } from "@nestjs/common";
-import { MessageAuthorizationService } from "./message-authorization.service";
+import { ChannelType as ChannelTypeEnum } from "@harmony/enums";
+import { MessageService } from "./message.service";
 
 @WebSocketGateway({
   cors: {
@@ -25,11 +26,15 @@ export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private readonly messageAuthorizationService: MessageAuthorizationService,
+    //private readonly messageAuthorizationService: MessageAuthorizationService,
+    private readonly messageService: MessageService,
     private readonly wsAuthService: WsAuthService
   ) {}
 
-  user: UserType;
+  private user: UserType;
+  //private activeSockets: { room: string; id: string }[] = [];
+  private voices: { channelId: string; socketId: string; user: UserType }[] =
+    [];
 
   @WebSocketServer()
   server: Server;
@@ -41,18 +46,21 @@ export class MessageGateway
     });
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket & { request: { user: UserType } }) {
     console.log(`Client ${client.id} disconnected.`);
+    await this.onVoiceLeave(client);
   }
 
   private getRoomName(channelId: IdType) {
-    return `channel:${channelId}`;
+    return channelId;
   }
 
   @SubscribeMessage(MessageNotification.LEAVE_ALL_ROOMS)
   async onLeaveAllRooms(
     @ConnectedSocket() client: Socket & { request: { user: UserType } }
   ) {
+    await this.onVoiceLeave(client);
+
     client.rooms.forEach((room) => {
       if (room !== client.id) {
         client.leave(room);
@@ -60,37 +68,121 @@ export class MessageGateway
     });
   }
 
+  @SubscribeMessage(MessageNotification.VOICE_LEAVE)
+  async onVoiceLeave(
+    @ConnectedSocket() client: Socket & { request: { user: UserType } }
+  ) {
+    const voiceIndex = this.voices.findIndex(
+      (voice) => voice.socketId === client.id
+    );
+
+    if (voiceIndex !== -1) {
+      client.broadcast.emit(MessageNotification.VOICE_LEAVE, {
+        socketId: client.id,
+        channelId: this.voices[voiceIndex].channelId,
+        user: this.voices[voiceIndex].user,
+      });
+
+      this.voices.splice(voiceIndex, 1);
+    }
+  }
+
   @SubscribeMessage(MessageNotification.JOIN_CHANNEL)
   async onJoinChannel(
     @ConnectedSocket() client: Socket & { request: { user: UserType } },
-    @MessageBody() channelId: IdType
+    @MessageBody() payload: { channelId?: IdType; offer?: string }
   ) {
+    if (!payload.channelId) {
+      client.emit(MessageNotification.ERROR, {
+        message: "Invalid payload channelId is required",
+      });
+      client.disconnect();
+      return;
+    }
+
     try {
-      IdSchema.parse(channelId);
+      IdSchema.parse(payload.channelId);
+    } catch (error) {
+      client.emit(MessageNotification.ERROR, {
+        message: "Invalid channel id",
+      });
+      client.disconnect();
+      return;
+    }
+
+    const channel = await this.messageService.getChannel({
+      channelId: payload.channelId,
+      user: this.user,
+    });
+
+    if (channel === null) {
+      client.emit(MessageNotification.ERROR, {
+        message: "You are not authorized to join this channel",
+      });
+      client.disconnect();
+      return;
+    }
+
+    switch (channel.type) {
+      case ChannelTypeEnum.VOICE:
+        await this.messageService.joinVoiceChannel({
+          client,
+          channelId: payload.channelId,
+          user: this.user,
+          offer: payload.offer,
+          voices: this.voices,
+        });
+
+        console.log("response", this.voices);
+        break;
+      case ChannelTypeEnum.TEXT:
+        await this.onLeaveAllRooms(client);
+        await client.join(this.getRoomName(payload.channelId));
+        break;
+      default:
+        client.emit("error", { message: "Invalid channel type" });
+        client.disconnect();
+    }
+  }
+
+  @SubscribeMessage(MessageNotification.VOICE_ANSWER)
+  async onVoiceAnswer(
+    @ConnectedSocket() client: Socket & { request: { user: UserType } },
+    @MessageBody() payload: { channelId?: IdType; answer?: string }
+  ) {
+    if (!payload.channelId) {
+      client.emit(MessageNotification.ERROR, {
+        message: "Invalid payload channelId is required",
+      });
+      client.disconnect();
+      return;
+    }
+
+    try {
+      IdSchema.parse(payload.channelId);
     } catch (error) {
       client.emit("error", { message: "Invalid channel id" });
       client.disconnect();
       return;
     }
 
-    const isAuthorized =
-      await this.messageAuthorizationService.canAccessChannel({
-        channelId,
-        user: this.user as UserType,
+    if (!payload.answer) {
+      client.emit(MessageNotification.ERROR, {
+        message: "Invalid payload answer is required",
       });
-
-    if (isAuthorized) {
-      console.log("join", channelId);
-
-      await this.onLeaveAllRooms(client);
-      await client.join(this.getRoomName(channelId));
-    } else {
-      client.emit("error", {
-        message: "You are not authorized to join this channel",
-      });
-
       client.disconnect();
+      return;
     }
+
+    const user = this.voices.find((voice) => voice.socketId === client.id);
+
+    client
+      .to(this.getRoomName(payload.channelId))
+      .emit(MessageNotification.VOICE_ANSWER, {
+        ...user,
+        offer: undefined,
+        answer: payload.answer,
+      });
   }
 
   @SubscribeMessage(MessageNotification.NEW_MESSAGE)

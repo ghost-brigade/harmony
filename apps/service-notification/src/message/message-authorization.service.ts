@@ -15,7 +15,7 @@ export class MessageAuthorizationService {
     private readonly clientServer: ClientProxy
   ) {}
 
-  async canAccessChannel({
+  async getChannelById({
     channelId,
     user,
   }: {
@@ -30,7 +30,7 @@ export class MessageAuthorizationService {
         })
       );
 
-      return channel ? true : false;
+      return channel ?? null;
     } catch (error) {
       console.log("error", error);
       return false;

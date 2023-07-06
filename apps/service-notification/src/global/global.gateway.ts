@@ -47,8 +47,8 @@ export class GlobalGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client ${client.id} disconnected.`);
   }
 
-  private getRoomName(serverId: IdType) {
-    return `user:${serverId}`;
+  private getRoomName(userId: IdType) {
+    return userId;
   }
 
   @SubscribeMessage(GlobalNotification.JOIN_CHANNEL)
@@ -74,7 +74,8 @@ export class GlobalGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    // update user status
+    // update user status with redis
+
     await client.join(this.getRoomName(userId));
   }
 

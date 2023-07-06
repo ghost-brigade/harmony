@@ -88,7 +88,9 @@ export class FileService {
     const parsed = IdSchema.safeParse(payload.id);
 
     if (parsed.success === false) {
-      throw new BadRequestException(FormatZodResponse(parsed.error.issues));
+      throw new RpcException(
+        new BadRequestException(FormatZodResponse(parsed.error.issues))
+      );
     }
 
     let file: FileType;
