@@ -45,12 +45,10 @@ export class UserController {
   async findOne(data: UserType & { auth?: boolean }) {
     try {
       let user: UserType;
+      const isAuth = data?.auth ?? false;
 
-      if (data?.auth === undefined) {
-        delete user.password;
-      } else {
-        delete data.auth;
-        // refresh redis user last request
+      if (isAuth === true) {
+        data.auth = undefined;
       }
 
       if (Object.keys(data).length === 2 && "id" in data) {
@@ -59,8 +57,14 @@ export class UserController {
         user = await this.userService.findOneBy(data);
       }
 
+      console.log("user", isAuth);
+      if (isAuth === false) {
+        delete user.password;
+      }
+
       return user;
     } catch (error) {
+      console.log(error);
       throw new RpcException(
         new InternalServerErrorException("Error getting user")
       );
