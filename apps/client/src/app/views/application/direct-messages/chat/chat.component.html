@@ -1,11 +1,9 @@
 <div
   class="flex max-h-[calc(100vh-env(safe-area-inset-bottom)-64px-env(safe-area-inset-top))] min-h-[calc(100vh-env(safe-area-inset-bottom)-64px-env(safe-area-inset-top))] w-full flex-row justify-center overflow-hidden">
-  <div class="flex flex-1 flex-col">
-    <harmony-server-navbar
-      class="relative lg:hidden"
-      [channel]="''" />
+  <div class="flex flex-1 flex-col items-center">
+    <harmony-dm-navbar class="relative w-full" />
     <div
-      class="flex max-h-[calc(100vh-env(safe-area-inset-bottom)-64px-env(safe-area-inset-top))] max-w-[100vw] flex-col-reverse gap-2 overflow-y-auto p-4 lg:max-w-[calc(100vw-500px)]"
+      class="flex max-h-[calc(100vh-env(safe-area-inset-bottom)-64px-env(safe-area-inset-top))] w-full max-w-[100vw] flex-col-reverse gap-2 overflow-y-auto p-4 lg:max-w-[calc(100vw-500px)]"
       auto-animate
       id="message-list">
       <harmony-message

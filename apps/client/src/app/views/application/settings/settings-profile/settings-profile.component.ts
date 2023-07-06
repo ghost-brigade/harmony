@@ -118,7 +118,6 @@ export class SettingsProfileComponent implements OnInit, OnDestroy {
             });
           },
         });
-
     } catch {}
   }
 

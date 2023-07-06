@@ -18,7 +18,14 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
 @Component({
   selector: "harmony-emoji-picker",
   standalone: true,
-  imports: [NgFor, NgIf, I18nPipe, FormsModule, NgAutoAnimateDirective, I18nPipe],
+  imports: [
+    NgFor,
+    NgIf,
+    I18nPipe,
+    FormsModule,
+    NgAutoAnimateDirective,
+    I18nPipe,
+  ],
   templateUrl: "./emoji-picker.component.html",
   styleUrls: ["./emoji-picker.component.css"],
 })

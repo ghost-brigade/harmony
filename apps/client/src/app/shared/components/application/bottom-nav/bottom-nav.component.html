@@ -7,12 +7,12 @@
   auto-animate />
 
 <div
-  *ngIf="$file() !== undefined"
+  *ngIf="$file() !== undefined || this.$dmFile() !== undefined"
   class="fixed bottom-[calc(env(safe-area-inset-bottom)+4rem)] left-5 z-10 mx-auto mb-4 flex max-h-[150px] min-h-[150px] min-w-[150px] max-w-[150px] flex-col items-center justify-center gap-2 whitespace-nowrap rounded-lg md:left-[calc((100vw-672px)/2)]"
   auto-animate>
   <img
     (click)="removeFile()"
-    *ngIf="$file() !== undefined"
+    *ngIf="$file() !== undefined || this.$dmFile() !== undefined"
     [src]="$fileUrl()"
     class="fixed bottom-[calc(env(safe-area-inset-bottom)+4rem)] left-5 z-10 mx-auto mb-4 flex max-h-[150px] max-w-[150px] cursor-pointer flex-col gap-2 whitespace-nowrap rounded-lg shadow transition-all duration-300 hover:brightness-50 md:left-[calc((100vw-672px)/2)]" />
 </div>
@@ -76,7 +76,9 @@
         *ngIf="$canSend()"
         (click)="sendMessage()"
         class="flex h-12 w-12 items-center transition-colors duration-300 justify-center rounded-full border py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4  {{
-          $message().length > 0 || $file() !== undefined
+          $message().length > 0 ||
+          $file() !== undefined ||
+          $dmFile() !== undefined
             ? 'border-blue-700 bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-white'
             : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-100'
         }}">
