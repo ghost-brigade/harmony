@@ -128,6 +128,7 @@ export class ChannelListComponent {
           const newChannels = this.$server()?.channels.filter(
             (c) => c.id !== channel
           );
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           this.$server().channels = newChannels;
           if (this.currentChannel === channel) {
