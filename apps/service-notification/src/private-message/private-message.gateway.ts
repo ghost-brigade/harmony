@@ -1,5 +1,11 @@
-import { MessageNotification } from "@harmony/notification";
-import { IdSchema, IdType, MessageType, UserType } from "@harmony/zod";
+import { PrivateMessageNotification } from "@harmony/notification";
+import {
+  IdSchema,
+  IdType,
+  MessageType,
+  PrivateMessageType,
+  UserType,
+} from "@harmony/zod";
 import {
   ConnectedSocket,
   MessageBody,
@@ -21,7 +27,7 @@ import { PrivateMessageAuthorizationService } from "./private-message-authorizat
   namespace: "message",
 })
 @Injectable()
-export class MessageGateway
+export class PrivateMessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
@@ -45,11 +51,11 @@ export class MessageGateway
     console.log(`Client ${client.id} disconnected.`);
   }
 
-  private getRoomName(channelId: IdType) {
-    return `channel:${channelId}`;
+  private getRoomName(receiverId: IdType) {
+    return `${receiverId}`;
   }
 
-  @SubscribeMessage(MessageNotification.LEAVE_ALL_ROOMS)
+  @SubscribeMessage(PrivateMessageNotification.LEAVE_ALL_ROOMS)
   async onLeaveAllRooms(
     @ConnectedSocket() client: Socket & { request: { user: UserType } }
   ) {
@@ -60,13 +66,13 @@ export class MessageGateway
     });
   }
 
-  @SubscribeMessage(MessageNotification.JOIN_CHANNEL)
-  async onJoinChannel(
+  @SubscribeMessage(PrivateMessageNotification.JOIN_RECEIVER)
+  async onJoinReceiver(
     @ConnectedSocket() client: Socket & { request: { user: UserType } },
-    @MessageBody() channelId: IdType
+    @MessageBody() receiverId: IdType
   ) {
     try {
-      IdSchema.parse(channelId);
+      IdSchema.parse(receiverId);
     } catch (error) {
       client.emit("error", { message: "Invalid channel id" });
       client.disconnect();
@@ -93,54 +99,54 @@ export class MessageGateway
     }
   }
 
-  @SubscribeMessage(MessageNotification.NEW_MESSAGE)
+  @SubscribeMessage(PrivateMessageNotification.NEW_MESSAGE)
   onNewMessage({
-    channelId,
+    receiverId,
     message,
   }: {
-    channelId: IdType;
-    message: MessageType;
+    receiverId: IdType;
+    message: PrivateMessageType;
   }) {
     try {
       this.server
-        .to(this.getRoomName(channelId))
-        .emit(MessageNotification.NEW_MESSAGE, message);
+        .to(this.getRoomName(receiverId))
+        .emit(PrivateMessageNotification.NEW_MESSAGE, message);
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  @SubscribeMessage(MessageNotification.UPDATE_MESSAGE)
+  @SubscribeMessage(PrivateMessageNotification.UPDATE_MESSAGE)
   onUpdateMessage({
-    channelId,
+    receiverId,
     message,
   }: {
-    channelId: IdType;
+    receiverId: IdType;
     message: MessageType;
   }) {
     try {
       this.server
-        .to(this.getRoomName(channelId))
-        .emit(MessageNotification.UPDATE_MESSAGE, message);
+        .to(this.getRoomName(receiverId))
+        .emit(PrivateMessageNotification.UPDATE_MESSAGE, message);
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  @SubscribeMessage(MessageNotification.DELETE_MESSAGE)
+  @SubscribeMessage(PrivateMessageNotification.DELETE_MESSAGE)
   onDeleteMessage({
-    channelId,
+    receiverId,
     messageId,
   }: {
-    channelId: IdType;
+    receiverId: IdType;
     messageId: IdType;
   }) {
     try {
       this.server
-        .to(this.getRoomName(channelId))
-        .emit(MessageNotification.DELETE_MESSAGE, messageId);
+        .to(this.getRoomName(receiverId))
+        .emit(PrivateMessageNotification.DELETE_MESSAGE, messageId);
       return true;
     } catch (error) {
       return false;
