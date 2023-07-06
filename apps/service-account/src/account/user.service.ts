@@ -342,9 +342,16 @@ export class UserService {
     );
   }
 
+  async updateUserLastRequest(id) {
+    await this.userModel.updateOne(
+      { _id: id },
+      { lastRequest: new Date() }
+    );
+  }
+
   async findOne(id: string): Promise<UserType | null> {
     return await this.userModel
-      .findById(id, { username: 1, email: 1, status: 1, avatar: 1 })
+      .findById(id, { username: 1, email: 1, status: 1, avatar: 1, lastRequest: 1 })
       .exec();
   }
 

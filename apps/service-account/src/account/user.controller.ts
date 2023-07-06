@@ -18,6 +18,7 @@ import {
 } from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 import { UserContext } from "@harmony/nest-microservice";
+import { UserStatus } from "@harmony/enums";
 
 @Controller()
 export class UserController {
@@ -51,13 +52,16 @@ export class UserController {
         data.auth = undefined;
       }
 
-      if (Object.keys(data).length === 2 && "id" in data) {
+      if (Object.keys(data).length === 1 && "id" in data) {
         user = await this.userService.findOne(data.id);
       } else {
         user = await this.userService.findOneBy(data);
       }
 
-      console.log("user", isAuth);
+      if (isAuth === true) {
+        await this.userService.updateUserLastRequest(user.id);
+      }
+
       if (isAuth === false) {
         delete user.password;
       }

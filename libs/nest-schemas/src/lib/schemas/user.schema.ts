@@ -37,6 +37,9 @@ export class User {
   @Prop({ type: String, enum: Roles, default: Roles.USER })
   role: string;
 
+  @Prop({ type: Date, default: Date.now })
+  lastRequest: Date;
+
   @Prop({ type: Array, default: [] })
   blockedUsers: User[];
 }
