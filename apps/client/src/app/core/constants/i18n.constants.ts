@@ -166,6 +166,8 @@ export const I18N_CONSTANTS = {
     ERROR_TOO_SMALL_PASSWORD: "Password is too short (min 8 characters)",
     ERROR_TOO_BIG_PASSWORD: "Password is too long (max 128 characters)",
     "Email or password is incorrect": "Email or password is incorrect",
+    "You are already friend with this user.":
+      "You are already friend with this user.",
 
     "en-US": "English",
     "fr-FR": "French",
@@ -323,6 +325,9 @@ export const I18N_CONSTANTS = {
 
     ERROR_INVALID_STRING_EMAIL: "Format d'e-mail invalide",
     ERROR_TOO_BIG_USERNAME: "Nom d'utilisateur trop long",
+    "Email or password is incorrect": "Email ou mot de passe incorrect",
+    "You are already friend with this user.":
+      "Vous êtes déjà ami avec cet utilisateur.",
 
     "en-US": "Anglais",
     "fr-FR": "Français",
@@ -484,6 +489,9 @@ export const I18N_CONSTANTS = {
     ERROR_CHANNEL_NOT_FOUND: "Canal no encontrado",
     ERROR_CANT_SEND_MESSAGE_IN_VOCAL:
       "No se puede enviar un mensaje en un canal de voz",
+    "Email or password is incorrect":
+      "El correo electrónico o la contraseña son incorrectos",
+    "You are already friend with this user.": "Ya eres amigo de este usuario.",
     "en-US": "Inglés",
     "fr-FR": "Francés",
     "es-ES": "Español",
@@ -643,6 +651,10 @@ export const I18N_CONSTANTS = {
     ERROR_CHANNEL_NOT_FOUND: "Arr, channel not found",
     ERROR_CANT_SEND_MESSAGE_IN_VOCAL:
       "Arr, ye can't be sending a message in a vocal channel",
+    "Email or password is incorrect":
+      "Arr, yer email or secret code be incorrect",
+    "You are already friend with this user.":
+      "Arr, ye be already friend with this mate.",
     "en-US": "English",
     "fr-FR": "French",
     "es-ES": "Spanish",
@@ -801,6 +813,11 @@ export const I18N_CONSTANTS = {
     ERROR_CHANNEL_NOT_FOUND: "Chaîne introuvable, elle est",
     ERROR_CANT_SEND_MESSAGE_IN_VOCAL:
       "Impossible d'envoyer un message vocal, il est",
+    "Email or password is incorrect":
+      "L'e-mail ou le mot de passe est incorrect, ils sont",
+    "You are already friend with this user.":
+      "Tu es déjà ami avec cet utilisateur.",
+
     "en-US": "Anglais, c'est",
     "fr-FR": "Français, c'est",
     "es-ES": "Espagnol, c'est",
