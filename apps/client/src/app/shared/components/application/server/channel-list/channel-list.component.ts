@@ -65,6 +65,8 @@ export class ChannelListComponent {
     );
     if (foundChannel?.type === "VOICE") {
       this.serverService.openCall();
+      this.serverService.$voiceChannel.set(channel);
+      this.socketService.joinChannel(channel);
     }
   }
 
@@ -75,7 +77,17 @@ export class ChannelListComponent {
     this.channelAddOpen = false;
   }
 
-  selectChannel(channel: string) {
+  selectChannel(channelObj: {
+    id: string;
+    name: string;
+    type: "TEXT" | "VOICE";
+    order: number;
+  }) {
+    if (channelObj.type === "VOICE") {
+      this.clickVoiceChannel(channelObj.id);
+      return;
+    }
+    const channel = channelObj.id;
     this.serverService.setActiveChannel(channel);
     this.socketService.joinChannel(channel);
     this.serverService.$isChannelListOpen.set(false);
@@ -132,7 +144,14 @@ export class ChannelListComponent {
           // @ts-ignore
           this.$server().channels = newChannels;
           if (this.currentChannel === channel) {
-            this.selectChannel(this.$server()?.channels?.[0].id as string);
+            this.selectChannel(
+              this.$server()?.channels?.[0] as {
+                id: string;
+                name: string;
+                type: "TEXT" | "VOICE";
+                order: number;
+              }
+            );
           }
         },
         error: (err) => {

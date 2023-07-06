@@ -1,6 +1,14 @@
-import { AfterViewInit, Component, Input } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  inject,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
-declare let JitsiMeetExternalAPI: any;
+import { ServerService } from "apps/client/src/app/views/application/server/server.service";
+import { SocketService } from "../../../../services/socket.service";
 
 @Component({
   selector: "harmony-call",
@@ -9,25 +17,15 @@ declare let JitsiMeetExternalAPI: any;
   templateUrl: "./call.component.html",
   styleUrls: ["./call.component.css"],
 })
-export class CallComponent implements AfterViewInit {
-  @Input() username = "alexislours";
-  @Input() room = "64a183a927b84d68ac9bf521";
-  api: any;
-  options = {
-    roomName: this.room,
-    height: document.documentElement.clientHeight,
-    width: document.documentElement.clientWidth,
-    parentNode: document.querySelector("#call-container"),
-    configOverwrite: { prejoinPageEnabled: false },
-    userInfo: {
-      displayName: this.username,
-    },
-  };
+export class CallComponent {
+  serverService = inject(ServerService);
+  socketService = inject(SocketService);
 
-  ngAfterViewInit() {
-    this.options.height = document.documentElement.clientHeight;
-    this.options.width = document.documentElement.clientWidth;
-    this.options.parentNode = document.querySelector("#call-container");
-    this.api = new JitsiMeetExternalAPI("meet.jit.si", this.options);
+  endCall() {
+    this.socketService.joinChannel(this.serverService.$activeChannel());
+    this.serverService.setActiveChannel(this.serverService.$activeChannel());
+    this.serverService.getChannelMessages(this.serverService.$activeChannel());
+    this.serverService.$isChannelListOpen.set(false);
+    this.serverService.closeCall();
   }
 }

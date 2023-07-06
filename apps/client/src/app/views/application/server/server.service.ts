@@ -35,6 +35,7 @@ export class ServerService {
       }
     | undefined;
   $loadingDone = signal(false);
+  $voiceChannel = signal("");
 
   openChannelList() {
     this.$isChannelListOpen.set(true);
