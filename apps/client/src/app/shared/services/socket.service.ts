@@ -2,7 +2,10 @@ import { Injectable, inject } from "@angular/core";
 import { io } from "socket.io-client";
 import { WS_BASE_URL } from "../../core/constants/api.constants";
 import { AuthService } from "../../core/services/auth.service";
-import { MessageNotification } from "@harmony/notification";
+import {
+  MessageNotification,
+  PrivateMessageNotification,
+} from "@harmony/notification";
 import { ServerService } from "../../views/application/server/server.service";
 
 @Injectable({
@@ -48,5 +51,9 @@ export class SocketService {
   joinChannel(channelId: string) {
     this.messageSocket.emit(MessageNotification.JOIN_CHANNEL, { channelId });
     this.serverService.getChannelMessages(channelId);
+  }
+
+  joinDM(receiverId: string) {
+    this.dmSocket.emit(PrivateMessageNotification.JOIN_RECEIVER, receiverId);
   }
 }

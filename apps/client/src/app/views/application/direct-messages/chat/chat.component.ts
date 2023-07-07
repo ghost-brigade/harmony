@@ -9,10 +9,7 @@ import { GetEndpoint } from "apps/client/src/app/core/constants/endpoints/get.co
 import { ActivatedRoute } from "@angular/router";
 import { AlertService } from "apps/client/src/app/core/components/alert/alert.service";
 import { MessageGetType } from "@harmony/zod";
-import {
-  MessageNotification,
-  PrivateMessageNotification,
-} from "@harmony/notification";
+import { PrivateMessageNotification } from "@harmony/notification";
 import { SocketService } from "apps/client/src/app/shared/services/socket.service";
 
 @Component({
@@ -50,7 +47,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.socketService.dmSocket.off(
-      MessageNotification.NEW_MESSAGE,
+      PrivateMessageNotification.NEW_MESSAGE,
       this.eventListener
     );
     this.chatService.$messages.set([]);
@@ -60,6 +57,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       const { id } = params;
+      this.socketService.joinDM(id as string);
 
       if (this.chatService.$user() === undefined) {
         this.requestService
@@ -95,7 +93,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         })
         .subscribe({
           next: (res) => {
-            console.log(res);
             this.chatService.$messages.set(res.messages);
           },
         });

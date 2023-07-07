@@ -1,5 +1,5 @@
-import { Component, Input, WritableSignal, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, Input, inject } from "@angular/core";
+import { NgFor, NgIf } from "@angular/common";
 import { ServerGetType } from "@harmony/zod";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { SocketService } from "../../../../services/socket.service";
@@ -10,7 +10,7 @@ import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 @Component({
   selector: "harmony-user-list",
   standalone: true,
-  imports: [CommonModule, AvatarComponent, I18nPipe],
+  imports: [NgFor, NgIf, AvatarComponent, I18nPipe],
   templateUrl: "./user-list.component.html",
   styleUrls: ["./user-list.component.css"],
   animations: USER_LIST_ANIMATION,

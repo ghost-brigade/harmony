@@ -1,5 +1,5 @@
 import { Component, computed, effect } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf } from "@angular/common";
 import { ToastService } from "./toast.service";
 import { I18nPipe } from "../../pipes/i18n.pipe";
 import { TOAST_ANIMATION } from "./toast.animation";
@@ -8,7 +8,7 @@ import { TOAST_ANIMATION } from "./toast.animation";
   selector: "harmony-core-toast",
   standalone: true,
   animations: TOAST_ANIMATION,
-  imports: [CommonModule, I18nPipe],
+  imports: [NgIf, I18nPipe],
   templateUrl: "./toast.component.html",
 })
 export class ToastComponent {

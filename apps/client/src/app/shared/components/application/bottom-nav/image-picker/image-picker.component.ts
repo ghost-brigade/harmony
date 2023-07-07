@@ -1,5 +1,5 @@
 import { Component, Input, computed, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf } from "@angular/common";
 import { FilePicker } from "@capawesome/capacitor-file-picker";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { ToastService } from "apps/client/src/app/core/components/toast/toast.service";
@@ -11,7 +11,7 @@ import { ChatService } from "apps/client/src/app/views/application/direct-messag
 @Component({
   selector: "harmony-image-picker",
   standalone: true,
-  imports: [CommonModule, I18nPipe],
+  imports: [NgIf, I18nPipe],
   templateUrl: "./image-picker.component.html",
   styleUrls: ["./image-picker.component.css"],
 })
