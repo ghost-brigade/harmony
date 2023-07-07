@@ -53,8 +53,10 @@ Welcome to the **Harmony** repository! This is our semester project, which aims 
 Deployed on Google Kubernetes Engine (GKE)  
 
 
-![Texte alternatif](https://drive.google.com/file/d/1hiiprAm7Fj5GxzFEUyiAtf3K8WBa5s6F/view?usp=sharing)
-![Texte alternatif](https://drive.google.com/uc?export=view&id=1hiiprAm7Fj5GxzFEUyiAtf3K8WBa5s6F)
+
+![Architecture](https://drive.google.com/uc?export=view&id=1AX41pSyqyOS97eEWcD0gZj7YnrFq88cH)
+![Architecture](https://drive.google.com/uc?export=view&id=1-uhaMWyyag9P15gDVvx97zKv5d19fvkP)
+
 
 
 ## Try it out
