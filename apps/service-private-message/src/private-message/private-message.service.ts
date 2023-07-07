@@ -109,7 +109,7 @@ export class PrivateMessageService {
       .find(query)
       .limit(payload.params?.limit ?? 10)
       .skip((payload.params?.page - 1 ?? 0) * (payload.params?.limit ?? 10))
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .exec();
 
     const count = await this.privateMessageModel.countDocuments(query);
@@ -126,7 +126,6 @@ export class PrivateMessageService {
   async getById(payload: { id: IdType }, user: UserContextType) {
     const privateMessage = await this.privateMessageModel
       .findById(payload.id)
-      .sort({ createdAt: -1 })
       .exec();
 
     if (!privateMessage) {
