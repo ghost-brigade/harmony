@@ -52,7 +52,6 @@ export class AuthenticationService {
       const user: UserType = await firstValueFrom(
         this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
           email: loginType.email,
-          auth: true,
         })
       );
 
@@ -99,8 +98,11 @@ export class AuthenticationService {
       const user = await firstValueFrom(
         this.accountService.send(ACCOUNT_MESSAGE_PATTERN.FIND_ONE, {
           email: payload.email,
-          auth: true,
         })
+      );
+
+      await firstValueFrom(
+        this.accountService.send(ACCOUNT_MESSAGE_PATTERN.UPDATE_STATUS, user.id)
       );
 
       const parse = UserContextSchema.safeParse(user);

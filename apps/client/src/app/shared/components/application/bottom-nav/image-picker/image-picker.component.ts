@@ -1,4 +1,4 @@
-import { Component, Input, inject } from "@angular/core";
+import { Component, Input, computed, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilePicker } from "@capawesome/capacitor-file-picker";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
@@ -6,6 +6,7 @@ import { ToastService } from "apps/client/src/app/core/components/toast/toast.se
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { BottomNavService } from "../bottom-nav.service";
 import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
+import { ChatService } from "apps/client/src/app/views/application/direct-messages/chat/chat.service";
 
 @Component({
   selector: "harmony-image-picker",
@@ -19,6 +20,8 @@ export class ImagePickerComponent {
   serverService = inject(ServerService);
   toastService = inject(ToastService);
   bottomNavService = inject(BottomNavService);
+  chatService = inject(ChatService);
+  $isDMs = computed(() => this.bottomNavService.$isDMs());
 
   async addFiles() {
     const result = await FilePicker.pickImages({
@@ -26,8 +29,13 @@ export class ImagePickerComponent {
       readData: true,
     });
     const file = this.b64toBlob(result.files[0].data as string);
-    this.serverService.$file.set(file);
-    this.bottomNavService.$addFilesOpen.set(false);
+    if (this.$isDMs()) {
+      this.chatService.$file.set(file);
+      this.bottomNavService.$addFilesOpen.set(false);
+    } else {
+      this.serverService.$file.set(file);
+      this.bottomNavService.$addFilesOpen.set(false);
+    }
   }
 
   async openCamera() {
@@ -56,7 +64,11 @@ export class ImagePickerComponent {
     if (image.webPath) {
       const file = await fetch(image.webPath);
       const blob = await file.blob();
-      this.serverService.$file.set(blob);
+      if (this.$isDMs()) {
+        this.chatService.$file.set(blob);
+      } else {
+        this.serverService.$file.set(blob);
+      }
       this.bottomNavService.$addFilesOpen.set(false);
     }
   }

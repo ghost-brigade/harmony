@@ -8,7 +8,6 @@ import { AuthService } from "../../../core/services/auth.service";
 import { finalize } from "rxjs";
 import { AlertService } from "../../../core/components/alert/alert.service";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-import { error } from "console";
 
 @Injectable({
   providedIn: "root",
@@ -123,7 +122,7 @@ export class ServerService {
     form.append("channel", this.$activeChannel());
     form.append("content", content);
     if (this.$file()) {
-      form.append("attachements[]", this.$file() as Blob);
+      form.append("attachments", this.$file() as Blob);
     }
     this.$file.set(undefined);
     this.http
@@ -133,7 +132,7 @@ export class ServerService {
         },
       })
       .subscribe({
-        next: (message) => {
+        next: () => {
           Haptics.impact({
             style: ImpactStyle.Heavy,
           });

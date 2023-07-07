@@ -18,11 +18,12 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { FilesInterceptor } from "@nestjs/platform-express";
+import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -68,9 +69,9 @@ export class MessageController {
     description: "The message to create.",
     type: MessageCreateDto,
   })
-  @UseInterceptors(FilesInterceptor("attachements[]", 3))
+  @UseInterceptors(FileInterceptor("attachments"))
   async newMessage(
-    @UploadedFiles(
+    @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
           fileType: /(jpg|jpeg|png|gif|webp)/,
@@ -78,15 +79,16 @@ export class MessageController {
         .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
         })
     )
-    attachments: Multer[],
+    attachments: Multer,
     @Body() message: MessageCreateDto
   ): Promise<MessageDto> {
     return this.serviceRequest.send({
       client: this.client,
       pattern: MESSENGER_MESSAGE_PATTERN.CREATE,
-      data: { message, attachments },
+      data: { message, attachments: attachments === undefined ? undefined : [attachments] },
     });
   }
 

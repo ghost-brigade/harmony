@@ -31,7 +31,7 @@ import {
   UserUpdateSchema,
 } from "@harmony/zod";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { Errors } from "@harmony/enums";
+import { Errors, UserStatus } from "@harmony/enums";
 import { ObjectId } from "mongodb";
 import { ServiceRequest } from "@harmony/nest-microservice";
 import {
@@ -49,6 +49,22 @@ export class UserService {
     private readonly clientAuthorization: ClientProxy,
     private readonly userAvatarService: UserAvatarService
   ) {}
+
+  async getUserStatus(user: UserType & { lastRequest: Date }) {
+    if (user?.lastRequest === undefined) {
+      return UserStatus.OFFLINE;
+    }
+
+    const currentTime = new Date();
+    const timeDifference = currentTime.getTime() - user.lastRequest.getTime();
+    const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+
+    if (minutesDifference < 5) {
+      return UserStatus.ONLINE;
+    } else {
+      return UserStatus.OFFLINE;
+    }
+  }
 
   async isUsernameAvailable(
     payload: {
@@ -343,16 +359,31 @@ export class UserService {
   }
 
   async updateUserLastRequest(id) {
-    await this.userModel.updateOne(
-      { _id: id },
-      { lastRequest: new Date() }
-    );
+    console.log("updateUserLastRequest");
+    try {
+      console.log("updateUserLastRequest", id);
+      await this.userModel.updateOne(
+        { _id: id },
+        { $set: { lastRequest: new Date() } }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
   }
 
   async findOne(id: string): Promise<UserType | null> {
-    return await this.userModel
-      .findById(id, { username: 1, email: 1, status: 1, avatar: 1, lastRequest: 1 })
+    const user = await this.userModel
+      .findById(id, {
+        username: 1,
+        email: 1,
+        status: 1,
+        avatar: 1,
+      })
       .exec();
+
+    return user;
   }
 
   async findOneBy(params: UserType): Promise<UserType | null> {

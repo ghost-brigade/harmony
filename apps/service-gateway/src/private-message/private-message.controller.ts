@@ -18,11 +18,12 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { FilesInterceptor } from "@nestjs/platform-express";
+import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -99,19 +100,20 @@ export class PrivateMessageController {
     description: "The private message to create.",
     type: PrivateMessageCreateDto,
   })
-  @UseInterceptors(FilesInterceptor("attachements[]", 3))
+  @UseInterceptors(FileInterceptor("attachments"))
   async newMessage(
-    @UploadedFiles(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: /(jpg|jpeg|png|gif|webp)/,
-        })
-        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        })
-    )
-    attachments: Multer[],
+      @UploadedFile(
+        new ParseFilePipeBuilder()
+          .addFileTypeValidator({
+            fileType: /(jpg|jpeg|png|gif|webp)/,
+          })
+          .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
+          .build({
+            errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            fileIsRequired: false,
+          })
+      )
+    attachments: Multer,
     @Body() privateMessage: PrivateMessageCreateDto,
     @Param("receiverId") receiverId: string
   ): Promise<PrivateMessageDto> {
@@ -120,7 +122,7 @@ export class PrivateMessageController {
       pattern: PRIVATE_MESSAGE_PATTERN.CREATE,
       data: {
         message: { ...privateMessage, receiver: receiverId },
-        attachments,
+        attachments: attachments === undefined ? undefined : [attachments]
       },
     });
   }

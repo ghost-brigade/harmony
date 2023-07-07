@@ -18,6 +18,7 @@ import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { Capacitor } from "@capacitor/core";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
+import { ChatService } from "apps/client/src/app/views/application/direct-messages/chat/chat.service";
 
 @Component({
   selector: "harmony-bottom-nav",
@@ -40,6 +41,8 @@ export class BottomNavComponent {
   bottomNavService = inject(BottomNavService);
   hapticsService = inject(HapticsService);
   serverService = inject(ServerService);
+  chatService = inject(ChatService);
+  $isDMs = computed(() => this.bottomNavService.$isDMs());
   $isEmojiPickerOpen = computed(
     () =>
       this.bottomNavService.$emojiOpen() &&
@@ -56,9 +59,12 @@ export class BottomNavComponent {
   $message = signal("");
   $inputFocused = signal(false);
   $file = computed(() => this.serverService.$file());
+  $dmFile = computed(() => this.chatService.$file());
   $fileUrl = computed(() => {
     if (this.$file()) {
       return URL.createObjectURL(this.$file() as Blob);
+    } else if (this.$dmFile()) {
+      return URL.createObjectURL(this.$dmFile() as Blob);
     }
     return "";
   });
@@ -66,7 +72,8 @@ export class BottomNavComponent {
     return (
       (this.$inputFocused() ||
         this.$message().trim().length > 0 ||
-        this.$file() !== undefined) &&
+        this.$file() !== undefined ||
+        this.$dmFile() !== undefined) &&
       this.$message().trim().length < 500
     );
   });
@@ -111,15 +118,24 @@ export class BottomNavComponent {
 
   async sendMessage() {
     const msg = this.$message().trim();
-    if (!msg && !this.$file()) {
+    if (!msg && !this.$file() && !this.$dmFile()) {
       return;
     }
-    this.serverService.sendMessage(msg);
+
+    if (this.$isDMs()) {
+      this.chatService.sendMessage(msg);
+    } else {
+      this.serverService.sendMessage(msg);
+    }
     this.$message.set("");
     await this.vibrate();
   }
 
   removeFile() {
-    this.serverService.$file.set(undefined);
+    if (this.$isDMs()) {
+      this.chatService.$file.set(undefined);
+    } else {
+      this.serverService.$file.set(undefined);
+    }
   }
 }

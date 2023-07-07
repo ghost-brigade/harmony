@@ -162,7 +162,8 @@
           <h2 class="mb-2 text-lg font-semibold">{{ "FRIENDS" | i18n }}</h2>
 
           <div
-            class="flex flex-col"
+            class="flex cursor-pointer flex-col"
+            [routerLink]="['/app/dms', friend.id]"
             *ngFor="let friend of $friends()">
             <div
               class="relative flex h-16 w-full items-center gap-2 rounded-lg bg-gray-100 px-4 shadow dark:bg-gray-700">
@@ -176,11 +177,9 @@
               }}</span>
 
               <button
-                (click)="unfriendUser(friend.id!)"
+                (click)="unfriendUser(friend.id!); $event.stopPropagation()"
                 [title]="'UNFRIEND_USER' | i18n"
-                class="flex h-10 w-10 items-center justify-center rounded-full
-                bg-gray-300 stroke-white transition-all duration-300
-                hover:bg-blue-200/50 hover:stroke-blue-500">
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-blue-200/50 hover:stroke-blue-500">
                 <svg
                   fill="none"
                   stroke-width="3"
@@ -195,11 +194,9 @@
                 </svg>
               </button>
               <button
-                (click)="blockUser(friend.id!)"
+                (click)="blockUser(friend.id!); $event.stopPropagation()"
                 [title]="'BLOCK_USER' | i18n"
-                class="flex h-10 w-10 items-center justify-center rounded-full
-                bg-gray-300 stroke-white transition-all duration-300
-                hover:bg-red-200/50 hover:stroke-red-500">
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
                 <svg
                   fill="none"
                   stroke-width="3"
@@ -242,9 +239,7 @@
               <button
                 (click)="unblockUser(friend.id!)"
                 [title]="'UNBLOCK_USER' | i18n"
-                class="flex h-10 w-10 items-center justify-center rounded-full
-                bg-gray-300 stroke-white transition-all duration-300
-                hover:bg-red-200/50 hover:stroke-red-500">
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 stroke-white transition-all duration-300 hover:bg-red-200/50 hover:stroke-red-500">
                 <svg
                   fill="none"
                   stroke-width="3"

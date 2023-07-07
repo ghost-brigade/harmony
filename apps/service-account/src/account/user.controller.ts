@@ -18,11 +18,15 @@ import {
 } from "@harmony/zod";
 import { ACCOUNT_MESSAGE_PATTERN } from "@harmony/service-config";
 import { UserContext } from "@harmony/nest-microservice";
-import { UserStatus } from "@harmony/enums";
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @MessagePattern(ACCOUNT_MESSAGE_PATTERN.UPDATE_STATUS)
+  async updateUserStatus(id: IdType) {
+    return await this.userService.updateUserLastRequest(id);
+  }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.USERNAME_AVAILABLE)
   async isUsernameAvailable(
@@ -43,27 +47,14 @@ export class UserController {
   }
 
   @MessagePattern(ACCOUNT_MESSAGE_PATTERN.FIND_ONE)
-  async findOne(data: UserType & { auth?: boolean }) {
+  async findOne(data: UserType) {
     try {
       let user: UserType;
-      const isAuth = data?.auth ?? false;
 
-      if (isAuth === true) {
-        data.auth = undefined;
-      }
-
-      if (Object.keys(data).length === 1 && "id" in data) {
+      if ("id" in data) {
         user = await this.userService.findOne(data.id);
       } else {
         user = await this.userService.findOneBy(data);
-      }
-
-      if (isAuth === true) {
-        await this.userService.updateUserLastRequest(user.id);
-      }
-
-      if (isAuth === false) {
-        delete user.password;
       }
 
       return user;

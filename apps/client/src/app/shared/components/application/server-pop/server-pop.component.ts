@@ -132,7 +132,6 @@ export class ServerPopComponent implements OnDestroy {
             });
           },
         });
-
     } catch {}
   }
 
