@@ -54,6 +54,7 @@ Deployed on Google Kubernetes Engine (GKE)
 
 
 ![Texte alternatif](https://drive.google.com/file/d/1hiiprAm7Fj5GxzFEUyiAtf3K8WBa5s6F/view?usp=sharing)
+![Texte alternatif](https://drive.google.com/uc?export=view&id=1hiiprAm7Fj5GxzFEUyiAtf3K8WBa5s6F)
 
 
 ## Try it out
