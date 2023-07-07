@@ -73,9 +73,9 @@ export class MessageController {
   async newMessage(
     @UploadedFile(
       new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: /(jpg|jpeg|png|gif|webp)/,
-        })
+        // .addFileTypeValidator({
+        //   fileType: /(jpg|jpeg|png|gif|webp)/,
+        // })
         .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
