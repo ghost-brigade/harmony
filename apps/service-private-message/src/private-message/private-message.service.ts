@@ -294,8 +294,8 @@ export class PrivateMessageService {
 
       let userAuthor;
       let userReceiver;
-      const author = authors[1];
-      const receiver = authors[0];
+      const author = authors[0];
+      const receiver = authors[1];
 
       let authorAvatarUrl = null;
       let receiverAvatarUrl = null;
