@@ -50,14 +50,8 @@ Welcome to the **Harmony** repository! This is our semester project, which aims 
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
 ### Microservices architecture
-Deployed on Google Kubernetes Engine (GKE)  
 
-
-
-![Architecture](https://drive.google.com/uc?export=view&id=1kRrZ5eCNUO4cAqYulAkAyjHvxNxg2w-V)
-![Architecture](https://drive.google.com/uc?export=view&id=1-uhaMWyyag9P15gDVvx97zKv5d19fvkP)
-
-
+https://excalidraw.com/#room=224b7234d79bbb788a9f,RBMf5Z-_0-j3sCVmKskIFA
 
 ## Try it out
 
@@ -69,7 +63,7 @@ Public app: https://harmony.vg
 
 Run the app for the first time using the following command
 
-```
+```bash
 npm install
 docker compose up
 npx nx serve client
