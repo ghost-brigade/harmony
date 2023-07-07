@@ -54,7 +54,7 @@ Deployed on Google Kubernetes Engine (GKE)
 
 
 
-![Architecture](https://drive.google.com/uc?export=view&id=1AX41pSyqyOS97eEWcD0gZj7YnrFq88cH)
+![Architecture](https://drive.google.com/uc?export=view&id=1kRrZ5eCNUO4cAqYulAkAyjHvxNxg2w-V)
 ![Architecture](https://drive.google.com/uc?export=view&id=1-uhaMWyyag9P15gDVvx97zKv5d19fvkP)
 
 
