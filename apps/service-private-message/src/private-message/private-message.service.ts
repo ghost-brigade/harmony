@@ -126,6 +126,7 @@ export class PrivateMessageService {
   async getById(payload: { id: IdType }, user: UserContextType) {
     const privateMessage = await this.privateMessageModel
       .findById(payload.id)
+      .sort({ createdAt: -1 })
       .exec();
 
     if (!privateMessage) {
