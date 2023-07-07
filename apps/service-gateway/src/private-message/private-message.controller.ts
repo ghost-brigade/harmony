@@ -102,17 +102,17 @@ export class PrivateMessageController {
   })
   @UseInterceptors(FileInterceptor("attachments"))
   async newMessage(
-      @UploadedFile(
-        new ParseFilePipeBuilder()
-          .addFileTypeValidator({
-            fileType: /(jpg|jpeg|png|gif|webp)/,
-          })
-          .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
-          .build({
-            errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            fileIsRequired: false,
-          })
-      )
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        // .addFileTypeValidator({
+        //   fileType: /(jpg|jpeg|png|gif|webp)/,
+        // })
+        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
+        })
+    )
     attachments: Multer,
     @Body() privateMessage: PrivateMessageCreateDto,
     @Param("receiverId") receiverId: string
@@ -122,7 +122,7 @@ export class PrivateMessageController {
       pattern: PRIVATE_MESSAGE_PATTERN.CREATE,
       data: {
         message: { ...privateMessage, receiver: receiverId },
-        attachments: attachments === undefined ? undefined : [attachments]
+        attachments: attachments === undefined ? undefined : [attachments],
       },
     });
   }
