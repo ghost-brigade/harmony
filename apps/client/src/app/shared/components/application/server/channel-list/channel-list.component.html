@@ -1,5 +1,5 @@
 <div
-  class="hidden h-full max-h-screen min-w-[250px] flex-col items-center gap-2 overflow-y-auto border-r border-gray-100 py-4 dark:border-gray-700 lg:flex"
+  class="hidden h-full max-h-screen min-w-[250px] max-w-[250px] flex-col items-center gap-2 overflow-y-auto overflow-x-hidden text-ellipsis border-r border-gray-100 py-4 dark:border-gray-700 lg:flex"
   auto-animate>
   <div class="flex w-full flex-row justify-between px-4">
     <svg
@@ -35,7 +35,9 @@
     [image]="$server()?.icon"
     *ngIf="$server()?.icon"
     size="h-20 w-20" />
-  <span class="text-center text-2xl font-semibold">{{ $server()?.name }}</span>
+  <span class="max-w-[250px] truncate p-2 text-center text-2xl font-semibold">{{
+    $server()?.name
+  }}</span>
   <div
     *ngFor="let channel of $server()?.channels"
     class="w-full px-2">

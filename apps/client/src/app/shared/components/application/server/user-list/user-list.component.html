@@ -11,7 +11,7 @@
     <harmony-avatar
       [image]="server?.owner?.avatar"
       [status]="server?.owner?.status || ''"></harmony-avatar>
-    <span class="font-semibold">{{ server?.owner?.username }}</span>
+    <span class="truncate font-semibold">{{ server?.owner?.username }}</span>
   </div>
   <ng-container *ngIf="server?.members?.length">
     <div class="flex w-full flex-row items-center gap-2">
@@ -27,7 +27,7 @@
       <harmony-avatar
         [image]="member.avatar"
         [status]="member.status || ''"></harmony-avatar>
-      <span class="font-semibold">{{ member.username }}</span>
+      <span class="truncate font-semibold">{{ member.username }}</span>
     </div>
   </ng-container>
 </div>
