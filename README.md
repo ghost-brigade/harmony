@@ -53,6 +53,7 @@ Welcome to the **Harmony** repository! This is our semester project, which aims 
 Deployed on Google Kubernetes Engine (GKE)  
 
 
+![Texte alternatif](https://drive.google.com/file/d/1hiiprAm7Fj5GxzFEUyiAtf3K8WBa5s6F/view?usp=sharing)
 
 
 ## Try it out
@@ -66,8 +67,9 @@ Public app: https://harmony.vg
 Run the app for the first time using the following command
 
 ```
-$ npm install
-$ docker compose up
+npm install
+docker compose up
+npx nx serve client
 ```
 
 The public app will be available at http://localhost:4200  
@@ -91,14 +93,6 @@ API_ENTRYPOINT= {API_ENTRYPOINT_KEY}
 MONGODB_URI= {MONGODB_URI_KEY}
 
 JWT_TOKEN_SECRET={SECRET_TOKEN}
-```
-
-## Commands
-
-```
-$ npm install
-$ docker compose up
-$ npx nx serve client
 ```
 
 ## Contributors
