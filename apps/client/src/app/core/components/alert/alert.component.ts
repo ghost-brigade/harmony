@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf } from "@angular/common";
 import { AlertService } from "./alert.service";
 import { ALERT_ANIMATION } from "./alert.animation";
 import { I18nPipe } from "../../pipes/i18n.pipe";
@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
   selector: "harmony-core-alert",
   standalone: true,
   animations: ALERT_ANIMATION,
-  imports: [CommonModule, I18nPipe],
+  imports: [NgIf, I18nPipe],
   templateUrl: "./alert.component.html",
 })
 export class AlertComponent {

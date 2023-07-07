@@ -55,7 +55,6 @@ export class DirectMessagesComponent implements OnInit {
   }
 
   goToDM(dm: UserType) {
-    console.log(dm);
     this.chatService.$user.set(dm);
     this.router.navigate(["/app/dms", dm.id]);
   }

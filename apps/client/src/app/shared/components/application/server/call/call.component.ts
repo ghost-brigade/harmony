@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { KeyValuePipe, NgFor, NgIf } from "@angular/common";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
 import { SocketService } from "../../../../services/socket.service";
 import { CALL_ANIMATION } from "./call.animation";
@@ -10,7 +10,7 @@ import { AuthService } from "apps/client/src/app/core/services/auth.service";
 @Component({
   selector: "harmony-call",
   standalone: true,
-  imports: [CommonModule, NgAutoAnimateDirective],
+  imports: [NgIf, NgFor, NgAutoAnimateDirective, KeyValuePipe],
   templateUrl: "./call.component.html",
   styleUrls: ["./call.component.css"],
   animations: CALL_ANIMATION,
@@ -26,13 +26,11 @@ export class CallComponent implements AfterViewInit {
   userListListener: (userList: string[]) => void;
   handleUserList(userList: string[]) {
     this.peers = userList.filter((user) => user !== this.self.id);
-    console.log("USERLIST", this.peers);
     this.callUsers();
   }
 
   voiceLeaveListener: (user: string) => void;
   handleVoiceLeave(user: string) {
-    console.log("LEAVE", user);
     delete this.streams[user];
   }
 
@@ -41,7 +39,6 @@ export class CallComponent implements AfterViewInit {
     this.voiceLeaveListener = this.handleVoiceLeave.bind(this);
     this.socketService.messageSocket.on("user_list", this.userListListener);
     this.self.on("call", (s) => {
-      console.log("CALL");
       s.answer(this.selfStream);
       s.on("stream", (stream) => {
         this.streams[s.peer] = stream;

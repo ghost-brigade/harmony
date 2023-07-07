@@ -123,10 +123,6 @@ export class ServerComponent implements OnInit, AfterViewInit, OnDestroy {
           },
         });
     });
-
-    this.socketService.messageSocket.on("disconnect", (msg) =>
-      console.log("disconnected", msg)
-    );
   }
 
   observeLoader() {

@@ -5,7 +5,7 @@ import {
   computed,
   inject,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgFor, NgIf } from "@angular/common";
 import { ServerGetType } from "@harmony/zod";
 import { CHANNEL_LIST_ANIMATION } from "./channel-list.animation";
 import { ServerService } from "apps/client/src/app/views/application/server/server.service";
@@ -28,7 +28,8 @@ import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
   selector: "harmony-channel-list",
   standalone: true,
   imports: [
-    CommonModule,
+    NgFor,
+    NgIf,
     ServerIconComponent,
     RouterModule,
     FormsModule,

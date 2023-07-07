@@ -148,7 +148,6 @@ export class ServerService {
 
   getMoreMessages() {
     if (this.isLoading) {
-      console.log("already loading");
       return;
     }
     if (this.lastMessageRequest) {

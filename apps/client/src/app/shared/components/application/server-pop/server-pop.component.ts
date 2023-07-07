@@ -1,5 +1,4 @@
 import { Component, Input, OnDestroy, computed, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { ServerPopService } from "./server-pop.service";
 import { FormsModule } from "@angular/forms";
 import { MESSAGE_POP_ANIMATION } from "./server-pop.animation";
@@ -19,12 +18,13 @@ import { ToastService } from "apps/client/src/app/core/components/toast/toast.se
 import { finalize } from "rxjs";
 import { PutEndpoint } from "apps/client/src/app/core/constants/endpoints/put.constants";
 import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
+import { NgIf } from "@angular/common";
 
 @Component({
   selector: "harmony-server-pop",
   standalone: true,
   imports: [
-    CommonModule,
+    NgIf,
     FormsModule,
     ServerIconComponent,
     NgAutoAnimateDirective,

@@ -1,23 +1,23 @@
 import { Component, Input, computed, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { DatePipe, NgFor, NgIf } from "@angular/common";
 import { MarkdownModule } from "ngx-markdown";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MessageGetType } from "@harmony/zod";
 import { NgAutoAnimateDirective } from "ng-auto-animate";
 import { IMAGE_ANIMATION } from "./image.animation";
 import { AuthService } from "apps/client/src/app/core/services/auth.service";
-import { ProfilePopService } from "../profile-pop/profile-pop.service";
 import { MessagePopService } from "../message-pop/message-pop.service";
-import { MessagePopComponent } from "../message-pop/message-pop.component";
 
 @Component({
   selector: "harmony-message",
   standalone: true,
   imports: [
-    CommonModule,
+    NgIf,
     MarkdownModule,
     AvatarComponent,
     NgAutoAnimateDirective,
+    NgFor,
+    DatePipe,
   ],
   templateUrl: "./message.component.html",
   styleUrls: ["./message.component.css"],

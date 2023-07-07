@@ -1,5 +1,5 @@
 import { Component, computed, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, NgIf } from "@angular/common";
 import { MessagePopService } from "./message-pop.service";
 import { FormsModule } from "@angular/forms";
 import { Dialog } from "@capacitor/dialog";
@@ -9,7 +9,7 @@ import { I18nPipe } from "apps/client/src/app/core/pipes/i18n.pipe";
 @Component({
   selector: "harmony-message-pop",
   standalone: true,
-  imports: [CommonModule, FormsModule, I18nPipe],
+  imports: [NgIf, FormsModule, I18nPipe],
   templateUrl: "./message-pop.component.html",
   styleUrls: ["./message-pop.component.css"],
   animations: MESSAGE_POP_ANIMATION,
